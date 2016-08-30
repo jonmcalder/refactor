@@ -16,6 +16,7 @@
 #' @return A factor is returned, unless labels = FALSE which results in an integer vector of level codes.
 #' @examples Z <- stats::rnorm(10000)
 #' cut.integer(Z, breaks = -6:6)
+#' @export
 cut.integer <- function(x, breaks, labels = NULL, include.lowest = FALSE,
                         right = TRUE, digit.lab = 3, ordered_result = FALSE, ...) {
   b1 <- breaks

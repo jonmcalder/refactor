@@ -6,11 +6,12 @@
 #' @param levels An optional vector of the values (as character strings) that x might have taken. The default is the unique set
 #' of values taken by as.character(x), sorted into increasing order of x. Note that this set can be specified as smaller than
 #' sort(unique(x)).
-#' @param Either an optional character vector of labels for the levels (in the same order as levels after removing those in exclude),
+#' @param labels Either an optional character vector of labels for the levels (in the same order as levels after removing those in exclude),
 #' or a character string of length 1.
 #' @return An object of class "factor" which has a set of integer codes the length of x with a "levels" attribute of mode character
 #' and unique (!anyDuplicated(.)) entries. If argument ordered is true (or ordered() is used) the result has class c("ordered", "factor").
 #' @examples cfactor(c("a", "c", "b", "c", "d"))
+#' @export
 cfactor <- function(x, levels = NULL, labels = levels, connector = c("to", "bis", "-"),
                     cleaning = list(punct = c(from = ",'.", to = "."),
                                     connector = list(from = c("to", "-", "bis"), to = " - "),
@@ -42,7 +43,7 @@ cfactor <- function(x, levels = NULL, labels = levels, connector = c("to", "bis"
 
   # check for empty / removed
   prior <- as.character(unique(x))
-  output<-factor(x, levels = finallevels, labels = finallevels, ...)
+  output<-factor(x, levels = finallevels, ...)
   if(!setequal(prior, levels(output))) {
     # levels that are not current names
     if(!all(levels(output) %in% prior)) {

@@ -16,7 +16,7 @@ cfactor(x, levels = NULL, labels = levels, connector = c("to", "bis",
 of values taken by as.character(x), sorted into increasing order of x. Note that this set can be specified as smaller than
 sort(unique(x)).}
 
-\item{Either}{an optional character vector of labels for the levels (in the same order as levels after removing those in exclude),
+\item{labels}{Either an optional character vector of labels for the levels (in the same order as levels after removing those in exclude),
 or a character string of length 1.}
 }
 \value{
