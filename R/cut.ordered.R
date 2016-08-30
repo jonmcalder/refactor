@@ -15,7 +15,7 @@
 #' @param ordered_result Logical: should the result be an ordered factor?
 #' @return A factor is returned, unless labels = FALSE which results in an integer vector of level codes.
 #' @examples Z <- stats::rnorm(10000)
-#' cut.ordered(Z, breaks = -6:6)
+#' cut(Z, breaks = -6:6)
 #' @export
 cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
                         right = TRUE, digit.lab = 3, ordered_result = FALSE, ...) {

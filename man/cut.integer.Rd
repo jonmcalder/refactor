@@ -34,6 +34,6 @@ cut divides the range of x into intervals and codes the values in x according to
 }
 \examples{
 Z <- stats::rnorm(10000)
-cut.integer(Z, breaks = -6:6)
+cut(Z, breaks = -6:6)
 }
 
