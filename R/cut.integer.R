@@ -14,21 +14,51 @@
 #' numbers.
 #' @param ordered_result Logical: should the result be an ordered factor?
 #' @return A factor is returned, unless labels = FALSE which results in an integer vector of level codes.
-#' @examples Z <- stats::rnorm(10000)
-#' cut(Z, breaks = -6:6)
+#' @examples Z <- stats::sample(10)
+#' cut(Z, breaks = c(0, 5, 10))
 #' @export
 cut.integer <- function(x, breaks, labels = NULL, include.lowest = FALSE,
                         right = TRUE, digit.lab = 3, ordered_result = FALSE, ...) {
   b1 <- breaks
   b2 <- breaks - 1
+  
+  breakpoints <- breaks
+  
+  if(length(b1) == 1) {
+    # we need to create the breakspoints with quantiles
+    breakpoints <- quantile(x, 0:(b1-1)/(b1-1))
+    
+    # we need to create the labels for the breakpoints
+    b1 <- floor(quantile(x, 0:(b1-1)/(b1-1)))
+    b2 <- ceiling(b1 -1)
+    
+    
+  }
+  
+  # now we have breakpoints b1, b2.
+    
+  # option right
   if(right == T) {
     shift <- 1
-  } else {
+    # option include.lowest
+    if(include.lowest == T) {
+      b1[1]<- b1[1]-1
+    }
+  } else if(right == F) {
     shift <- 0
+    
+    # option include.lowest
+    if(include.lowest == T) {
+      b2[length(b2)]<- b2[length(b2)]+1
+    }
   }
-  lab <- sapply(seq_len(length(b1)-1), function(i) paste0(b1[i]+shift, " - ", b2[i + 1]+shift, sep = ""))
+  
+  # create labels 
+  lab <- sapply(seq_len(length(b1)-1), function(i) paste0(b1[i] + shift, "-", b2[i + 1] + shift, sep = ""))
+  
+  
 
-  cut.default(x, breaks = breaks, labels = lab, include.lowest = include.lowest,
+  cut.default(x, breaks = breakpoints, labels = lab, include.lowest = include.lowest,
               right = right, digit.lab = digit.lab, ordered_result = ordered_result, ...)
 
 }
