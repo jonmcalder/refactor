@@ -17,48 +17,49 @@
 #' @examples Z <- stats::sample(10)
 #' cut(Z, breaks = c(0, 5, 10))
 #' @export
-cut.integer <- function(x, breaks, labels = NULL, include.lowest = FALSE,
-                        right = TRUE, digit.lab = 3, ordered_result = FALSE, ...) {
-  b1 <- breaks
-  b2 <- breaks - 1
+cut.integer <- function(x, breaks, include.lowest = FALSE,
+                        right = TRUE, digit.lab = 3, ordered_result = FALSE, breaks.mode = "default", label.sep = "-", ...) {
   
-  breakpoints <- breaks
-  
-  if(length(b1) == 1) {
-    # we need to create the breakspoints with quantiles
-    breakpoints <- quantile(x, 0:(b1-1)/(b1-1))
+  # if breaks are not specified (i.e. only the number of breaks is provided)
+  if(length(breaks) == 1){
     
-    # we need to create the labels for the breakpoints
-    b1 <- floor(quantile(x, 0:(b1-1)/(b1-1)))
-    b2 <- ceiling(b1 -1)
-    
+    # should the breaks be "pretty"? (‘round’ values which cover the range of the values in x)
+    # or based on quantiles?
+    # or evenly spaced over the range of the data? ("default")
+    if(breaks.mode == "pretty"){
+      breaks = pretty(x, breaks)
+    } else if(breaks.mode == "quantile"){
+      # not yet implemented
+    } else if(breaks.mode == "default"){
+      breaks = round(seq(from=min(x), to=max(x), length.out = breaks+1))
+    } else {
+      stop("breaks.mode needs to be either 'default', 'pretty' or 'quantile'")
+    }
     
   }
   
-  # now we have breakpoints b1, b2.
-    
-  # option right
-  if(right == T) {
-    shift <- 1
-    # option include.lowest
-    if(include.lowest == T) {
-      b1[1]<- b1[1]-1
+  numLabels = length(breaks)-1
+  
+  # handle break offsets for 'right' and 'left' intervals
+  # and also handle include.lowest = TRUE
+  if(right == TRUE){
+    floorInc    = rep(1, numLabels)
+    ceilingDec  = rep(0, numLabels)
+    if(include.lowest == TRUE){
+      floorInc[1] = 0  
     }
-  } else if(right == F) {
-    shift <- 0
-    
-    # option include.lowest
-    if(include.lowest == T) {
-      b2[length(b2)]<- b2[length(b2)]+1
+  } else {
+    floorInc    = rep(0, numLabels)
+    ceilingDec  = rep(1, numLabels)
+    if(include.lowest == TRUE){
+      ceilingDec[numLabels] = 0  
     }
   }
   
-  # create labels 
-  lab <- sapply(seq_len(length(b1)-1), function(i) paste0(b1[i] + shift, "-", b2[i + 1] + shift, sep = ""))
+  # create integer-based interval labels using label.sep
+  recodeLabels = paste(head(breaks, -1) + floorInc, tail(breaks, -1) - ceilingDec, sep = label.sep)
   
-  
-
-  cut.default(x, breaks = breakpoints, labels = lab, include.lowest = include.lowest,
-              right = right, digit.lab = digit.lab, ordered_result = ordered_result, ...)
+  cut.default(x, breaks = breaks, labels = recodeLabels, include.lowest = include.lowest,
+                           right = right, digit.lab = digit.lab, ordered_result = ordered_result, ...)
 
 }
