@@ -47,13 +47,13 @@ cfactor <- function(x, levels = NULL, labels = levels, connector = c("to", "bis"
   if(!setequal(prior, levels(output))) {
     # levels that are not current names
     if(!all(levels(output) %in% prior)) {
-      warning(paste("the following label(s) is / are empty: \n", paste(c(levels(output) %w/o% prior), collapse = "\n")),
+      warning(paste("the following levels were empty: \n", paste(c(levels(output) %w/o% prior), collapse = "\n")),
               call. = F)
     }
 
     # current names that don't become levels
     if(!all(prior %in% levels(output))) {
-      warning(paste("the following label(s) is / are removed: \n", paste(prior[!(prior %in% levels(output))], collapse = "\n")),
+      warning(paste("the following levels were removed: \n", paste(prior[!(prior %in% levels(output))], collapse = "\n")),
               call. = F)
     }
   }
