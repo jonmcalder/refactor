@@ -17,49 +17,86 @@
 #' @examples Z <- stats::sample(10)
 #' cut(Z, breaks = c(0, 5, 10))
 #' @export
-cut.integer <- function(x, breaks, include.lowest = FALSE,
-                        right = TRUE, digit.lab = 3, ordered_result = FALSE, breaks.mode = "default", label.sep = "-", ...) {
+cut.integer <- function(x, breaks, include.lowest = FALSE, right = TRUE, ordered_result = FALSE,
+                        breaks_mode = "default", label_sep = "-", balance = "left", ...) {
   
   # if breaks are not specified (i.e. only the number of breaks is provided)
   if(length(breaks) == 1){
     
+    numLabels <- breaks
+    
     # should the breaks be "pretty"? (‘round’ values which cover the range of the values in x)
     # or based on quantiles?
     # or evenly spaced over the range of the data? ("default")
-    if(breaks.mode == "pretty"){
-      breaks = pretty(x, breaks)
-    } else if(breaks.mode == "quantile"){
+    if(breaks_mode == "pretty"){
+      
+      breakpoints <- pretty(x, breaks)
+      
+    } else if(breaks_mode == "quantile"){
+      
       # not yet implemented
-    } else if(breaks.mode == "default"){
-      breaks = round(seq(from=min(x), to=max(x), length.out = breaks+1))
+      
+    } else if(breaks_mode == "default"){
+      
+      range <- max(x)-min(x)+1
+      avg_bin_width <- floor(range/breaks)
+      rem <- range %% breaks
+      num <- breaks+1
+      if(rem == 0){
+        breakpoints <- seq(from=min(x)-1, by = avg_bin_width, length.out = num)
+        breakpoints[1] <- min(x)
+      } else {
+        if(balance == "left"){
+          breakpoints <- rev(seq(from=max(x), by = -avg_bin_width, length.out = num))
+          breakpoints[1] <- min(x)
+          for(i in 1:rem){
+            breakpoints[i+1] <- min(x)-1+avg_bin_width*i+i
+          }
+        } else {
+          breakpoints <- seq(from=min(x)-1, by = avg_bin_width, length.out = num)
+          breakpoints[1] <- min(x)
+          breakpoints[num] <- max(x)
+          for(i in num:(num-rem+1)){
+            breakpoints[i-1] <- max(x)-(avg_bin_width+1)*(num-i+1)
+          }
+        }
+      }
     } else {
-      stop("breaks.mode needs to be either 'default', 'pretty' or 'quantile'")
+      stop("breaks_mode needs to be either 'default', 'pretty' or 'quantile'")
     }
     
-  }
+    include.lowest <- TRUE
+    right <- TRUE
   
-  numLabels = length(breaks)-1
+  # use breakpoints as is if provided  
+  } else {
+    
+    breakpoints <- breaks
+
+    numLabels <- length(breakpoints) - 1
+    
+  }
   
   # handle break offsets for 'right' and 'left' intervals
   # and also handle include.lowest = TRUE
   if(right == TRUE){
-    floorInc    = rep(1, numLabels)
-    ceilingDec  = rep(0, numLabels)
+    floorInc    <- rep(1, numLabels)
+    ceilingDec  <- rep(0, numLabels)
     if(include.lowest == TRUE){
-      floorInc[1] = 0  
+      floorInc[1] <- 0
     }
   } else {
-    floorInc    = rep(0, numLabels)
-    ceilingDec  = rep(1, numLabels)
+    floorInc    <- rep(0, numLabels)
+    ceilingDec  <- rep(1, numLabels)
     if(include.lowest == TRUE){
-      ceilingDec[numLabels] = 0  
+      ceilingDec[numLabels] <- 0
     }
   }
   
-  # create integer-based interval labels using label.sep
-  recodeLabels = paste(head(breaks, -1) + floorInc, tail(breaks, -1) - ceilingDec, sep = label.sep)
+  # create integer-based interval labels using label_sep
+  recode_labels <- paste(head(breakpoints, -1) + floorInc, tail(breakpoints, -1) - ceilingDec, sep = label_sep)
   
-  cut.default(x, breaks = breaks, labels = recodeLabels, include.lowest = include.lowest,
-                           right = right, digit.lab = digit.lab, ordered_result = ordered_result, ...)
-
+  cut.default(x, breaks = breakpoints, labels = recode_labels, include.lowest = include.lowest,
+              right = right, ordered_result = ordered_result, ...)
+  
 }
