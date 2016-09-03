@@ -14,11 +14,21 @@
 #' numbers.
 #' @param ordered_result Logical: should the result be an ordered factor?
 #' @return A factor is returned, unless labels = FALSE which results in an integer vector of level codes.
-#' @examples Z <- stats::sample(10)
+#' @examples Z <- sample(10)
 #' cut(Z, breaks = c(0, 5, 10))
 #' @export
 cut.integer <- function(x, breaks, include.lowest = FALSE, right = TRUE, ordered_result = FALSE,
                         breaks_mode = "default", label_sep = "-", balance = "left", ...) {
+  
+  # check function arguments
+  assert_class(x, "integer")
+  assert_class(breaks, "numeric")
+  assert_class(include.lowest, "logical")
+  assert_class(right, "logical")
+  assert_class(ordered_result, "logical")
+  assert_choice(breaks_mode, c("default", "pretty", "quantile"))
+  assert_class(label_sep, "character")
+  assert_choice(balance, c("left", "right"))
   
   # if breaks are not specified (i.e. only the number of breaks is provided)
   if(length(breaks) == 1){
