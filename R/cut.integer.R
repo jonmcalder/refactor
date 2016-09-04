@@ -28,17 +28,27 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = FALSE, right 
   assert_class(label_sep, "character")
   assert_choice(balance, c("left", "right"))
   
+  # NAs in breaks
+  if(anyNA(breaks)) {
+    breaks <- na.omit(breaks)
+    warning("missing values in breaks were removed")
+  }
+  
+  # unsorted breaks
+  if(is.unsorted(breaks)){
+    breaks <- sort(breaks)
+    warning(paste("breaks were unsorted and are now sorted in the following order:", paste0(breaks, collapse = " ")))
+  }
+
+  # break / x interaction
   if(length(x) %in% length(breaks) %in% 1) stop("if x is a scalar, breaks must be given in intervals")
   
   if(length(breaks) == 1) {
     if(2 * breaks > max(x) - min(x) + 1) stop("range too small for the number of breaks specified")
     if(length(x) <= breaks) warning("breaks is a scalar not smaller than the length of x")
   }
-  
-  if(is.unsorted(breaks)){
-    breaks <- sort(breaks)
-    warning(paste("breaks were unsorted and are now sorted in the following order:", paste0(breaks, collapse = " ")))
-  }
+
+  ############################################### assertive checks completed  ###############################################
   
   # if breaks are not specified (i.e. only the number of breaks is provided)
   if(length(breaks) == 1){
