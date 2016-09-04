@@ -35,6 +35,10 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = FALSE, right 
     if(length(x) <= breaks) warning("breaks is a scalar not smaller than the length of x")
   }
   
+  if(is.unsorted(breaks)){
+    breaks <- sort(breaks)
+    warning(paste("breaks were unsorted and are now sorted in the following order:", paste0(breaks, collapse = " ")))
+  }
   
   # if breaks are not specified (i.e. only the number of breaks is provided)
   if(length(breaks) == 1){

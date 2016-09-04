@@ -116,6 +116,9 @@ test_that("cut.integer error cases", {
 test_that("cut.integer warning cases", {
   expect_warning(cut(sample(10), breaks = c(0, 4, 5)), 
                  "[[:digit:]]+ missing values generated$")
+  
+  expect_warning(cut(sample(10), breaks = c(10, 0, 3)), 
+                 "^breaks were unsorted and are now sorted in the following order:")
 })
 
 
