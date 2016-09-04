@@ -119,6 +119,9 @@ test_that("cut.integer warning cases", {
   
   expect_warning(cut(sample(10), breaks = c(10, 0, 3)), 
                  "^breaks were unsorted and are now sorted in the following order:")
+  
+  expect_warning(cut(sample(10), breaks = c(NA, 0, 10)), 
+                 "missing values in breaks were removed$")
 })
 
 
