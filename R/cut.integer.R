@@ -55,14 +55,14 @@ cut.integer <- function(x, breaks, include.lowest = FALSE, right = TRUE, ordered
       if(rem == 0){
         breakpoints <- seq(from=min(x)-1, by = avg_bin_width, length.out = num)
         breakpoints[1] <- min(x)
-      } else {
+      } else if(rem != 0) {
         if(balance == "left"){
           breakpoints <- rev(seq(from=max(x), by = -avg_bin_width, length.out = num))
           breakpoints[1] <- min(x)
           for(i in 1:rem){
             breakpoints[i+1] <- min(x)-1+avg_bin_width*i+i
           }
-        } else {
+        } else if(balance == "right"){
           breakpoints <- seq(from=min(x)-1, by = avg_bin_width, length.out = num)
           breakpoints[1] <- min(x)
           breakpoints[num] <- max(x)
@@ -71,15 +71,13 @@ cut.integer <- function(x, breaks, include.lowest = FALSE, right = TRUE, ordered
           }
         }
       }
-    } else {
-      stop("breaks_mode needs to be either 'default', 'pretty' or 'quantile'")
     }
     
     include.lowest <- TRUE
     right <- TRUE
   
   # use breakpoints as is if provided  
-  } else {
+  } else if(length(breaks > 1)){
     
     breakpoints <- breaks
 
@@ -95,7 +93,7 @@ cut.integer <- function(x, breaks, include.lowest = FALSE, right = TRUE, ordered
     if(include.lowest == TRUE){
       floorInc[1] <- 0
     }
-  } else {
+  } else if(right == FALSE) {
     floorInc    <- rep(0, numLabels)
     ceilingDec  <- rep(1, numLabels)
     if(include.lowest == TRUE){
