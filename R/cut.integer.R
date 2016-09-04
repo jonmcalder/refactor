@@ -3,21 +3,19 @@
 #' cut divides the range of x into intervals and codes the values in x according to the interval they fall into.
 #'
 #' @param x A numeric vector which is to be converted to a factor by cutting.
-#' @param breaks Either a numeric vector of two or more unique cut points or a single number (greater than or equal to 2) giving the
+#' @param breaks Either an integer vector of two or more unique cut points or a single integer (greater than or equal to 2) giving the
 #' number of intervals into which x is to be cut.
-#' @param labels Labels for the levels of the resulting category. By default, labels are constructed using "(a,b]" interval notation.
+#' @param labels Labels for the levels of the resulting category. By default, labels are constructed using "a-b c-d" interval notation.
 #' If labels = FALSE, simple integer codes are returned instead of a factor.
 #' @param include.lowest Logical, indicating if an ‘x[i]’ equal to the lowest (or highest, for right = FALSE) ‘breaks’ value should be
 #' included.
 #' @param right	Logical, indicating if the intervals should be closed on the right (and open on the left) or vice versa.
-#' @param digit.lab	Integer which is used when labels are not given. It determines the number of digits used in formatting the break
-#' numbers.
 #' @param ordered_result Logical: should the result be an ordered factor?
 #' @return A factor is returned, unless labels = FALSE which results in an integer vector of level codes.
 #' @examples Z <- sample(10)
 #' cut(Z, breaks = c(0, 5, 10))
 #' @export
-cut.integer <- function(x, breaks, include.lowest = FALSE, right = TRUE, ordered_result = FALSE,
+cut.integer <- function(x, breaks, labels = NULL, include.lowest = FALSE, right = TRUE, ordered_result = FALSE,
                         breaks_mode = "default", label_sep = "-", balance = "left", ...) {
   
   # check function arguments
@@ -29,6 +27,28 @@ cut.integer <- function(x, breaks, include.lowest = FALSE, right = TRUE, ordered
   assert_choice(breaks_mode, c("default", "pretty", "quantile"))
   assert_class(label_sep, "character")
   assert_choice(balance, c("left", "right"))
+  
+  # NAs in breaks
+  if(anyNA(breaks)) {
+    breaks <- na.omit(breaks)
+    warning("missing values in breaks were removed")
+  }
+  
+  # unsorted breaks
+  if(is.unsorted(breaks)){
+    breaks <- sort(breaks)
+    warning(paste("breaks were unsorted and are now sorted in the following order:", paste0(breaks, collapse = " ")))
+  }
+
+  # break / x interaction
+  if(length(x) %in% length(breaks) %in% 1) stop("if x is a scalar, breaks must be given in intervals")
+  
+  if(length(breaks) == 1) {
+    if(2 * breaks > max(x) - min(x) + 1) stop("range too small for the number of breaks specified")
+    if(length(x) <= breaks) warning("breaks is a scalar not smaller than the length of x")
+  }
+
+  ############################################### assertive checks completed  ###############################################
   
   # if breaks are not specified (i.e. only the number of breaks is provided)
   if(length(breaks) == 1){
@@ -76,6 +96,7 @@ cut.integer <- function(x, breaks, include.lowest = FALSE, right = TRUE, ordered
     include.lowest <- TRUE
     right <- TRUE
   
+    
   # use breakpoints as is if provided  
   } else if(length(breaks > 1)){
     
@@ -102,9 +123,25 @@ cut.integer <- function(x, breaks, include.lowest = FALSE, right = TRUE, ordered
   }
   
   # create integer-based interval labels using label_sep
-  recode_labels <- paste(head(breakpoints, -1) + floorInc, tail(breakpoints, -1) - ceilingDec, sep = label_sep)
-  
-  cut.default(x, breaks = breakpoints, labels = recode_labels, include.lowest = include.lowest,
+  if(is.null(labels)) {
+    recode_labels <- paste(head(breakpoints, -1) + floorInc, tail(breakpoints, -1) - ceilingDec, sep = label_sep)
+  } else if(length(labels) == 1){
+    if(labels == FALSE) {
+    recode_labels <- FALSE
+    }
+  } else if(!is.null(labels)) {
+    if(length(labels) == length(breakpoints) - 1) {
+      recode_labels <- labels
+    } else if(length(labels) != length(breakpoints) -1) {
+      stop("if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
+    }
+    
+  }
+  output <- cut.default(x, breaks = breakpoints, labels = recode_labels, include.lowest = include.lowest,
               right = right, ordered_result = ordered_result, ...)
   
+  if(anyNA(output)) {
+    warning(paste(sum(is.na(output)), "missing values generated"))
+  }
+  output
 }

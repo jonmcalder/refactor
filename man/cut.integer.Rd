@@ -4,15 +4,18 @@
 \alias{cut.integer}
 \title{Convert Numeric to Factor}
 \usage{
-\method{cut}{integer}(x, breaks, include.lowest = FALSE, right = TRUE,
-  ordered_result = FALSE, breaks_mode = "default", label_sep = "-",
-  balance = "left", ...)
+\method{cut}{integer}(x, breaks, labels = NULL, include.lowest = FALSE,
+  right = TRUE, ordered_result = FALSE, breaks_mode = "default",
+  label_sep = "-", balance = "left", ...)
 }
 \arguments{
 \item{x}{A numeric vector which is to be converted to a factor by cutting.}
 
-\item{breaks}{Either a numeric vector of two or more unique cut points or a single number (greater than or equal to 2) giving the
+\item{breaks}{Either an integer vector of two or more unique cut points or a single integer (greater than or equal to 2) giving the
 number of intervals into which x is to be cut.}
+
+\item{labels}{Labels for the levels of the resulting category. By default, labels are constructed using "a-b c-d" interval notation.
+If labels = FALSE, simple integer codes are returned instead of a factor.}
 
 \item{include.lowest}{Logical, indicating if an ‘x[i]’ equal to the lowest (or highest, for right = FALSE) ‘breaks’ value should be
 included.}
@@ -20,12 +23,6 @@ included.}
 \item{right}{Logical, indicating if the intervals should be closed on the right (and open on the left) or vice versa.}
 
 \item{ordered_result}{Logical: should the result be an ordered factor?}
-
-\item{labels}{Labels for the levels of the resulting category. By default, labels are constructed using "(a,b]" interval notation.
-If labels = FALSE, simple integer codes are returned instead of a factor.}
-
-\item{digit.lab}{Integer which is used when labels are not given. It determines the number of digits used in formatting the break
-numbers.}
 }
 \value{
 A factor is returned, unless labels = FALSE which results in an integer vector of level codes.

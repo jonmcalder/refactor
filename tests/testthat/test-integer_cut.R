@@ -30,6 +30,14 @@ case18 <- cut(int3_norep, breaks = 4, balance = "right")
 case19 <- cut(int3_norep, breaks = 5, balance = "left")
 case20 <- cut(int3_norep, breaks = 5, balance = "right")
 
+# for extremely few values
+case21 <- cut(1L, breaks = c(0, 1, 9), include.lowest = T)
+
+# non-default labels
+case22 <- cut(sample(10), breaks = 3, labels = letters[1:3])
+case23 <- cut(sample(10), breaks = 3, labels = F)
+
+
 
 test_that("cut.integer returns same as cut.default but with better labels for length(break) > 1", {
   # right = T
@@ -78,3 +86,47 @@ test_that("cut.integer returns expected (natural) intervals with better labels f
   expect_equal(levels(case20), c("1-19", "20-39", "40-59", "60-79", "80-99"))
 
 })
+
+test_that("cut.integer with user-defined labels", {
+  expect_equal(levels(case22), c("a", "b", "c"))
+  expect_equal(sort(unique(case23)), c(1, 2, 3))
+})
+
+
+# can't be assigned because of error. Created within testthat
+test_that("cut.integer error cases", {
+  
+  ## should produce an error: length(breaks) == length(x) == 1
+  expect_error(cut(1L, breaks = 2), 
+               "if x is a scalar, breaks must be given in intervals")
+  
+  ## should not produce an error if breaks are already given
+  expect_equal(levels(case21), c("0-1", "2-9"))
+  
+  ## should produce an error if breaks > length(x), since integer bins can't be created if bins should contain at least two integers.
+  expect_error(cut(sample(2), breaks = 3), 
+               "range too small for the number of breaks specified")
+  expect_error(cut(sample(10), breaks = 3, labels = letters[1:4]), 
+               "if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
+  expect_error(cut(sample(10), breaks = 3, labels = letters[1:99]), 
+               "if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
+
+})
+
+test_that("cut.integer warning cases", {
+  expect_warning(cut(sample(10), breaks = c(0, 4, 5)), 
+                 "[[:digit:]]+ missing values generated$")
+  
+  expect_warning(cut(sample(10), breaks = c(10, 0, 3)), 
+                 "^breaks were unsorted and are now sorted in the following order:")
+  
+  expect_warning(cut(sample(10), breaks = c(NA, 0, 10)), 
+                 "missing values in breaks were removed$")
+})
+
+
+
+
+test_that("cut.integer if breaks outside range(x)", {
+  # not yet finished
+}) 
