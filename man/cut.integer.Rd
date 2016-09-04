@@ -4,7 +4,7 @@
 \alias{cut.integer}
 \title{Convert Numeric to Factor}
 \usage{
-\method{cut}{integer}(x, breaks, labels = NULL, include.lowest = FALSE,
+\method{cut}{integer}(x, breaks, labels = NULL, include.lowest = TRUE,
   right = TRUE, ordered_result = FALSE, breaks_mode = "default",
   label_sep = "-", balance = "left", ...)
 }
@@ -18,7 +18,8 @@ number of intervals into which x is to be cut.}
 If labels = FALSE, simple integer codes are returned instead of a factor.}
 
 \item{include.lowest}{Logical, indicating if an ‘x[i]’ equal to the lowest (or highest, for right = FALSE) ‘breaks’ value should be
-included.}
+included. Note that unlike \link[base]{cut.default}, here include.lowest defaults to TRUE, since this is more intuitive for integer 
+intervals}
 
 \item{right}{Logical, indicating if the intervals should be closed on the right (and open on the left) or vice versa.}
 

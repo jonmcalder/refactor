@@ -2,9 +2,9 @@ context("integer_cut")
 
 int_norep <- sample(10, replace = F)
 
-case1 <- cut(int_norep, breaks = c(1, 5, 10), right = T)
+case1 <- cut(int_norep, breaks = c(1, 5, 10), right = T, include.lowest = F)
 case2 <- cut(int_norep, breaks = c(1, 5, 10), right = T, include.lowest = T)
-case3 <- cut(int_norep, breaks = c(1, 5, 10), right = F)
+case3 <- cut(int_norep, breaks = c(1, 5, 10), right = F, include.lowest = F)
 case4 <- cut(int_norep, breaks = c(1, 5, 10), right = F, include.lowest = T)
 
 case5 <- cut(int_norep, breaks = 2, balance = "left")

@@ -8,14 +8,15 @@
 #' @param labels Labels for the levels of the resulting category. By default, labels are constructed using "a-b c-d" interval notation.
 #' If labels = FALSE, simple integer codes are returned instead of a factor.
 #' @param include.lowest Logical, indicating if an ‘x[i]’ equal to the lowest (or highest, for right = FALSE) ‘breaks’ value should be
-#' included.
+#' included. Note that unlike \link[base]{cut.default}, here include.lowest defaults to TRUE, since this is more intuitive for integer 
+#' intervals
 #' @param right	Logical, indicating if the intervals should be closed on the right (and open on the left) or vice versa.
 #' @param ordered_result Logical: should the result be an ordered factor?
 #' @return A factor is returned, unless labels = FALSE which results in an integer vector of level codes.
 #' @examples Z <- sample(10)
 #' cut(Z, breaks = c(0, 5, 10))
 #' @export
-cut.integer <- function(x, breaks, labels = NULL, include.lowest = FALSE, right = TRUE, ordered_result = FALSE,
+cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, right = TRUE, ordered_result = FALSE,
                         breaks_mode = "default", label_sep = "-", balance = "left", ...) {
   
   # check function arguments
@@ -93,7 +94,6 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = FALSE, right 
       }
     }
     
-    include.lowest <- TRUE
     right <- TRUE
   
     
