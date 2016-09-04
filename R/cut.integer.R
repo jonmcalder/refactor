@@ -123,7 +123,11 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = FALSE, right 
     }
     
   }
-  cut.default(x, breaks = breakpoints, labels = recode_labels, include.lowest = include.lowest,
+  output <- cut.default(x, breaks = breakpoints, labels = recode_labels, include.lowest = include.lowest,
               right = right, ordered_result = ordered_result, ...)
   
+  if(anyNA(output)) {
+    warning(paste(sum(is.na(output)), "missing values generated"))
+  }
+  output
 }

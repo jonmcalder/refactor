@@ -38,6 +38,7 @@ case22 <- cut(sample(10), breaks = 3, labels = letters[1:3])
 case23 <- cut(sample(10), breaks = 3, labels = F)
 
 
+
 test_that("cut.integer returns same as cut.default but with better labels for length(break) > 1", {
   # right = T
   expect_equal(levels(case1), c("2-5", "6-10"))
@@ -111,6 +112,14 @@ test_that("cut.integer error cases", {
                "if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
 
 })
+
+test_that("cut.integer warning cases", {
+  expect_warning(cut(sample(10), breaks = c(0, 4, 5)), 
+                 "[[:digit:]]+ missing values generated$")
+})
+
+
+
 
 test_that("cut.integer if breaks outside range(x)", {
   # not yet finished
