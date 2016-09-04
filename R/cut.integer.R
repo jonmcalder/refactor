@@ -29,7 +29,11 @@ cut.integer <- function(x, breaks, include.lowest = FALSE, right = TRUE, ordered
   assert_choice(breaks_mode, c("default", "pretty", "quantile"))
   assert_class(label_sep, "character")
   assert_choice(balance, c("left", "right"))
-  
+  if(length(x) %in% length(breaks) %in% 1) stop("if x is a scalar, breaks must be given in intervals")
+  if(length(breaks) == 1) {
+    if(2 * breaks > max(x) - min(x) + 1) stop("range too small for the number of breaks specified")
+    if(length(x) <= breaks) warning("breaks is a scalar not smaller than the length of x")
+  }
   # if breaks are not specified (i.e. only the number of breaks is provided)
   if(length(breaks) == 1){
     
@@ -76,6 +80,7 @@ cut.integer <- function(x, breaks, include.lowest = FALSE, right = TRUE, ordered
     include.lowest <- TRUE
     right <- TRUE
   
+    
   # use breakpoints as is if provided  
   } else if(length(breaks > 1)){
     

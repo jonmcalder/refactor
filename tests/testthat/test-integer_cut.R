@@ -30,6 +30,9 @@ case18 <- cut(int3_norep, breaks = 4, balance = "right")
 case19 <- cut(int3_norep, breaks = 5, balance = "left")
 case20 <- cut(int3_norep, breaks = 5, balance = "right")
 
+# for extremely few values
+case21 <- cut(1L, breaks = c(0, 1, 9), include.lowest = T)
+
 
 test_that("cut.integer returns same as cut.default but with better labels for length(break) > 1", {
   # right = T
@@ -78,3 +81,23 @@ test_that("cut.integer returns expected (natural) intervals with better labels f
   expect_equal(levels(case20), c("1-19", "20-39", "40-59", "60-79", "80-99"))
 
 })
+
+# can't be assigned because of error. Created within testthat
+test_that("cut.integer error cases", {
+  
+  ## should produce an error: length(breaks) == length(x) == 1
+  expect_error(cut(1L, breaks = 2), 
+               "if x is a scalar, breaks must be given in intervals")
+  
+  ## should not produce an error if breaks are already given
+  expect_equal(levels(case21), c("0-1", "2-9"))
+  
+  ## should produce an error if breaks > length(x), since integer bins can't be created if bins should contain at least two integers.
+  expect_error(cut(sample(2), breaks = 3), 
+               "range too small for the number of breaks specified")
+
+})
+
+test_that("cut.integer if breaks outside range(x)", {
+  
+}) 
