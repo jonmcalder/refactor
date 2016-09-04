@@ -7,11 +7,20 @@
 #' number of intervals into which x is to be cut.
 #' @param labels Labels for the levels of the resulting category. By default, labels are constructed using "a-b c-d" interval notation.
 #' If labels = FALSE, simple integer codes are returned instead of a factor.
-#' @param include.lowest Logical, indicating if an ‘x[i]’ equal to the lowest (or highest, for right = FALSE) ‘breaks’ value should be
+#' @param include.lowest Logical, indicating if an "x[i]" equal to the lowest (or highest, for right = FALSE) "breaks" value should be
 #' included. Note that unlike \link[base]{cut.default}, here include.lowest defaults to TRUE, since this is more intuitive for integer 
-#' intervals
+#' intervals.
 #' @param right	Logical, indicating if the intervals should be closed on the right (and open on the left) or vice versa.
 #' @param ordered_result Logical: should the result be an ordered factor?
+#' @param breaks_mode A parameter indicating how to determine the intervals when breaks is specified as 
+#' a scalar. \itemize{
+#'  \item 'default' will result in intervals spread as evenly as possible over the exact range of x
+#'  \item 'pretty' will generate rounded breakpoints for the intervals (often extending slightly beyond the range of x) based on 
+#'  \link[base]{pretty}
+#'  \item 'quantile' will form the intervals so as to result in similar frequencies of occurrence in each of the intervals
+#' }
+#' @param label_sep A single or short character string used to generate labels for the intervals e.g. the default value of "-" 
+#' will result in labels like 1-10 11-20 21-30 etc
 #' @return A factor is returned, unless labels = FALSE which results in an integer vector of level codes.
 #' @examples Z <- sample(10)
 #' cut(Z, breaks = c(0, 5, 10))
