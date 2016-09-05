@@ -165,6 +165,10 @@ test_that("cut.integer warning cases", {
   expect_warning(cut(sample(10), breaks = c(1, 2.6, 5.1, 10)), 
                  "^When coerced to integers, the following breaks were rounded")
   
+  # when bins with width 1 are produced
+  expect_warning(cut(sample(10), breaks = c(1, 4, 6, 8, 9, 10)),
+                 "^this break specification produces [[:digit:]]+ bin\\(s\\) of width 1. The corresponding label\\(s\\) are: 9, 10")
+  
 })
 
 

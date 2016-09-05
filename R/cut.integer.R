@@ -60,15 +60,22 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, right =
     breaks <- new_breaks
   }
   
-  
   # unsorted breaks
   if(is.unsorted(breaks)){
     breaks <- sort(breaks)
     warning(paste("breaks were unsorted and are now sorted in the following order:", paste0(breaks, collapse = " ")))
   }
+  
+  # breaks that create bins of width 1
+  n_of_1bins <- diff(breaks)[-1] == 1
+  if(sum(n_of_1bins > 0)) {
+    warning(paste("this break specification produces", 
+                  sum(n_of_1bins), "bin(s) of width 1. The corresponding label(s) are:", 
+                  paste(breaks[c(F, F, n_of_1bins)], collapse = ", "))) # + 2 to get right index because of (1) diff and (2) first diff dropped
+  }
 
   # break / x interaction
-  if(length(x) %in% length(breaks) %in% 1) stop("if x is a scalar, breaks must be given in intervals")
+  if(length(x) == 1 & length(breaks) == 1) stop("if x is a scalar, breaks must be given in intervals")
   
   if(length(breaks) == 1) {
     if(2 * breaks > max(x) - min(x) + 1) stop("range too small for the number of breaks specified")
@@ -150,7 +157,11 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, right =
   
   # create integer-based interval labels using label_sep
   if(is.null(labels)) {
-    recode_labels <- paste(head(breakpoints, -1) + floorInc, tail(breakpoints, -1) - ceilingDec, sep = label_sep)
+    recode_labels <- paste(head(breakpoints, -1) + floorInc, tail(breakpoints, -1) - ceilingDec, sep = label_sep) 
+    # correct labels with binwidth 1, that is where to elements separated by label_sep are the same, i.e. the label "10-10"
+    same <- head(breakpoints, -1) + floorInc == tail(breakpoints, -1) - ceilingDec
+    recode_labels[same] <- (tail(breakpoints, -1) - ceilingDec)[same]
+    
   } else if(!is.null(labels)) {
     if(length(labels) == length(breakpoints) - 1) {
       recode_labels <- labels
@@ -159,10 +170,10 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, right =
         if(labels == F) {
           recode_labels <- labels
         } else if(labels != F) {
-          stop("if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
+          stop("if labels not 'NULL' and not 'F', it must be the same length as the number of bins resulting from 'breaks'")
         }
       } else if(length(labels) != 1) {
-        stop("if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
+        stop("if labels not 'NULL' and not 'F', it must be the same length as the number of bins resulting from 'breaks'")
       }
       
     }
