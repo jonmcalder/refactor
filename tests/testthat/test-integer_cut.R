@@ -30,12 +30,27 @@ case18 <- cut(int3_norep, breaks = 4, balance = "right")
 case19 <- cut(int3_norep, breaks = 5, balance = "left")
 case20 <- cut(int3_norep, breaks = 5, balance = "right")
 
-# for extremely few values
+# for extremely few values in x 
 case21 <- cut(1L, breaks = c(0, 1, 9), include.lowest = T)
 
 # non-default labels
 case22 <- cut(sample(10), breaks = 3, labels = letters[1:3])
 case23 <- cut(sample(10), breaks = 3, labels = F)
+
+# for extremely few values in breaks
+## breaks as scalar
+case24 <- cut(sample(10), breaks = 1, labels = F) # desired outcome although not in line with cut.defalt
+case25 <- cut(sample(10), breaks = 1, labels = NULL)
+case26 <- cut(sample(10), breaks = 1, labels = "lion") 
+
+# breaks as vector
+case27 <- cut(sample(10), breaks = c(1, 10), labels = F) 
+case28 <- cut(sample(10), breaks = c(1, 10), labels = NULL)
+case29 <- cut(sample(10), breaks = c(1, 10), labels = "lion")
+
+# not desired outcome although it should be without 
+# cut.default(sample(10), breaks = 1, labels = F)
+
 
 
 
@@ -47,6 +62,11 @@ test_that("cut.integer returns same as cut.default but with better labels for le
   # right = F
   expect_equal(levels(case3), c("1-4", "5-9"))
   expect_equal(levels(case4), c("1-4", "5-10"))
+  
+  # extremely few break values
+  expect_equal(case27, rep(1, 10))
+  expect_equal(levels(case28), "1-10")
+  expect_equal(levels(case29), "lion")
 })
 
 
@@ -84,6 +104,12 @@ test_that("cut.integer returns expected (natural) intervals with better labels f
   # 1:99 - 5 breaks ("left & "right")
   expect_equal(levels(case19), c("1-20", "21-40", "41-60", "61-80", "81-99"))
   expect_equal(levels(case20), c("1-19", "20-39", "40-59", "60-79", "80-99"))
+  
+  # extremely few break values
+  expect_equal(case24, rep(1, 10))
+  expect_equal(levels(case25), "1-10")
+  expect_equal(levels(case26), "lion")
+  
 
 })
 
@@ -110,8 +136,13 @@ test_that("cut.integer error cases", {
                "if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
   expect_error(cut(sample(10), breaks = 3, labels = letters[1:99]), 
                "if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
-
+  # edge case
+  expect_error(cut(sample(10), breaks = 1, labels = c("lion", "tiger")),
+    "if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
+  
 })
+
+
 
 test_that("cut.integer warning cases", {
   expect_warning(cut(sample(10), breaks = c(0, 4, 5)), 

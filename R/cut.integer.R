@@ -134,17 +134,21 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, right =
   # create integer-based interval labels using label_sep
   if(is.null(labels)) {
     recode_labels <- paste(head(breakpoints, -1) + floorInc, tail(breakpoints, -1) - ceilingDec, sep = label_sep)
-  } else if(length(labels) == 1){
-    if(labels == FALSE) {
-    recode_labels <- FALSE
-    }
   } else if(!is.null(labels)) {
     if(length(labels) == length(breakpoints) - 1) {
       recode_labels <- labels
-    } else if(length(labels) != length(breakpoints) -1) {
-      stop("if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
+    } else if(length(labels) != length(breakpoints) - 1) {
+      if(length(labels) == 1) {
+        if(labels == F) {
+          recode_labels <- labels
+        } else if(labels != F) {
+          stop("if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
+        }
+      } else if(length(labels) != 1) {
+        stop("if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
+      }
+      
     }
-    
   }
   output <- cut.default(x, breaks = breakpoints, labels = recode_labels, include.lowest = include.lowest,
               right = right, ordered_result = ordered_result, ...)
