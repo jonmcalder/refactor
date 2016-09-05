@@ -12,7 +12,7 @@
 #' and unique (!anyDuplicated(.)) entries. If argument ordered is true (or ordered() is used) the result has class c("ordered", "factor").
 #' @examples cfactor(c("a", "c", "b", "c", "d"))
 #' @export
-cfactor <- function(x, levels = NULL, labels = levels, exclude = NA, ordered = is.ordered(x), nmax = NA) {
+cfactor <- function(x, levels = sort(unique(as.character(x))), labels = levels, exclude = NA, ordered = is.ordered(x), nmax = NA) {
 
   `%w/o%` <- function(x, y) x[!x %in% y] # opposite of %in%
 
