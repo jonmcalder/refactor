@@ -30,7 +30,13 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, right =
   
   # check function arguments
   assert_class(x, "integer")
-  assert_class(breaks, "numeric")
+  
+  # breaks are either numeric or integer
+  assert(
+    test_class(breaks, "numeric"),
+    test_class(breaks, "integer")
+  )
+
   assert_class(include.lowest, "logical")
   assert_class(right, "logical")
   assert_class(ordered_result, "logical")

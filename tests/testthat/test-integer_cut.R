@@ -51,7 +51,8 @@ case29 <- cut(sample(10), breaks = c(1, 10), labels = "lion")
 # not desired outcome although it should be without 
 # cut.default(sample(10), breaks = 1, labels = F)
 
-
+# when breaks are of class integer
+cas30 <- cut(sample(10), breaks = c(1L, 3L, 10L))
 
 
 test_that("cut.integer returns same as cut.default but with better labels for length(break) > 1", {
@@ -110,6 +111,8 @@ test_that("cut.integer returns expected (natural) intervals with better labels f
   expect_equal(levels(case25), "1-10")
   expect_equal(levels(case26), "lion")
   
+  # when breaks are of class integer
+  expect_equal(levels(case30), c("1-3", "4-10"))
 
 })
 
