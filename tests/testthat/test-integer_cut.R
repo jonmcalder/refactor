@@ -52,8 +52,10 @@ case29 <- cut(sample(10), breaks = c(1, 10), labels = "lion")
 # cut.default(sample(10), breaks = 1, labels = F)
 
 # when breaks are of class integer
-cas30 <- cut(sample(10), breaks = c(1L, 3L, 10L))
+case30 <- cut(sample(10), breaks = c(1L, 3L, 10L))
 
+# when breaks need to be rounded
+case31 <- cut(sample(10), breaks = c(1, 2.6, 5.1, 10))
 
 test_that("cut.integer returns same as cut.default but with better labels for length(break) > 1", {
   # right = T
@@ -114,6 +116,8 @@ test_that("cut.integer returns expected (natural) intervals with better labels f
   # when breaks are of class integer
   expect_equal(levels(case30), c("1-3", "4-10"))
 
+  # when breaks need to be rounde
+  expect_equal(levels(case31), c("1-3", "4-5", "6-10"))
 })
 
 test_that("cut.integer with user-defined labels", {
@@ -156,6 +160,11 @@ test_that("cut.integer warning cases", {
   
   expect_warning(cut(sample(10), breaks = c(NA, 0, 10)), 
                  "missing values in breaks were removed$")
+  
+  # when breaks are to be rounded to coerce to integers
+  expect_warning(cut(sample(10), breaks = c(1, 2.6, 5.1, 10)), 
+                 "^When coerced to integers, the following breaks were rounded")
+  
 })
 
 

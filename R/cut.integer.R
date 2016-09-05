@@ -50,6 +50,17 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, right =
     warning("missing values in breaks were removed")
   }
   
+  # corece breaks to integers
+  new_breaks <- round(breaks)
+  if(!setequal(new_breaks, breaks)){
+    differ <- new_breaks != breaks
+    warning(paste("When coerced to integers, the following breaks were rounded: \n ", 
+          paste(paste(breaks[differ], "to", new_breaks[differ]), " \n", collapse = " ")))
+          
+    breaks <- new_breaks
+  }
+  
+  
   # unsorted breaks
   if(is.unsorted(breaks)){
     breaks <- sort(breaks)
