@@ -140,12 +140,12 @@ test_that("cut.integer error cases", {
   expect_error(cut(sample(2), breaks = 3), 
                "range too small for the number of breaks specified")
   expect_error(cut(sample(10), breaks = 3, labels = letters[1:4]), 
-               "if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
+               "if labels not 'NULL' and not 'F', it must be the same length as the number of bins resulting from 'breaks'")
   expect_error(cut(sample(10), breaks = 3, labels = letters[1:99]), 
-               "if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
+               "if labels not 'NULL' and not 'F', it must be the same length as the number of bins resulting from 'breaks'")
   # edge case
   expect_error(cut(sample(10), breaks = 1, labels = c("lion", "tiger")),
-    "if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
+    "if labels not 'NULL' and not 'F', it must be the same length as the number of bins resulting from 'breaks'")
   
 })
 
