@@ -12,48 +12,26 @@
 #' and unique (!anyDuplicated(.)) entries. If argument ordered is true (or ordered() is used) the result has class c("ordered", "factor").
 #' @examples cfactor(c("a", "c", "b", "c", "d"))
 #' @export
-cfactor <- function(x, levels = NULL, labels = levels, connector = c("to", "bis", "-"),
-                    cleaning = list(punct = c(from = ",'.", to = "."),
-                                    connector = list(from = c("to", "-", "bis"), to = " - "),
-                                    case = "upper",
-                                    numbersAsStrings = F),
-                    ...) {
+cfactor <- function(x, levels = NULL, labels = levels, exclude = NA, ordered = is.ordered(x), nmax = NA) {
 
-  `%w/o%` <- function(x, y) x[!x %in% y]
+  `%w/o%` <- function(x, y) x[!x %in% y] # opposite of %in%
 
-  # detect factor levels
-  if(is.null(levels)){
-    connector.ready <- paste0(connector, collapse = "|")
-    sep <- regexec(connector.ready, x)
-    start <- sapply(sep, "[[", 1) # extract start
-    before <- substr(x, 1, start - 1)
-    before <- gsub("[[:space:]]", "", before)
-    finalorder <- order(as.numeric(gsub("[^[:digit:]]", "", before)))
-
-    finallevels <- unique(x)[finalorder]
-  } else {
-    finallevels <- levels
-  }
-
-  #  clean levels
-  if(!is.null(cleaning[["punct"]])) {
-    regex <- paste("[", cleaning[["punct"]][["from"]], "]", sep = "")
-  }
-
-
-  # check for empty / removed
+  # create the factor
+  output<-factor(x, levels = levels, labels = labels, exclude = exclude, ordered = ordered, nmax = nmax) # only x should never be looked up in .GlobalEnv
   prior <- as.character(unique(x))
-  output<-factor(x, levels = finallevels, ...)
-  if(!setequal(prior, levels(output))) {
+  posterior <- levels(output)
+  
+  # check if new levels differ from old unique character strings
+  if(!setequal(prior, posterior)) {
     # levels that are not current names
-    if(!all(levels(output) %in% prior)) {
-      warning(paste("the following label(s) is / are empty: \n", paste(c(levels(output) %w/o% prior), collapse = "\n")),
+    if(!all(posterior %in% prior)) {
+      warning(paste("the following levels were empty: \n", paste(c(posterior %w/o% prior), collapse = "\n")),
               call. = F)
     }
 
     # current names that don't become levels
-    if(!all(prior %in% levels(output))) {
-      warning(paste("the following label(s) is / are removed: \n", paste(prior[!(prior %in% levels(output))], collapse = "\n")),
+    if(!all(prior %in% posterior)) {
+      warning(paste("the following levels were removed: \n", paste(prior[!(prior %in% posterior)], collapse = "\n")),
               call. = F)
     }
   }

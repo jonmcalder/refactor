@@ -4,10 +4,8 @@
 \alias{cfactor}
 \title{Factor}
 \usage{
-cfactor(x, levels = NULL, labels = levels, connector = c("to", "bis",
-  "-"), cleaning = list(punct = c(from = ",'.", to = "."), connector =
-  list(from = c("to", "-", "bis"), to = " - "), case = "upper", numbersAsStrings
-  = F), ...)
+cfactor(x, levels = NULL, labels = levels, exclude = NA,
+  ordered = is.ordered(x), nmax = NA)
 }
 \arguments{
 \item{x}{A vector of data, usually taking a small number of distinct values.}
