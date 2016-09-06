@@ -62,7 +62,7 @@ using `cut` gives boundaries like [50, 55) [55, 60), even for integers. This is 
 
 ```{r}
 random <- sample(100)
-cut(random, breaks = seq(0, 100, by = 10))[1:10] # the uggly outcome with cut.default
+cut.default(random, breaks = seq(0, 100, by = 10))[1:10] # the uggly outcome with cut.default
 
 class(random) # ok, we define an S3 method for integer
 
