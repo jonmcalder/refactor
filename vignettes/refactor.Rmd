@@ -1,0 +1,81 @@
+---
+title: "refactor"
+author: "Lorenz Walthert and Jon Calder"
+date: "`r Sys.Date()`"
+output: 
+  rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{refactor}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+## Introduction
+
+### unmatched factors
+`cfactor` has been defined to give warnings when empty factors are created from strings or when existing strings are not preserved. Essentially, it is a wrapper for `factor()`, and the 'c' stands for enhanced control.
+```{r}
+string <- c("a", "b", "c")
+
+# with base::factor the "a" is lost (becomes NA) with no warning
+factor(string, levels = c("b", "c", "d"))
+
+library(refactor)
+# with refactor::cfactor warnings are issued to communicate fact that levels were referenced that do not appear in the data and vice versa
+cfactor(string, levels = c("b", "c", "d"))
+```
+
+### detect levels
+`cfactor` should detect sequences in strings, and if existent, order the levels. The default behavior of `factor` is
+`factor(x, levels = sort(unique(as.character(x)))`, which would be fine if the string ordering was the same as ordering the numbers within the string, but in general that is often not the case.
+
+\
+**A simple example**
+```{r}
+money <- c("EUR 11 - EUR 20", "EUR 1 - EUR 10", "EUR 21 - EUR 22") # no issue, since all numbers are two digits
+factor(money, ordered = T) # correctly detects level
+
+money <- c("EUR 21 - EUR 22", "EUR 100 - 101", "EUR 1 - EUR 10", "EUR 11 - EUR 20")  # the general case
+cfactor(money, ordered = T) # cfactor detects levels using regular expressions
+```
+
+\
+**A more "dirty" example**
+```{r}
+dirty_money <- c("EUR 21 - EUR 22", "EUR 100 - 101", "EUR 11 bis EUR 20", "from 98 to 99")
+cfactor(dirty_money, ordered = T)
+```
+
+\
+**Other example strings**
+```{r, echo = F, include = T}
+c("1 to 4", "5 to 6") # properly separated
+c("1 to 4", "4 to 6") # not properly separated
+c("from 1,000 to 2,000", "from 2000 to 4,000") # comma separated and 'from' and 'to'
+c("4.0 / 4.1", "4.2 / 4.3") # point and slash separator
+c("one minute", "three minutes", "1 hour")
+```
+
+
+### boundary labels for integer bins
+using `cut` gives boundaries like [50, 55) [55, 60), even for integers. This is undesired in the case of integer values, so it should give boundaries like "50 - 55", "56 - 60". Possibly with the spacing being optional.
+
+```{r}
+random <- sample(100)
+cut(random, breaks = seq(0, 100, by = 10))[1:10] # the uggly outcome with cut.default
+
+class(random) # ok, we define an S3 method for integer
+
+library(refactor)
+cut(random, breaks = seq(0, 100, by = 10))[1:10]
+```
+
+### cut method for ordered factors
+This method should allow to summarize levels of factors into fewer categories given some break points
+```{r}
+library(refactor)
+timeX <- c("very low", "rather low", "low", "medium", "upper medium", "high")
+time <- factor(timeX, levels = unique(timeX), ordered = T)
+
+cut(time, breaks = c("low", "medium", "high"))
+```
