@@ -19,15 +19,18 @@ cfactor <- function(x, levels, labels = levels, exclude = NA, ordered = is.order
 
   if(missing(levels)){ # detect factor levels if not given
     if(!is.null(connector)){ # use regular expression algorithm
+      uniq_x <- unique(x)
       connector.ready <- paste0(connector, collapse = "|")
-      sep <- regexec(connector.ready, x)
-      start <- sapply(sep, "[[", 1) # extract start of connector
-      before <- substr(x, 1, start - 1)
+      sep <- regexec(connector.ready, uniq_x)
+      start <- vapply(sep, "[", 1, FUN.VALUE = numeric(1)) # extract start of connector
+      start <- ifelse(start == -1, nchar(uniq_x) + 1 , start)
+      before <- substr(uniq_x, 1, start - 1)
       before <- gsub("[[:space:]]", "", before)
       # remove all non-digit characters and return the order of the numbers
-      finalorder <- order(as.numeric(gsub("[^[:digit:]]", "", before)))
+      rmpattern <- paste0("[^[:digit:]\\", options()$OutDec, "]") # get the systems decimal separator
+      finalorder <- order(as.numeric(gsub(rmpattern, "", before)))
       
-      levels <- unique(x)[finalorder]
+      levels <- uniq_x[finalorder]
     } else if(is.null(connector)){ # use factor algorithm
       levels <- sort(unique(as.character(x)))
     }
@@ -35,7 +38,7 @@ cfactor <- function(x, levels, labels = levels, exclude = NA, ordered = is.order
   }
   
   # create the factor
-  output<-factor(x, levels = levels, labels = labels, exclude = exclude, ordered = ordered, nmax = nmax) # only x should never be looked up in .GlobalEnv
+  output <- factor(x, levels = levels, labels = labels, exclude = exclude, ordered = ordered, nmax = nmax) # only x should never be looked up in .GlobalEnv
   prior <- as.character(unique(x))
   posterior <- levels(output)
   
