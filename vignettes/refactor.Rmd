@@ -28,7 +28,7 @@ One can note the following issues:
 * This is not only changing the data representation but also make it impossible to restore the information, i.e. 1 represents now the first level of both lower and upper, so it can either be `b` or `A`. 
 
 ## `cfactor`
-`cfactor` has been defined to give warnings in cases when empty factors are created from strings or when existing strings are not preserved. Essentially, it is a wrapper for `factor()`, and the 'c' stands for enhanced control. It also has an improved level order detection based on numerical values within strings that is superior to the way `factor` assesses this order in certain cases.
+`cfactor` has been defined to give warnings in cases when empty factors are created from strings or when existing strings are not preserved. Essentially, it is a wrapper for `factor()`, has the exact same arguments, and the 'c' stands for enhanced control. It also has an improved level order detection based on numerical values within strings that is superior to the way `factor` assesses this order in certain cases.
 
 ### unmatched factors
 ```{r}
