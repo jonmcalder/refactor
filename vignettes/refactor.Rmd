@@ -12,21 +12,34 @@ vignette: >
 
 ## Introduction
 
+Working with factors in R can be frustrating. As described well by [John Monut](http://www.win-vector.com/blog/2014/09/factors-are-not-first-class-citizens-in-r/), factors are not first-class citizens in R. Even most basic code does often behave in an unexpeced manner and without any warning. Let's start off with a simple example that illustrates some of the issues: Creating two factor vectors and combining them together:
+
+```{r}
+lower <- factor(letters[1:3], levels = letters[2:4])
+upper <- factor(LETTERS[1:5], levels = LETTERS[1:4])
+(combined <- c(lower, upper))
+```
+
+
+One can note the following issues:
+
+* `factor()` does not yield an error when `NA`s are created silently, neither when levels does not match x nor when too few levels are specified. 
+* When `c()` is used to combine the two, the levels of the two elements (which are just attributes to integer vectors) are not conveyed, R puts together the underlying integers.
+* This is not only changing the data representation but also make it impossible to restore the information, i.e. 1 represents now the first level of both lower and upper, so it can either be `b` or `A`. 
+
+## `cfactor`
+`cfactor` has been defined to give warnings in cases when empty factors are created from strings or when existing strings are not preserved. Essentially, it is a wrapper for `factor()`, and the 'c' stands for enhanced control. It also has an improved level order detection based on numerical values within strings that is superior to the way `factor` assesses this order in certain cases.
+
 ### unmatched factors
-`cfactor` has been defined to give warnings when empty factors are created from strings or when existing strings are not preserved. Essentially, it is a wrapper for `factor()`, and the 'c' stands for enhanced control.
 ```{r}
 string <- c("a", "b", "c")
-
-# with base::factor the "a" is lost (becomes NA) with no warning
-factor(string, levels = c("b", "c", "d"))
-
 library(refactor)
 # with refactor::cfactor warnings are issued to communicate fact that levels were referenced that do not appear in the data and vice versa
 cfactor(string, levels = c("b", "c", "d"))
 ```
 
 ### detect levels
-`cfactor` should detect sequences in strings, and if existent, order the levels. The default behavior of `factor` is
+`cfactor` should detect sequences in strings if the argument `ordered` is set to `TRUE` order the levels. The default behavior of `factor` is
 `factor(x, levels = sort(unique(as.character(x)))`, which would be fine if the string ordering was the same as ordering the numbers within the string, but in general that is often not the case.
 
 \
