@@ -39,17 +39,37 @@ cfactor(string, levels = c("b", "c", "d"))
 ```
 
 ### detect levels
-`cfactor` should detect sequences in strings if the argument `ordered` is set to `TRUE` order the levels. The default behavior of `factor` is
-`factor(x, levels = sort(unique(as.character(x)))`, which would be fine if the string ordering was the same as ordering the numbers within the string, but in general that is often not the case.
+`cfactor` should detect sequences in strings if the argument `ordered` is set to `TRUE` order the levels. The default behavior of `factor` is first convert `x` to character, take the unique values and sort the characters (`sort(unique(as.character(x)))`), which is fine if the string ordering was the same as ordering the numbers within the string, but in general that is not the case.
 
 \
-**A simple example**
-```{r}
-money <- c("EUR 11 - EUR 20", "EUR 1 - EUR 10", "EUR 21 - EUR 22") # no issue, since all numbers are two digits
-factor(money, ordered = T) # correctly detects level
+**A "clean" example**
 
-money <- c("EUR 21 - EUR 22", "EUR 100 - 101", "EUR 1 - EUR 10", "EUR 11 - EUR 20")  # the general case
-cfactor(money, ordered = T) # cfactor detects levels using regular expressions
+With all numbers having the same number of digits, `factor` can detect the order correctly.
+```{r}
+easy_to_dectect <- c("EUR 11 - EUR 20", "EUR 1 - EUR 10", "EUR 21 - EUR 22")
+factor(easy_to_dectect, ordered = T) # correctly detects level
+```
+
+**A more "dirty" example**
+
+However, in the general case, where number of digits might be destinct, this does not work anymore. The category "EUR 100 - 101" comes second, but it should be the last.
+```{r}
+hard_to_dectect <- c("EUR 21 - EUR 22", "EUR 100 - 101", "EUR 1 - EUR 10", "EUR 11 - EUR 20")
+factor(hard_to_dectect, ordered = T) # factor messes up 
+```
+
+`cfactor` detects levels using regular expressions. Concretely, it extracts the substrings before the `sep`, removes all letters in `x` and orders the remaining numbers.
+```{r}
+cfactor(hard_to_dectect, ordered = T, sep = "-")
+```
+
+This detection algorithm can be turned off and the default ordering of factor can be applied by setting the sep argument to `NULL`.
+
+```{r}
+identical(
+  cfactor(hard_to_dectect, ordered = T, sep = NULL),
+  factor(hard_to_dectect, ordered = T)
+)
 ```
 
 \

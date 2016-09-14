@@ -5,7 +5,7 @@
 \title{Factor}
 \usage{
 cfactor(x, levels, labels = levels, exclude = NA, ordered = is.ordered(x),
-  nmax = NA, connector = c("-", "to"))
+  nmax = NA, sep = c("-", "to"))
 }
 \arguments{
 \item{x}{A vector of data, usually taking a small number of distinct values.}
@@ -17,7 +17,7 @@ sort(unique(x)).}
 \item{labels}{Either an optional character vector of labels for the levels (in the same order as levels after removing those in exclude),
 or a character string of length 1.}
 
-\item{connector}{A character vector giving all strings that are used to separate the lower boundary of a range from the upper boundary.}
+\item{sep}{A character vector giving all strings that are used to separate the lower boundary of a range from the upper boundary.}
 }
 \value{
 An object of class "factor" which has a set of integer codes the length of x with a "levels" attribute of mode character
