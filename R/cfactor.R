@@ -8,14 +8,32 @@
 #' sort(unique(x)).
 #' @param labels Either an optional character vector of labels for the levels (in the same order as levels after removing those in exclude),
 #' or a character string of length 1.
+#' @param connector A character vector giving all strings that are used to separate the lower boundary of a range from the upper boundary.
 #' @return An object of class "factor" which has a set of integer codes the length of x with a "levels" attribute of mode character
 #' and unique (!anyDuplicated(.)) entries. If argument ordered is true (or ordered() is used) the result has class c("ordered", "factor").
 #' @examples cfactor(c("a", "c", "b", "c", "d"))
 #' @export
-cfactor <- function(x, levels = sort(unique(as.character(x))), labels = levels, exclude = NA, ordered = is.ordered(x), nmax = NA) {
+cfactor <- function(x, levels, labels = levels, exclude = NA, ordered = is.ordered(x), nmax = NA, connector = c("-", "to")) {
 
   `%w/o%` <- function(x, y) x[!x %in% y] # opposite of %in%
 
+  if(missing(levels)){ # detect factor levels if not given
+    if(!is.null(connector)){ # use regular expression algorithm
+      connector.ready <- paste0(connector, collapse = "|")
+      sep <- regexec(connector.ready, x)
+      start <- sapply(sep, "[[", 1) # extract start of connector
+      before <- substr(x, 1, start - 1)
+      before <- gsub("[[:space:]]", "", before)
+      # remove all non-digit characters and return the order of the numbers
+      finalorder <- order(as.numeric(gsub("[^[:digit:]]", "", before)))
+      
+      levels <- unique(x)[finalorder]
+    } else if(is.null(connector)){ # use factor algorithm
+      levels <- sort(unique(as.character(x)))
+    }
+    
+  }
+  
   # create the factor
   output<-factor(x, levels = levels, labels = labels, exclude = exclude, ordered = ordered, nmax = nmax) # only x should never be looked up in .GlobalEnv
   prior <- as.character(unique(x))
