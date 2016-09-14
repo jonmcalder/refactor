@@ -16,4 +16,9 @@ test_that("cfactor returns expected levels", {
   expect_equal(levels(case2), paste("letter", 1:26, sep = "")) # is this really desired
   expect_equal(levels(case3), letters)
   expect_equal(levels(case4), letters)
+  
 })
+
+# connector esape hatch
+
+# width-1-categories with no separator
