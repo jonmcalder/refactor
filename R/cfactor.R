@@ -41,7 +41,7 @@ cfactor <- function(x, levels, labels = levels, exclude = NA, ordered = is.order
   # create the factor
   output <- factor(x, levels = levels, labels = labels, exclude = exclude, ordered = ordered, nmax = nmax) # only x should never be looked up in .GlobalEnv
   prior <- as.character(unique(x))
-  posterior <- levels(output)
+  posterior <- ifelse(levels == labels, levels(output), levels)
   
   # check if new levels differ from old unique character strings
   if(!setequal(prior, posterior)) {
