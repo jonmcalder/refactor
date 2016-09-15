@@ -25,10 +25,15 @@ One can note the following issues:
 
 * `factor()` does not yield an error when `NA`s are created silently, neither when levels does not match x nor when too few levels are specified. 
 * When `c()` is used to combine the two, the levels of the two elements (which are just attributes to integer vectors) are not conveyed, R puts together the underlying integers.
-* This is not only changing the data representation but also make it impossible to restore the information, i.e. 1 represents now the first level of both lower and upper, so it can either be `b` or `A`. 
+* This is not only changing the data representation but also make it impossible to restore the information, i.e. 1 represents now the first level of both `lower` and `upper`, so it can either be `b` or `A` which does not really make sense.
+
+The goal of the `refactor` package is to make working with factors more natural and fun by
+
+* providing a wrapper for `factor` to enhance control at the point of factor creation
+* providing S3 generics for existing R base classes (mainly `ordered` and `factor`) where current methods are not tailored for categorical data.
 
 ## `cfactor`
-`cfactor` has been defined to give warnings in cases when empty factors are created from strings or when existing strings are not preserved. Essentially, it is a wrapper for `factor()`, has the exact same arguments, and the 'c' stands for enhanced control. It also has an improved level order detection based on numerical values within strings that is superior to the way `factor` assesses this order in certain cases.
+`cfactor` has been defined to give warnings in cases when empty factors are created from strings or when existing strings are not preserved. Essentially, it is a wrapper for `factor()`, and the 'c' stands for enhanced control. It also has an improved level order detection based on numerical values within strings that is superior to the way `factor` assesses this order in certain cases.
 
 ### unmatched factors
 ```{r}
@@ -39,7 +44,7 @@ cfactor(string, levels = c("b", "c", "d"))
 ```
 
 ### detect levels
-`cfactor` should detect sequences in strings if the argument `ordered` is set to `TRUE` order the levels. The default behavior of `factor` is first convert `x` to character, take the unique values and sort the characters (`sort(unique(as.character(x)))`), which is fine if the string ordering was the same as ordering the numbers within the string, but in general that is not the case.
+The default behavior of `factor` is (if levels is not explicitly supplied) to first convert `x` to character, take the unique values and sort the characters (`sort(unique(as.character(x)))`), which is fine if the string ordering was the same as ordering the numbers within the string, but in general that is not the case.
 
 \
 **A "clean" example**
@@ -52,31 +57,24 @@ factor(easy_to_dectect, ordered = T) # correctly detects level
 
 **A more "dirty" example**
 
-However, in the general case, where number of digits might be destinct, this does not work anymore. The category "EUR 100 - 101" comes second, but it should be the last.
+However, in the general case, where number of digits might be destinct, this does not work anymore. The category "EUR 100 - 101" comes second, but it should be last.
 ```{r}
 hard_to_dectect <- c("EUR 21 - EUR 22", "EUR 100 - 101", "EUR 1 - EUR 10", "EUR 11 - EUR 20")
-factor(hard_to_dectect, ordered = T) # factor messes up 
+factor(hard_to_dectect, ordered = T)
 ```
 
-`cfactor` detects levels using regular expressions. Concretely, it extracts the substrings before the `sep`, removes all letters in `x` and orders the remaining numbers.
+`cfactor` detects levels using regular expressions. Concretely, it extracts the substrings preceding the `sep`, removes everything except digits and the decimal point in `x` and orders the remaining numbers to find the order of the levels.
 ```{r}
 cfactor(hard_to_dectect, ordered = T, sep = "-")
 ```
 
-This detection algorithm can be turned off and the default ordering of factor can be applied by setting the sep argument to `NULL`.
+This detection algorithm can be turned off and the default ordering of factor can be applied by setting the `sep` argument to `NULL`.
 
 ```{r}
 identical(
   cfactor(hard_to_dectect, ordered = T, sep = NULL),
-  factor(hard_to_dectect, ordered = T)
+   factor(hard_to_dectect, ordered = T)
 )
-```
-
-\
-**A more "dirty" example**
-```{r}
-dirty_money <- c("EUR 21 - EUR 22", "EUR 100 - 101", "EUR 11 bis EUR 20", "from 98 to 99")
-cfactor(dirty_money, ordered = T)
 ```
 
 \
@@ -89,21 +87,49 @@ c("4.0 / 4.1", "4.2 / 4.3") # point and slash separator
 c("one minute", "three minutes", "1 hour")
 ```
 
+## tailored methods for categorical data
+Instead of defining completely new functions, we decided to provide some S3 generics to extend the functionality of existing R functions and tailor them so they are better suited for categorical data. Also, a more extensive warning and error behavior than for their base R counterparts is implemented. 
 
-### boundary labels for integer bins
-using `cut` gives boundaries like [50, 55) [55, 60), even for integers. This is undesired in the case of integer values, so it should give boundaries like "50 - 55", "56 - 60". Possibly with the spacing being optional.
+### `cut`
+Applying cut can result in categorical data, for example if integers are binned or if ordered factor levels are summarized into larger categories.
 
+#### a `cut` method for integers
+`cut.default` provides kind of inappropriate labels for integer values.
 ```{r}
 random <- sample(100)
-cut.default(random, breaks = seq(0, 100, by = 10))[1:10] # the uggly outcome with cut.default
-
-class(random) # ok, we define an S3 method for integer
-
-library(refactor)
-cut(random, breaks = seq(0, 100, by = 10))[1:10]
+cut.default(random, breaks = seq(0, 100, by = 10))[1:10]
 ```
 
-### cut method for ordered factors
+Hence, we defined `cut.integer` to provide more natural labels for this data type.
+```{r}
+cut(random, breaks = seq(0, 100, by = 10))[1:10]
+```
+\
+The remainder of the section describes how the method deviates from the default method. \
+\
+Creating missing values will yield a warning.
+
+```{r}
+cut(sample(10), breaks = c(0, 3, 5))
+```
+
+It is possible to define bins with width 1. This will generate a label with just the value of the integer containted (e.g. 2 instead of 2-2) and issue a warning.
+```{r}
+cut(sample(10), breaks = c(1, 4, 6, 8, 9, 10))
+```
+
+Unordered breaks will be ordered before proceeding and a warning will be issued.
+```{r}
+cut(sample(10), breaks = c(10, 0, 3))
+```
+
+Decimal values for `breaks` will be rounded to integers and a warning will be issued.
+```{r}
+cut(sample(10), breaks = c(1, 2.6, 5.1, 10))
+```
+
+
+#### a `cut` method for ordered factors
 This method should allow to summarize levels of factors into fewer categories given some break points
 ```{r}
 library(refactor)
