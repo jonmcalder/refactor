@@ -18,8 +18,9 @@ cfactor <- function(x, levels, labels = levels, exclude = NA, ordered = is.order
   `%w/o%` <- function(x, y) x[!x %in% y] # opposite of %in%
 
   if(missing(levels)){ # detect factor levels if not given
-    if(!is.null(sep)){ # use regular expression algorithm
-      uniq_x <- unique(x)
+    uniq_x <- unique(x)
+    has_numbers <- any(grepl("[[:digit:]]", uniq_x))
+    if(!is.null(sep) && has_numbers){ # use regular expression algorithm
       sep.ready <- paste0(sep, collapse = "|")
       sep <- regexec(sep.ready, uniq_x)
       start <- vapply(sep, "[", 1, FUN.VALUE = numeric(1)) # extract start of sep
@@ -31,7 +32,7 @@ cfactor <- function(x, levels, labels = levels, exclude = NA, ordered = is.order
       finalorder <- order(as.numeric(gsub(rmpattern, "", before)))
       
       levels <- uniq_x[finalorder]
-    } else if(is.null(sep)){ # use factor algorithm
+    } else { # use factor algorithm
       levels <- sort(unique(as.character(x)))
     }
     
