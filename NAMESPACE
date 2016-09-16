@@ -3,4 +3,5 @@
 S3method(cut,integer)
 S3method(cut,ordered)
 export(cfactor)
+export(index_cfactor)
 import(checkmate)
