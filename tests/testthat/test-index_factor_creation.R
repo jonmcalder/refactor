@@ -1,4 +1,3 @@
-library(testthat)
 context("index_factor_creation")
 data <- data.frame(var1 = sample(x = 1:10, size = 20, replace = TRUE),
                    var2 = rep(1:2, 20),
@@ -12,9 +11,9 @@ index <- data.frame(var = rep(paste0("var", 1:3), c(10, 2, 20)),
                     label = c(letters[1:10], c("male", "female"), LETTERS[1:20]))
 
 test_that("basics", {
-  index_cfactor(data = data, index = index, variable = "var")
-  index_cfactor(data = data, index = index, variable = "var", ordered = TRUE)
-  index_cfactor(data = data, index = index, variable = "var", ordered = c(TRUE, FALSE, FALSE))
+  expect_error(index_cfactor(data = data, index = index, variable = "var"), NA)
+  expect_error(index_cfactor(data = data, index = index, variable = "var", ordered = TRUE), NA)
+  expect_error(index_cfactor(data = data, index = index, variable = "var", ordered = c(TRUE, FALSE, FALSE)), NA)
 })
 
 
