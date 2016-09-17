@@ -35,9 +35,10 @@ index_cfactor <- function(data, index, variable = "variable", encoding = "encodi
   sp_index_enc <- lapply(sp_index, "[[", pos_enc) # extract the encoding columns
   sp_index_lab <- lapply(sp_index, "[[", pos_lab) # extract the label columns
   
-  if(!is.null(further_args$ordered) && length(sp_index_enc) %% length(further_args$ordered)){
-    stop("argument 'ordered' is not recycled fully. Number of columns to be decoded should match the length of 'ordered' or mulitiple thereof.")
-  }
+  lapply(seq_along(further_args), function(i) if(!is.null(further_args[[i]]) && length(sp_index_enc) %% length(further_args[[i]])){
+    stop(paste("argument '", names(further_args)[[i]], "' is not recycled fully. Number of columns to be decoded should match the length of '", names(further_args)[[i]],"' or mulitiple thereof."))
+  })
+    
   data[, pos_fact] <- as.data.frame(Map(cfactor, data[, pos_fact], sp_index_enc, sp_index_lab, ...)) # apply cfactor to the original data, each column with its 
   data
 }
