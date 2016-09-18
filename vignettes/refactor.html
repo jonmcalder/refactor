@@ -12,7 +12,7 @@
 
 <meta name="author" content="Lorenz Walthert and Jon Calder" />
 
-<meta name="date" content="2016-09-06" />
+<meta name="date" content="2016-09-18" />
 
 <title>refactor</title>
 
@@ -70,23 +70,38 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">refactor</h1>
 <h4 class="author"><em>Lorenz Walthert and Jon Calder</em></h4>
-<h4 class="date"><em>2016-09-06</em></h4>
+<h4 class="date"><em>2016-09-18</em></h4>
 
 
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
+<p>Working with factors in R can be frustrating. As described well by <a href="http://www.win-vector.com/blog/2014/09/factors-are-not-first-class-citizens-in-r/">John Monut</a>, factors are not first-class citizens in R. Even most basic code does often behave in an unexpeced manner and without any warning. Let’s start off with a simple example that illustrates some of the issues: Creating two factor vectors and combining them together:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lower &lt;-<span class="st"> </span><span class="kw">factor</span>(letters[<span class="dv">1</span>:<span class="dv">3</span>], <span class="dt">levels =</span> letters[<span class="dv">2</span>:<span class="dv">4</span>])
+upper &lt;-<span class="st"> </span><span class="kw">factor</span>(LETTERS[<span class="dv">1</span>:<span class="dv">5</span>], <span class="dt">levels =</span> LETTERS[<span class="dv">1</span>:<span class="dv">4</span>])
+(combined &lt;-<span class="st"> </span><span class="kw">c</span>(lower, upper))</code></pre></div>
+<pre><code>## [1] NA  1  2  1  2  3  4 NA</code></pre>
+<p>One can note the following issues:</p>
+<ul>
+<li><code>factor()</code> does not yield an error when <code>NA</code>s are created silently, neither when levels does not match x nor when too few levels are specified.</li>
+<li>When <code>c()</code> is used to combine the two, the levels of the two elements (which are just attributes to integer vectors) are not conveyed, R puts together the underlying integers.</li>
+<li>This is not only changing the data representation but also make it impossible to restore the information, i.e. 1 represents now the first level of both <code>lower</code> and <code>upper</code>, so it can either be <code>b</code> or <code>A</code> which does not really make sense.</li>
+</ul>
+<p>The goal of the <code>refactor</code> package is to make working with factors more natural and fun by providing</p>
+<ul>
+<li>the wrapper <code>cfactor</code> for <code>factor</code> to enhance control at the point of factor creation</li>
+<li>a function <code>index_cfactor</code> to decode numerical data into (ordered) factors given the encoding</li>
+<li>S3 generics for existing R base classes (mainly <code>ordered</code> and <code>factor</code>) where current methods are not tailored for categorical data.</li>
+</ul>
+</div>
+<div id="cfactor" class="section level2">
+<h2><code>cfactor</code></h2>
+<p><code>cfactor</code> has been defined to give warnings in cases when empty factors are created from strings or when existing strings are not preserved. Essentially, it is a wrapper for <code>factor()</code>, and the ‘c’ stands for enhanced control. It also has an improved level order detection based on numerical values within strings that is superior to the way <code>factor</code> assesses this order in certain cases.</p>
 <div id="unmatched-factors" class="section level3">
 <h3>unmatched factors</h3>
-<p><code>cfactor</code> has been defined to give warnings when empty factors are created from strings or when existing strings are not preserved. Essentially, it is a wrapper for <code>factor()</code>, and the ‘c’ stands for enhanced control.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">string &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>)
-
-<span class="co"># with base::factor the &quot;a&quot; is lost (becomes NA) with no warning</span>
-<span class="kw">factor</span>(string, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>, <span class="st">&quot;d&quot;</span>))</code></pre></div>
-<pre><code>## [1] &lt;NA&gt; b    c   
-## Levels: b c d</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(refactor)
-<span class="co"># with refactor::cfactor warnings are issued to communicate fact that levels were referenced that do not appear in the data and vice versa</span>
+
+string &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>)
 <span class="kw">cfactor</span>(string, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>, <span class="st">&quot;d&quot;</span>))</code></pre></div>
 <pre><code>## Warning: the following levels were empty: 
 ##  d</code></pre>
@@ -97,48 +112,158 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 </div>
 <div id="detect-levels" class="section level3">
 <h3>detect levels</h3>
-<p><code>cfactor</code> should detect sequences in strings, and if existent, order the levels. The default behavior of <code>factor</code> is <code>factor(x, levels = sort(unique(as.character(x)))</code>, which would be fine if the string ordering was the same as ordering the numbers within the string, but in general that is often not the case.</p>
+<p>The default behavior of <code>factor</code> is (if levels is not explicitly supplied) to first convert <code>x</code> to character, take the unique values and sort the characters (<code>sort(unique(as.character(x)))</code>), which is fine if the string ordering was the same as ordering the numbers within the string, but in general that is not the case.</p>
 <p><br />
-<strong>A simple example</strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">money &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;EUR 11 - EUR 20&quot;</span>, <span class="st">&quot;EUR 1 - EUR 10&quot;</span>, <span class="st">&quot;EUR 21 - EUR 22&quot;</span>) <span class="co"># no issue, since all numbers are two digits</span>
-<span class="kw">factor</span>(money, <span class="dt">ordered =</span> T) <span class="co"># correctly detects level</span></code></pre></div>
+<strong>A “clean” example</strong></p>
+<p>With all numbers having the same number of digits, <code>factor</code> can detect the order correctly.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">easy_to_dectect &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;EUR 11 - EUR 20&quot;</span>, <span class="st">&quot;EUR 1 - EUR 10&quot;</span>, <span class="st">&quot;EUR 21 - EUR 22&quot;</span>)
+<span class="kw">factor</span>(easy_to_dectect, <span class="dt">ordered =</span> T) <span class="co"># correctly detects level</span></code></pre></div>
 <pre><code>## [1] EUR 11 - EUR 20 EUR 1 - EUR 10  EUR 21 - EUR 22
 ## Levels: EUR 1 - EUR 10 &lt; EUR 11 - EUR 20 &lt; EUR 21 - EUR 22</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">money &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;EUR 21 - EUR 22&quot;</span>, <span class="st">&quot;EUR 100 - 101&quot;</span>, <span class="st">&quot;EUR 1 - EUR 10&quot;</span>, <span class="st">&quot;EUR 11 - EUR 20&quot;</span>)  <span class="co"># the general case</span>
-<span class="kw">cfactor</span>(money, <span class="dt">ordered =</span> T) <span class="co"># cfactor detects levels using regular expressions</span></code></pre></div>
-<pre><code>## [1] EUR 21 - EUR 22 EUR 100 - 101   EUR 1 - EUR 10  EUR 11 - EUR 20
-## 4 Levels: EUR 1 - EUR 10 &lt; EUR 100 - 101 &lt; ... &lt; EUR 21 - EUR 22</code></pre>
 <p><br />
 <strong>A more “dirty” example</strong></p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">dirty_money &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;EUR 21 - EUR 22&quot;</span>, <span class="st">&quot;EUR 100 - 101&quot;</span>, <span class="st">&quot;EUR 11 bis EUR 20&quot;</span>, <span class="st">&quot;from 98 to 99&quot;</span>)
-<span class="kw">cfactor</span>(dirty_money, <span class="dt">ordered =</span> T)</code></pre></div>
-<pre><code>## [1] EUR 21 - EUR 22   EUR 100 - 101     EUR 11 bis EUR 20 from 98 to 99    
-## 4 Levels: EUR 100 - 101 &lt; EUR 11 bis EUR 20 &lt; ... &lt; from 98 to 99</code></pre>
+<p>However, in the general case, where number of digits might be destinct, this does not work anymore. The category “EUR 100 - 101” comes second, but it should be last.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hard_to_dectect &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;EUR 21 - EUR 22&quot;</span>, <span class="st">&quot;EUR 100 - 101&quot;</span>, <span class="st">&quot;EUR 1 - EUR 10&quot;</span>, <span class="st">&quot;EUR 11 - EUR 20&quot;</span>)
+<span class="kw">factor</span>(hard_to_dectect, <span class="dt">ordered =</span> T)</code></pre></div>
+<pre><code>## [1] EUR 21 - EUR 22 EUR 100 - 101   EUR 1 - EUR 10  EUR 11 - EUR 20
+## 4 Levels: EUR 1 - EUR 10 &lt; EUR 100 - 101 &lt; ... &lt; EUR 21 - EUR 22</code></pre>
+<p><code>cfactor</code> detects levels using regular expressions. Concretely, it extracts the substrings preceding <code>sep</code>, removes everything except digits and the decimal point in <code>x</code> and orders the remaining numbers to find the order of the levels.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cfactor</span>(hard_to_dectect, <span class="dt">ordered =</span> T, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>)</code></pre></div>
+<pre><code>## [1] EUR 21 - EUR 22 EUR 100 - 101   EUR 1 - EUR 10  EUR 11 - EUR 20
+## 4 Levels: EUR 1 - EUR 10 &lt; EUR 11 - EUR 20 &lt; ... &lt; EUR 100 - 101</code></pre>
+<p>This detection algorithm can be turned off and the default ordering of <code>factor</code> can be applied by setting the <code>sep</code> argument to <code>NULL</code>. Also, in the absence of any numbers, the default ordering of <code>factor</code> is applied.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">identical</span>(
+  <span class="kw">cfactor</span>(hard_to_dectect, <span class="dt">ordered =</span> T, <span class="dt">sep =</span> <span class="ot">NULL</span>),
+   <span class="kw">factor</span>(hard_to_dectect, <span class="dt">ordered =</span> T)
+)</code></pre></div>
+<pre><code>## [1] TRUE</code></pre>
+</div>
+</div>
+<div id="index_cfactor" class="section level2">
+<h2><code>index_cfactor</code></h2>
+<p>If data is encoded, the <code>labels</code> argument of <code>factor()</code> can be used to label the data, which is a common data pre-processing step. This works the same as with <code>cfactor()</code>. Here, we want to give an example where the relationship beteween the encoding and the label is stored in a <code>data.frame</code>, e.g. after it was imported from a spread sheet.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dt">x =</span> <span class="dv">1</span>:<span class="dv">10</span>, <span class="dt">size =</span> <span class="dv">20</span>, <span class="dt">replace =</span> T)
+index &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">encoding =</span> <span class="dv">1</span>:<span class="dv">10</span>,
+                    <span class="dt">label =</span> letters[<span class="dv">1</span>:<span class="dv">10</span>])
+
+<span class="kw">cfactor</span>(data, <span class="dt">levels =</span> index$encoding, <span class="dt">labels =</span> index$label)</code></pre></div>
+<pre><code>## Warning: the following levels were empty: 
+##  4</code></pre>
+<pre><code>##  [1] f a e g b g f f i b h i j f c b h c e i
+## Levels: a b c d e f g h i j</code></pre>
 <p><br />
-<strong>Other example strings</strong></p>
+In a real-world situation, it is likely that a lot of variables have to be decoded. For this task, we created <code>index_cfactor</code>. First, we need some sample data.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">var1 =</span> <span class="kw">sample</span>(<span class="dt">x =</span> <span class="dv">1</span>:<span class="dv">10</span>, <span class="dt">size =</span> <span class="dv">20</span>, <span class="dt">replace =</span> T),
+                  <span class="dt">var2 =</span> <span class="kw">rep</span>(<span class="dv">1</span>:<span class="dv">2</span>, <span class="dv">20</span>),
+                  <span class="dt">var3 =</span> <span class="kw">sample</span>(<span class="dv">20</span>),
+                  <span class="dt">var4 =</span> <span class="dv">2</span>, 
+                  <span class="dt">var5 =</span> <span class="kw">sample</span>(<span class="kw">row.names</span>(USArrests), <span class="dt">size =</span> <span class="dv">20</span>),
+                  <span class="dt">stringsAsFactors =</span> F)
+<span class="kw">head</span>(data)</code></pre></div>
+<pre><code>##   var1 var2 var3 var4     var5
+## 1    9    1   19    2 Nebraska
+## 2    5    2   20    2   Oregon
+## 3    5    1    8    2 Kentucky
+## 4    3    2   12    2  Alabama
+## 5    6    1   10    2 New York
+## 6    3    2    3    2   Kansas</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">index &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">var =</span> <span class="kw">rep</span>(<span class="kw">paste0</span>(<span class="st">&quot;var&quot;</span>, <span class="dv">1</span>:<span class="dv">3</span>), <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">2</span>, <span class="dv">20</span>)),
+                    <span class="dt">encoding =</span> <span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">10</span>, <span class="dv">1</span>:<span class="dv">2</span>, <span class="dv">1</span>:<span class="dv">20</span>),
+                    <span class="dt">label =</span> <span class="kw">c</span>(letters[<span class="dv">1</span>:<span class="dv">10</span>], <span class="kw">c</span>(<span class="st">&quot;male&quot;</span>, <span class="st">&quot;female&quot;</span>), LETTERS[<span class="dv">1</span>:<span class="dv">20</span>]))
+<span class="kw">head</span>(index)</code></pre></div>
+<pre><code>##    var encoding label
+## 1 var1        1     a
+## 2 var1        2     b
+## 3 var1        3     c
+## 4 var1        4     d
+## 5 var1        5     e
+## 6 var1        6     f</code></pre>
+<p>Now we use <code>index_cfactor</code> to decode the <code>data.frame</code>. Note that <code>var4</code> and <code>var5</code> are left as is, since no variable encoding for them is defined in <code>index</code>. Using the <code>...</code> argument of <code>index_cfactor</code>, we can pass additional arguments to <code>cfactor</code>.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">final &lt;-<span class="st"> </span><span class="kw">head</span>(<span class="kw">index_cfactor</span>(<span class="dt">data =</span> data, <span class="dt">index =</span> index, <span class="dt">variable =</span> <span class="st">&quot;var&quot;</span>, <span class="dt">ordered =</span> <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)))</code></pre></div>
+<pre><code>## Warning: the following levels were empty: 
+##  4
+## 10</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(final)</code></pre></div>
+<pre><code>##   var1   var2 var3 var4     var5
+## 1    i   male    S    2 Nebraska
+## 2    e female    T    2   Oregon
+## 3    e   male    H    2 Kentucky
+## 4    c female    L    2  Alabama
+## 5    f   male    J    2 New York
+## 6    c female    C    2   Kansas</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sapply</span>(final, class)</code></pre></div>
+<pre><code>## $var1
+## [1] &quot;ordered&quot; &quot;factor&quot; 
+## 
+## $var2
+## [1] &quot;ordered&quot; &quot;factor&quot; 
+## 
+## $var3
+## [1] &quot;factor&quot;
+## 
+## $var4
+## [1] &quot;numeric&quot;
+## 
+## $var5
+## [1] &quot;character&quot;</code></pre>
+<p><code>index_cfactor</code> converts all columns in <code>data</code> that have a match in <code>index</code> to factors with the respective encoding using <code>cfactor</code>. Further arguments are <code>category</code>, <code>label</code> and <code>encoding</code> referring to the colunm names in index that contain the respective information.</p>
+<p><strong>Other example strings</strong></p>
 <pre><code>## [1] &quot;1 to 4&quot; &quot;5 to 6&quot;</code></pre>
 <pre><code>## [1] &quot;1 to 4&quot; &quot;4 to 6&quot;</code></pre>
 <pre><code>## [1] &quot;from 1,000 to 2,000&quot; &quot;from 2000 to 4,000&quot;</code></pre>
 <pre><code>## [1] &quot;4.0 / 4.1&quot; &quot;4.2 / 4.3&quot;</code></pre>
 <pre><code>## [1] &quot;one minute&quot;    &quot;three minutes&quot; &quot;1 hour&quot;</code></pre>
 </div>
-<div id="boundary-labels-for-integer-bins" class="section level3">
-<h3>boundary labels for integer bins</h3>
-<p>using <code>cut</code> gives boundaries like [50, 55) [55, 60), even for integers. This is undesired in the case of integer values, so it should give boundaries like “50 - 55”, “56 - 60”. Possibly with the spacing being optional.</p>
+<div id="tailored-methods-for-categorical-data" class="section level2">
+<h2>tailored methods for categorical data</h2>
+<p>Instead of defining completely new functions, we decided to provide some S3 generics to extend the functionality of existing R functions and tailor them so they are better suited for categorical data. Also, a more extensive warning and error behavior than for their base R counterparts is implemented.</p>
+<div id="cut" class="section level3">
+<h3><code>cut</code></h3>
+<p>Applying cut can result in categorical data, for example if integers are binned or if ordered factor levels are summarized into larger categories.</p>
+<div id="a-cut-method-for-integers" class="section level4">
+<h4>a <code>cut</code> method for integers</h4>
+<p><code>cut.default</code> provides kind of inappropriate labels for integer values.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">random &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">100</span>)
-<span class="kw">cut.default</span>(random, <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">10</span>))[<span class="dv">1</span>:<span class="dv">10</span>] <span class="co"># the uggly outcome with cut.default</span></code></pre></div>
-<pre><code>##  [1] (0,10]   (60,70]  (30,40]  (90,100] (90,100] (30,40]  (40,50] 
-##  [8] (50,60]  (30,40]  (90,100]
+<span class="kw">cut.default</span>(random, <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">10</span>))[<span class="dv">1</span>:<span class="dv">10</span>]</code></pre></div>
+<pre><code>##  [1] (20,30] (70,80] (20,30] (0,10]  (50,60] (0,10]  (40,50] (80,90]
+##  [9] (50,60] (0,10] 
 ## 10 Levels: (0,10] (10,20] (20,30] (30,40] (40,50] (50,60] ... (90,100]</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">class</span>(random) <span class="co"># ok, we define an S3 method for integer</span></code></pre></div>
-<pre><code>## [1] &quot;integer&quot;</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(refactor)
-<span class="kw">cut</span>(random, <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">10</span>))[<span class="dv">1</span>:<span class="dv">10</span>]</code></pre></div>
-<pre><code>##  [1] 0-10   61-70  31-40  91-100 91-100 31-40  41-50  51-60  31-40  91-100
+<p>Hence, we defined <code>cut.integer</code> to provide more natural labels for this data type.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(random, <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">10</span>))[<span class="dv">1</span>:<span class="dv">10</span>]</code></pre></div>
+<pre><code>##  [1] 21-30 71-80 21-30 0-10  51-60 0-10  41-50 81-90 51-60 0-10 
 ## Levels: 0-10 11-20 21-30 31-40 41-50 51-60 61-70 71-80 81-90 91-100</code></pre>
+<p><br />
+The remainder of the section describes how the method deviates from the default method.<br />
+<br />
+Creating missing values will yield a warning.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">5</span>))</code></pre></div>
+<pre><code>## Warning in cut.integer(sample(10), breaks = c(0, 3, 5)): 5 missing values
+## generated</code></pre>
+<pre><code>##  [1] 0-3  &lt;NA&gt; 0-3  4-5  4-5  &lt;NA&gt; &lt;NA&gt; 0-3  &lt;NA&gt; &lt;NA&gt;
+## Levels: 0-3 4-5</code></pre>
+<p>It is possible to define bins with width 1. This will generate a label with just the value of the integer containted (e.g. 2 instead of 2-2) and issue a warning.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>))</code></pre></div>
+<pre><code>## Warning in cut.integer(sample(10), breaks = c(1, 4, 6, 8, 9, 10)): this
+## break specification produces 2 bin(s) of width 1. The corresponding
+## label(s) are: 9, 10</code></pre>
+<pre><code>##  [1] 9   5-6 10  7-8 5-6 1-4 7-8 1-4 1-4 1-4
+## Levels: 1-4 5-6 7-8 9 10</code></pre>
+<p>Unordered breaks will be ordered before proceeding and a warning will be issued.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">3</span>))</code></pre></div>
+<pre><code>## Warning in cut.integer(sample(10), breaks = c(10, 0, 3)): breaks were
+## unsorted and are now sorted in the following order: 0 3 10</code></pre>
+<pre><code>##  [1] 0-3  0-3  4-10 4-10 4-10 4-10 0-3  4-10 4-10 4-10
+## Levels: 0-3 4-10</code></pre>
+<p>Decimal values for <code>breaks</code> will be rounded to integers and a warning will be issued.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="fl">2.6</span>, <span class="fl">5.1</span>, <span class="dv">10</span>))</code></pre></div>
+<pre><code>## Warning in cut.integer(sample(10), breaks = c(1, 2.6, 5.1, 10)): When coerced to integers, the following breaks were rounded: 
+##   2.6 to 3  
+##  5.1 to 5</code></pre>
+<pre><code>##  [1] 6-10 1-3  1-3  6-10 6-10 6-10 1-3  4-5  6-10 4-5 
+## Levels: 1-3 4-5 6-10</code></pre>
 </div>
-<div id="cut-method-for-ordered-factors" class="section level3">
-<h3>cut method for ordered factors</h3>
+<div id="a-cut-method-for-ordered-factors" class="section level4">
+<h4>a <code>cut</code> method for ordered factors</h4>
 <p>This method should allow to summarize levels of factors into fewer categories given some break points</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(refactor)
 timeX &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;very low&quot;</span>, <span class="st">&quot;rather low&quot;</span>, <span class="st">&quot;low&quot;</span>, <span class="st">&quot;medium&quot;</span>, <span class="st">&quot;upper medium&quot;</span>, <span class="st">&quot;high&quot;</span>)
@@ -147,6 +272,7 @@ time &lt;-<span class="st"> </span><span class="kw">factor</span>(timeX, <span c
 <span class="kw">cut</span>(time, <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;low&quot;</span>, <span class="st">&quot;medium&quot;</span>, <span class="st">&quot;high&quot;</span>))</code></pre></div>
 <pre><code>## [1] low    low    low    medium high   high  
 ## Levels: low medium high</code></pre>
+</div>
 </div>
 </div>
 
