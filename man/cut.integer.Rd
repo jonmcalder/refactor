@@ -26,7 +26,7 @@ intervals.}
 \item{ordered_result}{Logical: should the result be an ordered factor?}
 
 \item{breaks_mode}{A parameter indicating how to determine the intervals when breaks is specified as 
-a scalar. \itemize{
+ a scalar. \itemize{
  \item 'default' will result in intervals spread as evenly as possible over the exact range of x
  \item 'pretty' will generate rounded breakpoints for the intervals (often extending slightly beyond the range of x) based on 
  \link[base]{pretty}
@@ -44,6 +44,6 @@ cut divides the range of x into intervals and codes the values in x according to
 }
 \examples{
 Z <- sample(10)
-cut(Z, breaks = c(0, 5, 10))
+ cut(Z, breaks = c(0, 5, 10))
 }
 

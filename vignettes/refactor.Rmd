@@ -12,7 +12,7 @@ vignette: >
 
 ## Introduction
 
-Working with factors in R can be frustrating. As described well by [John Monut](http://www.win-vector.com/blog/2014/09/factors-are-not-first-class-citizens-in-r/), factors are not first-class citizens in R. Even most basic code does often behave in an unexpeced manner and without any warning. Let's start off with a simple example that illustrates some of the issues: Creating two factor vectors and combining them together:
+Working with factors in R can be frustrating. As described well by [John Mount](http://www.win-vector.com/blog/2014/09/factors-are-not-first-class-citizens-in-r/), factors are not first-class citizens in R. Even the most basic code often behaves in an unexpected manner and without any warning. Let's start off with a simple example - creating two factor vectors and combining them together - that illustrates some of the issues:
 
 ```{r}
 lower <- factor(letters[1:3], levels = letters[2:4])
@@ -23,9 +23,9 @@ upper <- factor(LETTERS[1:5], levels = LETTERS[1:4])
 
 One can note the following issues:
 
-* `factor()` does not yield an error when `NA`s are created silently, neither when levels does not match x nor when too few levels are specified. 
-* When `c()` is used to combine the two, the levels of the two elements (which are just attributes to integer vectors) are not conveyed, R puts together the underlying integers.
-* This is not only changing the data representation but also make it impossible to restore the information, i.e. 1 represents now the first level of both `lower` and `upper`, so it can either be `b` or `A` which does not really make sense.
+* `factor()` does not yield an error when `NA`s are created silently, neither when levels do not match x nor when too few levels are specified. 
+* When `c()` is used to combine the two, the levels of the two elements (which are just attributes to integer vectors) are not conveyed, R simply combines the underlying integers from each vector.
+* This not only changes the data representation but fundamentally changes the data values and makes it impossible to restore the information. e.g. 1 now represents the first level of both `lower` and `upper`, so a 1 in the combined vector could be either `b` or an `A` from one of the original vectors.
 
 The goal of the `refactor` package is to make working with factors more natural and fun by providing
 
@@ -34,7 +34,7 @@ The goal of the `refactor` package is to make working with factors more natural 
 * S3 generics for existing R base classes (mainly `ordered` and `factor`) where current methods are not tailored for categorical data.
 
 ## `cfactor`
-`cfactor` has been defined to give warnings in cases when empty factors are created from strings or when existing strings are not preserved. Essentially, it is a wrapper for `factor()`, and the 'c' stands for enhanced control. It also has an improved level order detection based on numerical values within strings that is superior to the way `factor` assesses this order in certain cases.
+`cfactor` has been defined to give warnings in cases when empty factors are created from strings or when existing strings are not preserved. Essentially, it is a wrapper for `factor()`, and the 'c' stands for enhanced control. It also has improved level order detection based on numerical values within strings that is superior to the way `factor` assesses this order in certain cases.
 
 ### unmatched factors
 ```{r}
@@ -45,7 +45,7 @@ cfactor(string, levels = c("b", "c", "d"))
 ```
 
 ### detect levels
-The default behavior of `factor` is (if levels is not explicitly supplied) to first convert `x` to character, take the unique values and sort the characters (`sort(unique(as.character(x)))`), which is fine if the string ordering was the same as ordering the numbers within the string, but in general that is not the case.
+The default behavior of `factor` (if levels are not explicitly supplied), is to first convert `x` to character, and then to take the unique values and sort the characters (`sort(unique(as.character(x)))`). This approach is fine if the string ordering was the same as ordering the numbers within the string, but in general this is not the case, as the following examples will illustrate:
 
 \
 **A "clean" example**
@@ -91,7 +91,7 @@ index <- data.frame(encoding = 1:10,
 cfactor(data, levels = index$encoding, labels = index$label)
 ```
 \
-In a real-world situation, it is likely that a lot of variables have to be decoded. For this task, we created `index_cfactor`. First, we need some sample data.
+In a real-world situation, it is likely that a lot of variables have to be decoded. `index_cfactor` was created to assist with this task. First, we need some sample data.
 ```{r}
 data <- data.frame(var1 = sample(x = 1:10, size = 20, replace = T),
                   var2 = rep(1:2, 20),
@@ -112,7 +112,7 @@ final <- head(index_cfactor(data = data, index = index, variable = "var", ordere
 print(final)
 sapply(final, class)
 ```
-`index_cfactor` converts all columns in `data` that have a match in `index` to factors with the respective encoding using `cfactor`. Further arguments are `category`, `label` and `encoding` referring to the colunm names in index that contain the respective information.
+`index_cfactor` converts all columns in `data` that have a match in `index` to factors with the respective encoding using `cfactor`. Further arguments are `category`, `label` and `encoding` referring to the column names in index that contain the respective information.
 
 **Other example strings**
 ```{r, echo = F, include = T}
@@ -130,19 +130,19 @@ Instead of defining completely new functions, we decided to provide some S3 gene
 Applying cut can result in categorical data, for example if integers are binned or if ordered factor levels are summarized into larger categories.
 
 #### a `cut` method for integers
-`cut.default` provides kind of inappropriate labels for integer values.
+`cut.default` provides rather inappropriate labels for integer values.
 ```{r}
 random <- sample(100)
 cut.default(random, breaks = seq(0, 100, by = 10))[1:10]
 ```
 
-Hence, we defined `cut.integer` to provide more natural labels for this data type.
+`refactor` extends the S3 method `cut` with `cut.integer` to provide more natural labels for this data type.
 ```{r}
 cut(random, breaks = seq(0, 100, by = 10))[1:10]
 ```
-\
-The remainder of the section describes how the method deviates from the default method. \
-\
+
+The remainder of the section will outline and describe how `cut.integer` deviates from the default `cut` method.    
+<br><br>
 Creating missing values will yield a warning.
 
 ```{r}
@@ -166,7 +166,7 @@ cut(sample(10), breaks = c(1, 2.6, 5.1, 10))
 
 
 #### a `cut` method for ordered factors
-This method should allow to summarize levels of factors into fewer categories given some break points
+This method allows one to combine the levels of a factor into fewer categories given some break points:
 ```{r}
 library(refactor)
 timeX <- c("very low", "rather low", "low", "medium", "upper medium", "high")
