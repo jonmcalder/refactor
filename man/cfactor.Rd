@@ -4,25 +4,46 @@
 \alias{cfactor}
 \title{Factor}
 \usage{
-cfactor(x, levels = NULL, labels = levels, exclude = NA,
-  ordered = is.ordered(x), nmax = NA)
+cfactor(x, levels, labels = levels, exclude = NA, ordered = is.ordered(x),
+  nmax = NA, sep = c("-", "to"))
 }
 \arguments{
-\item{x}{A vector of data, usually taking a small number of distinct values.}
+\item{x}{a vector of data, usually taking a small number of distinct
+    values.}
 
-\item{levels}{An optional vector of the values (as character strings) that x might have taken. The default is the unique set
-of values taken by as.character(x), sorted into increasing order of x. Note that this set can be specified as smaller than
-sort(unique(x)).}
+\item{levels}{an optional vector of the values (as character strings)
+    that \code{x} might have taken.  The default is the unique set of
+    values taken by \code{\link{as.character}(x)}, sorted into
+    increasing order \emph{of \code{x}}.  Note that this set can be
+    specified as smaller than \code{sort(unique(x))}.}
 
-\item{labels}{Either an optional character vector of labels for the levels (in the same order as levels after removing those in exclude),
-or a character string of length 1.}
+\item{labels}{\emph{either} an optional character vector of labels for the
+    levels (in the same order as \code{levels} after removing those in
+    \code{exclude}), \emph{or} a character string of length 1.}
+
+\item{exclude}{a vector of values to be excluded when forming the
+    set of levels.  This should be of the same type as \code{x}, and
+    will be coerced if necessary.}
+
+\item{ordered}{logical flag to determine if the levels should be regarded
+    as ordered (in the order given).}
+
+\item{nmax}{an upper bound on the number of levels; see \sQuote{Details}.}
+
+\item{sep}{A character vector giving all strings that are used to separate the lower numerical boundary of a range from the upper 
+numerical boundary within \code{x}.}
 }
 \value{
-An object of class "factor" which has a set of integer codes the length of x with a "levels" attribute of mode character
-and unique (!anyDuplicated(.)) entries. If argument ordered is true (or ordered() is used) the result has class c("ordered", "factor").
+An object of class "factor" which has a set of integer codes the length of \code{x} with a "levels" attribute of mode character
+ and unique (!anyDuplicated(.)) entries. If argument ordered is true (or ordered() is used) the result has class c("ordered", "factor").
 }
 \description{
-A wrapper for factor with enhanced control.
+A wrapper for \code{factor} with enhanced control.
+}
+\details{
+\code{cfactor} wraps \code{\link{factor}} but provides enhanced control. \cr
+ The order of the levels is determined by sorting the numerical values preceeding the separators indicated in \code{sep}. If 
+ \code{sep} is set to \code{NULL} or if not every value of \code{x} contains numbers, the same ordering as in \code{factor} is applied.
 }
 \examples{
 cfactor(c("a", "c", "b", "c", "d"))

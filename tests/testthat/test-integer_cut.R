@@ -7,28 +7,28 @@ case2 <- cut(int_norep, breaks = c(1, 5, 10), right = T, include.lowest = T)
 case3 <- cut(int_norep, breaks = c(1, 5, 10), right = F, include.lowest = F)
 case4 <- cut(int_norep, breaks = c(1, 5, 10), right = F, include.lowest = T)
 
-case5 <- cut(int_norep, breaks = 2, balance = "left")
-case6 <- cut(int_norep, breaks = 2, balance = "right")
-case7 <- cut(int_norep, breaks = 3, balance = "left")
-case8 <- cut(int_norep, breaks = 3, balance = "right")
+case5 <- cut(int_norep, breaks = 2, right = FALSE)
+case6 <- cut(int_norep, breaks = 2, right = TRUE)
+case7 <- cut(int_norep, breaks = 3, right = FALSE)
+case8 <- cut(int_norep, breaks = 3, right = TRUE)
 
 int2_norep <- sample(15, replace = F)
 
-case9 <- cut(int2_norep, breaks = 3, balance = "left")
-case10 <- cut(int2_norep, breaks = 3, balance = "right")
-case11 <- cut(int2_norep, breaks = 4, balance = "left")
-case12 <- cut(int2_norep, breaks = 4, balance = "right")
-case13 <- cut(int2_norep, breaks = 5, balance = "left")
-case14 <- cut(int2_norep, breaks = 5, balance = "right")
+case9 <- cut(int2_norep, breaks = 3, right = FALSE)
+case10 <- cut(int2_norep, breaks = 3, right = TRUE)
+case11 <- cut(int2_norep, breaks = 4, right = FALSE)
+case12 <- cut(int2_norep, breaks = 4, right = TRUE)
+case13 <- cut(int2_norep, breaks = 5, right = FALSE)
+case14 <- cut(int2_norep, breaks = 5, right = TRUE)
 
 int3_norep <- sample(99, replace = F)
 
-case15 <- cut(int3_norep, breaks = 3, balance = "left")
-case16 <- cut(int3_norep, breaks = 3, balance = "right")
-case17 <- cut(int3_norep, breaks = 4, balance = "left")
-case18 <- cut(int3_norep, breaks = 4, balance = "right")
-case19 <- cut(int3_norep, breaks = 5, balance = "left")
-case20 <- cut(int3_norep, breaks = 5, balance = "right")
+case15 <- cut(int3_norep, breaks = 3, right = FALSE)
+case16 <- cut(int3_norep, breaks = 3, right = TRUE)
+case17 <- cut(int3_norep, breaks = 4, right = FALSE)
+case18 <- cut(int3_norep, breaks = 4, right = TRUE)
+case19 <- cut(int3_norep, breaks = 5, right = FALSE)
+case20 <- cut(int3_norep, breaks = 5, right = TRUE)
 
 # for extremely few values in x 
 case21 <- cut(1L, breaks = c(0, 1, 9), include.lowest = T)
@@ -51,8 +51,11 @@ case29 <- cut(sample(10), breaks = c(1, 10), labels = "lion")
 # not desired outcome although it should be without 
 # cut.default(sample(10), breaks = 1, labels = F)
 
+# when breaks are of class integer
+case30 <- cut(sample(10), breaks = c(1L, 3L, 10L))
 
-
+# when breaks need to be rounded
+case31 <- cut(sample(10), breaks = c(1, 2.6, 5.1, 10))
 
 test_that("cut.integer returns same as cut.default but with better labels for length(break) > 1", {
   # right = T
@@ -110,7 +113,11 @@ test_that("cut.integer returns expected (natural) intervals with better labels f
   expect_equal(levels(case25), "1-10")
   expect_equal(levels(case26), "lion")
   
+  # when breaks are of class integer
+  expect_equal(levels(case30), c("1-3", "4-10"))
 
+  # when breaks need to be rounde
+  expect_equal(levels(case31), c("1-3", "4-5", "6-10"))
 })
 
 test_that("cut.integer with user-defined labels", {
@@ -133,12 +140,12 @@ test_that("cut.integer error cases", {
   expect_error(cut(sample(2), breaks = 3), 
                "range too small for the number of breaks specified")
   expect_error(cut(sample(10), breaks = 3, labels = letters[1:4]), 
-               "if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
+               "if labels not 'NULL' and not 'F', it must be the same length as the number of bins resulting from 'breaks'")
   expect_error(cut(sample(10), breaks = 3, labels = letters[1:99]), 
-               "if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
+               "if labels not 'NULL' and not 'F', it must be the same length as the number of bins resulting from 'breaks'")
   # edge case
   expect_error(cut(sample(10), breaks = 1, labels = c("lion", "tiger")),
-    "if labels not 'NULL' and not 'F', it must be the same length as the number of brackets resulting from 'breaks'")
+    "if labels not 'NULL' and not 'F', it must be the same length as the number of bins resulting from 'breaks'")
   
 })
 
@@ -153,6 +160,15 @@ test_that("cut.integer warning cases", {
   
   expect_warning(cut(sample(10), breaks = c(NA, 0, 10)), 
                  "missing values in breaks were removed$")
+  
+  # when breaks are to be rounded to coerce to integers
+  expect_warning(cut(sample(10), breaks = c(1, 2.6, 5.1, 10)), 
+                 "^When coerced to integers, the following breaks were rounded")
+  
+  # when bins with width 1 are produced
+  expect_warning(cut(sample(10), breaks = c(1, 4, 6, 8, 9, 10)),
+                 "^this break specification produces [[:digit:]]+ bin\\(s\\) of width 1. The corresponding label\\(s\\) are: 9, 10")
+  
 })
 
 
