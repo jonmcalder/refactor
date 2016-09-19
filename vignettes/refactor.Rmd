@@ -112,7 +112,7 @@ final <- head(index_cfactor(data = data, index = index, variable = "var", ordere
 print(final)
 sapply(final, class)
 ```
-`index_cfactor` converts all columns in `data` that have a match in `index` to factors with the respective encoding using `cfactor`. Further arguments are `category`, `label` and `encoding` referring to the column names in index that contain the respective information.
+`index_cfactor` converts all columns in `data` that have a match in `index` to factors with the respective encoding using `cfactor`. Further arguments are `variable`, `label` and `encoding` referring to the column names in index that contain the respective information.
 
 **Other example strings**
 ```{r, echo = F, include = T}
