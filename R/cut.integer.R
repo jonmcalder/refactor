@@ -10,7 +10,10 @@
 #' @param include.lowest Logical, indicating if an "x[i]" equal to the lowest (or highest, for right = FALSE) "breaks" value should be
 #'  included. Note that unlike \link[base]{cut.default}, here include.lowest defaults to TRUE, since this is more intuitive for integer 
 #'  intervals.
-#' @param right	Logical, indicating if the intervals should be closed on the right (and open on the left) or vice versa.
+#' @param right	Logical, indicating how to create the bins. This is utilized in two different ways based on the type of breaks argument. 
+#'  In the conventional case, where a breaks vector is supplied, right = TRUE indicates that bins should be closed on the right (and open 
+#'  on the left) or vice versa. If a single integer breaks value is provided, then right = TRUE indicates that bins will be determined 
+#'  such that those on the right are larger (if it is not possible for all bins to be evenly sized).
 #' @param ordered_result Logical: should the result be an ordered factor?
 #' @param breaks_mode A parameter indicating how to determine the intervals when breaks is specified as 
 #'  a scalar. \itemize{
@@ -27,7 +30,7 @@
 #' @export
 
 cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, right = TRUE, ordered_result = FALSE,
-                        breaks_mode = "default", label_sep = "-", balance = "left", ...) {
+                        breaks_mode = "default", label_sep = "-", ...) {
   
   # check function arguments
   assert_class(x, "integer")
@@ -43,7 +46,6 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, right =
   assert_class(ordered_result, "logical")
   assert_choice(breaks_mode, c("default", "pretty", "quantile"))
   assert_class(label_sep, "character")
-  assert_choice(balance, c("left", "right"))
   
   # NAs in breaks
   if(anyNA(breaks)) {
@@ -111,13 +113,13 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, right =
         breakpoints <- seq(from=min(x)-1, by = avg_bin_width, length.out = num)
         breakpoints[1] <- min(x)
       } else if(rem != 0) {
-        if(balance == "left"){
+        if(right == FALSE){
           breakpoints <- rev(seq(from=max(x), by = -avg_bin_width, length.out = num))
           breakpoints[1] <- min(x)
           for(i in 1:rem){
             breakpoints[i+1] <- min(x)-1+avg_bin_width*i+i
           }
-        } else if(balance == "right"){
+        } else if(right == TRUE){
           breakpoints <- seq(from=min(x)-1, by = avg_bin_width, length.out = num)
           breakpoints[1] <- min(x)
           breakpoints[num] <- max(x)
