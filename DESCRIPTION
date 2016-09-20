@@ -1,7 +1,7 @@
 Package: refactor
 Type: Package
 Title: Better factor handling for R
-Version: 0.1.0
+Version: 0.1.0.9000
 Authors@R: c(
   person("Lorenz", "Walthert", email = "lorenz.walthert@icloud.com", role = "cre"),
   person("Jon", "Calder", email = "jonmcalder@gmail.com", role = "aut"))
