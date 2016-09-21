@@ -18,10 +18,111 @@
 #' cut(Z, breaks = -6:6)
 #' @export
 cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
-                        right = TRUE, digit.lab = 3, ordered_result = FALSE, ...) {
+                        right = TRUE, digit.lab = 3, ordered_result = FALSE, breaks_mode = "default", label_sep = "-", ...) {
   xnum <- as.numeric(x)
-  b1 <- sapply(breaks, function(point) which(point == levels(x)))
-  cut(xnum, breaks = c(min(xnum)-1, b1), labels = breaks, include.lowest = include.lowest,
-      right = right, digit.lab = digit.lab, ordered_result = ordered_result, ...)
-
+  x_lev <- levels(x)
+  breakpos <- match(breaks, x_lev)
+  
+  
+  ######## 
+  # if breaks are not specified (i.e. only the number of breaks is provided)
+  if(length(breaks) == 1){
+    
+    numLabels <- breaks
+    
+    # should the breaks be "pretty"? (‘round’ values which cover the range of the values in x_num)
+    # or based on quantiles?
+    # or evenly spaced over the range of the data? ("default")
+    if(breaks_mode == "quantile"){
+      
+      # not yet implemented
+      
+    } else if(breaks_mode == "default"){
+      
+      range <- max(x_num)-min(x_num)+1
+      avg_bin_width <- floor(range/breaks)
+      rem <- range %% breaks
+      num <- breaks+1
+      if(rem == 0){
+        breakpoints <- seq(from=min(x_num)-1, by = avg_bin_width, length.out = num)
+        breakpoints[1] <- min(x_num)
+      } else if(rem != 0) {
+        if(right == FALSE){
+          breakpoints <- rev(seq(from=max(x_num), by = -avg_bin_width, length.out = num))
+          breakpoints[1] <- min(x_num)
+          for(i in 1:rem){
+            breakpoints[i+1] <- min(x_num)-1+avg_bin_width*i+i
+          }
+        } else if(right == TRUE){
+          breakpoints <- seq(from=min(x_num)-1, by = avg_bin_width, length.out = num)
+          breakpoints[1] <- min(x_num)
+          breakpoints[num] <- max(x_num)
+          for(i in num:(num-rem+1)){
+            breakpoints[i-1] <- max(x_num)-(avg_bin_width+1)*(num-i+1)
+          }
+        }
+      }
+    }
+    
+    right <- TRUE
+    
+    
+    # use breakpoints as is if provided  
+  } else if(length(breaks > 1)){
+    
+    breakpoints <- breaks
+    
+    numLabels <- length(breakpoints) - 1
+    
+  }
+  
+  # handle break offsets for 'right' and 'left' intervals
+  # and also handle include.lowest = TRUE
+  if(right == TRUE){
+    floorInc    <- rep(1, numLabels)
+    ceilingDec  <- rep(0, numLabels)
+    if(include.lowest == TRUE){
+      floorInc[1] <- 0
+    }
+  } else if(right == FALSE) {
+    floorInc    <- rep(0, numLabels)
+    ceilingDec  <- rep(1, numLabels)
+    if(include.lowest == TRUE){
+      ceilingDec[numLabels] <- 0
+    }
+  }
+  
+  # create integer-based interval labels using label_sep
+  if(is.null(labels)) {
+    recode_labels <- paste(x_lev[head(breakpos, -1) + floorInc], x_lev[tail(breakpos, -1) - ceilingDec], sep = label_sep) 
+    
+    # correct labels with binwidth 1, that is where to elements separated by label_sep are the same, i.e. the label "10-10"
+    # deactivated
+    same <- head(breakpos, -1) + floorInc == tail(breakpos, -1) - ceilingDec
+    # recode_labels[same] <- (tail(breakpos, -1) - ceilingDec)[same] 
+    
+  } else if(!is.null(labels)) {
+    if(length(labels) == length(breakpoints) - 1) {
+      recode_labels <- labels
+    } else if(length(labels) != length(breakpoints) - 1) {
+      if(length(labels) == 1) {
+        if(labels == F) {
+          recode_labels <- labels
+        } else if(labels != F) {
+          stop("if labels not 'NULL' and not 'F', it must be the same length as the number of bins resulting from 'breaks'")
+        }
+      } else if(length(labels) != 1) {
+        stop("if labels not 'NULL' and not 'F', it must be the same length as the number of bins resulting from 'breaks'")
+      }
+      
+    }
+  }
+  output <- cut.default(xnum, breaks = breakpos, labels = recode_labels, include.lowest = include.lowest,
+                        right = right, ordered_result = ordered_result, ...)
+  
+  
+  if(anyNA(output)) {
+    warning(paste(sum(is.na(output)), "missing values generated"))
+  }
+  output
 }
