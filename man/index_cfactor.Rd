@@ -8,13 +8,15 @@ index_cfactor(data, index, variable = "variable", encoding = "encoding",
   label = "label", ...)
 }
 \arguments{
-\item{data}{A data.frame containing integers to decode.}
+\item{data}{A data frame containing integers to decode.}
 
-\item{index}{A data.frame containing the encoding for \code{data}.}
+\item{index}{A data frame containing the encoding for \code{data}.}
 
 \item{variable}{The name of the column in \code{index} that indicates the variable.}
 
 \item{encoding}{The name of the column in \code{index} that indicates the encoding.}
+
+\item{label}{The name of the column in \code{index} that indicates the label to be assigned.}
 
 \item{...}{Further arguments to pass to \code{\link{cfactor}}.}
 }

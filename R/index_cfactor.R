@@ -2,10 +2,11 @@
 #'
 #' Decode numerical data into (ordered) factors given the encoding
 #'
-#' @param data A data.frame containing integers to decode.
-#' @param index A data.frame containing the encoding for \code{data}.
+#' @param data A data frame containing integers to decode.
+#' @param index A data frame containing the encoding for \code{data}.
 #' @param variable The name of the column in \code{index} that indicates the variable.
 #' @param encoding The name of the column in \code{index} that indicates the encoding.
+#' @param label The name of the column in \code{index} that indicates the label to be assigned.
 #' @param ... Further arguments to pass to \code{\link{cfactor}}. 
 #' @examples 
 #' data <- data.frame(var1 = sample(x = 1:10, size = 20, replace = TRUE),
