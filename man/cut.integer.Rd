@@ -33,7 +33,6 @@ such that those on the right are larger (if it is not possible for all bins to b
  \item 'default' will result in intervals spread as evenly as possible over the exact range of x
  \item 'pretty' will generate rounded breakpoints for the intervals (often extending slightly beyond the range of x) based on 
  \link[base]{pretty}
- \item 'quantile' will form the intervals so as to result in similar frequencies of occurrence in each of the intervals
 }}
 
 \item{label_sep}{A single or short character string used to generate labels for the intervals e.g. the default value of "-" 

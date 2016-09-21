@@ -20,7 +20,6 @@
 #'  \item 'default' will result in intervals spread as evenly as possible over the exact range of x
 #'  \item 'pretty' will generate rounded breakpoints for the intervals (often extending slightly beyond the range of x) based on 
 #'  \link[base]{pretty}
-#'  \item 'quantile' will form the intervals so as to result in similar frequencies of occurrence in each of the intervals
 #' }
 #' @param label_sep A single or short character string used to generate labels for the intervals e.g. the default value of "-" 
 #'  will result in labels like 1-10 11-20 21-30 etc
@@ -44,7 +43,7 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, right =
   assert_class(include.lowest, "logical")
   assert_class(right, "logical")
   assert_class(ordered_result, "logical")
-  assert_choice(breaks_mode, c("default", "pretty", "quantile"))
+  assert_choice(breaks_mode, c("default", "pretty"))
   assert_class(label_sep, "character")
   
   # NAs in breaks
@@ -98,10 +97,6 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, right =
     if(breaks_mode == "pretty"){
       
       breakpoints <- pretty(x, breaks)
-      
-    } else if(breaks_mode == "quantile"){
-      
-      # not yet implemented
       
     } else if(breaks_mode == "default"){
       
