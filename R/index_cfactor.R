@@ -48,8 +48,8 @@ index_cfactor <- function(data, index, variable = "variable", encoding = "encodi
   sp_index_lab <- lapply(sp_index, "[[", pos_lab) # extract the label columns
   
   # check whether argument can be recycled fully, otherwise stop
-  lapply(seq_along(further_args), function(i) if(!is.null(further_args[[i]]) && length(sp_index_enc) %% length(further_args[[i]])){
-    stop(paste0("argument '", names(further_args)[[i]], "' is not recycled fully. Number of columns to be decoded should match the length of '", names(further_args)[[i]],"' or mulitiple thereof."))
+  lapply(seq_along(further_args), function(i) if(!is.null(further_args[[i]]) && !(length(further_args[[i]]) %in% c(1, length(sp_index_enc)))){
+    stop(paste0("argument '", names(further_args)[[i]], " has unexpected length. Only arguments of length 1 are recycled. Hence, the arguement should either be of length ", length(sp_index_enc), " or 1"))
   })
   
   # check whether all variables in pos_fact have numeric counterparts in data, otherwise stop
