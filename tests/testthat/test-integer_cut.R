@@ -177,3 +177,7 @@ test_that("cut.integer warning cases", {
 test_that("cut.integer if breaks outside range(x)", {
   # not yet finished
 }) 
+
+# what happens in binwidth 1 if none is this width (line 99)
+# not optimal:
+# cut(int_norep, breaks = c(1, 2, 3, 10), right = T, include.lowest = F)
