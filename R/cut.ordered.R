@@ -10,16 +10,16 @@
 #' @param include.lowest Logical, indicating if an \code{x[i]} equal to the lowest (or highest, for \code{right = FALSE}) breaks value 
 #' should be included.
 #' @param right	Logical, indicating if the intervals should be closed on the right (and open on the left) or vice versa.
-#' @param digit.lab	Integer which is used when labels are not given. It determines the number of digits used in formatting the break
-#' numbers.
 #' @param ordered_result Logical: should the result be an ordered factor?
-#' @inheritParams base::cut
+#' @param breaks_mode Either pretty or default.
+#' @param label_sep A single or short character string used to generate labels for the intervals e.g. the default value of "-" 
+#'  will result in labels like a-c d-g i-z etc#.
 #' @return A factor is returned, unless labels = FALSE which results in an integer vector of level codes.
 #' @examples Z <- stats::rnorm(10000)
 #' cut(Z, breaks = -6:6)
 #' @export
 cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
-                        right = TRUE, digit.lab = 3, ordered_result = FALSE, breaks_mode = "default", label_sep = "-", ...) {
+                        right = TRUE, ordered_result = FALSE, breaks_mode = "default", label_sep = "-", ...) {
   xnum <- as.numeric(x)
   x_lev <- levels(x)
   breakpos <- match(breaks, x_lev)
@@ -33,14 +33,9 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
     
     numLabels <- breaks
     
-    # should the breaks be "pretty"? (‘round’ values which cover the range of the values in x_num)
-    # or based on quantiles?
+    # should the breaks be "pretty"? (‘floor’ values which cover the range of the values in x_num)
     # or evenly spaced over the range of the data? ("default")
-    if(breaks_mode == "quantile"){
-      
-      # not yet implemented
-      
-    } else if(breaks_mode == "default"){
+    if(breaks_mode == "default"){
       
       range <- max(x_num)-min(x_num)+1
       avg_bin_width <- floor(range/breaks)
