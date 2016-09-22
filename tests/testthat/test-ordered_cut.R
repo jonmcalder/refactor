@@ -30,6 +30,14 @@ test_that("cut.ordered with breaks_mode = 'default'", {
 
 # specify breaks out of range
 test_that("warnings", {
+  # breaks that create missing values
   expect_warning(cut(cfactor1, breaks = c("a", "q", "y"), right = T, include.lowest = T), 
                  "[[:digit:]] missing values generated")
 })
+
+test_that("errors", {
+  # breaks that do not exist in data
+  expect_error(cut(cfactor2, breaks = c("a", "q", "y"), right = T, include.lowest = T), 
+                 "specified breakpoints inexistent in data")
+})
+
