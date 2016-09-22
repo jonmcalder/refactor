@@ -29,8 +29,8 @@ One can note the following issues:
 
 The goal of the `refactor` package is to make working with factors more natural and fun by providing
 
-* the wrapper `cfactor` for `factor` to enhance control at the point of factor creation
-* a function `index_cfactor` to decode numerical data into (ordered) factors given the encoding
+* the wrapper `cfactor` for `factor` to enhance control at the point of factor creation.
+* a function `index_cfactor` to decode numerical data into (ordered) factors given the encoding.
 * S3 generics for existing R base classes (mainly `ordered` and `factor`) where current methods are not tailored for categorical data.
 
 ## `cfactor`
