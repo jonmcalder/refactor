@@ -22,7 +22,9 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
   xnum <- as.numeric(x)
   x_lev <- levels(x)
   breakpos <- match(breaks, x_lev)
-  
+  if(anyNA(breakpos)){
+    stop(paste("specified breakpoints inexistent in data: \n", paste(breaks[is.na(breakpos)], collapse = "\n")))
+  }
   
   ######## 
   # if breaks are not specified (i.e. only the number of breaks is provided)
