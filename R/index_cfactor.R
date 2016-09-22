@@ -7,7 +7,7 @@
 #' @param variable The name of the column in \code{index} that indicates the variable.
 #' @param encoding The name of the column in \code{index} that indicates the encoding.
 #' @param ... Further arguments to pass to \code{\link{cfactor}}. 
-#' @details Arguments passed via \code{...} to \code{cfactor} are recycled, but only if they can be recycled in full length. Otherwise, an error is thrown. 
+#' @details Arguments passed via \code{...} to \code{cfactor} are only recycled if of length 1. Otherwise, an error is thrown. 
 #'  All arguments passed via \code{...} are applied in the order of the data columns but columns not to convert are skipped (see example).
 #'  
 #' @return The original data frame is returned whereas the variables for which an encoding was provided are turned into (ordered) factors. All other columns are returned unmodified.
