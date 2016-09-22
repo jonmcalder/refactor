@@ -6,14 +6,14 @@
 #' @param breaks Either an integer vector of two or more unique cut points or a single integer (greater than or equal to 2) giving the
 #'  number of intervals into which x is to be cut.
 #' @param labels Labels for the levels of the resulting category. By default, labels are constructed using "a-b c-d" interval notation.
-#'  If labels = FALSE, simple integer codes are returned instead of a factor.
-#' @param include.lowest Logical, indicating if an "x[i]" equal to the lowest (or highest, for right = FALSE) "breaks" value should be
-#'  included. Note that unlike \link[base]{cut.default}, here include.lowest defaults to TRUE, since this is more intuitive for integer 
-#'  intervals.
+#'  If \code{labels = FALSE}, simple integer codes are returned instead of a factor.
+#' @param include.lowest Logical, indicating if an \code{x[i]} equal to the lowest (or highest, for \code{right = FALSE}) \code{breaks} 
+#'  value should be included. Note that unlike \link[base]{cut.default}, here include.lowest defaults to TRUE, since this is more 
+#'  intuitive for integer intervals.
 #' @param right	Logical, indicating how to create the bins. This is utilized in two different ways based on the type of breaks argument. 
-#'  In the conventional case, where a breaks vector is supplied, right = TRUE indicates that bins should be closed on the right (and open 
-#'  on the left) or vice versa. If a single integer breaks value is provided, then right = TRUE indicates that bins will be determined 
-#'  such that those on the right are larger (if it is not possible for all bins to be evenly sized).
+#'  In the conventional case, where a breaks vector is supplied, \code{right = TRUE} indicates that bins should be closed on the right 
+#'  (and open on the left) or vice versa. If a single integer breaks value is provided, then right = TRUE indicates that bins will be 
+#'  determined such that those on the right are larger (if it is not possible for all bins to be evenly sized).
 #' @param ordered_result Logical: should the result be an ordered factor?
 #' @param breaks_mode A parameter indicating how to determine the intervals when breaks is specified as 
 #'  a scalar. \itemize{
@@ -23,6 +23,7 @@
 #' }
 #' @param label_sep A single or short character string used to generate labels for the intervals e.g. the default value of "-" 
 #'  will result in labels like 1-10 11-20 21-30 etc
+#' @inheritParams base::cut
 #' @return A factor is returned, unless labels = FALSE which results in an integer vector of level codes.
 #' @examples Z <- sample(10)
 #'  cut(Z, breaks = c(0, 5, 10))

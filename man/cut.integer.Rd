@@ -15,16 +15,16 @@
 number of intervals into which x is to be cut.}
 
 \item{labels}{Labels for the levels of the resulting category. By default, labels are constructed using "a-b c-d" interval notation.
-If labels = FALSE, simple integer codes are returned instead of a factor.}
+If \code{labels = FALSE}, simple integer codes are returned instead of a factor.}
 
-\item{include.lowest}{Logical, indicating if an "x[i]" equal to the lowest (or highest, for right = FALSE) "breaks" value should be
-included. Note that unlike \link[base]{cut.default}, here include.lowest defaults to TRUE, since this is more intuitive for integer 
-intervals.}
+\item{include.lowest}{Logical, indicating if an \code{x[i]} equal to the lowest (or highest, for \code{right = FALSE}) \code{breaks} 
+value should be included. Note that unlike \link[base]{cut.default}, here include.lowest defaults to TRUE, since this is more 
+intuitive for integer intervals.}
 
 \item{right}{Logical, indicating how to create the bins. This is utilized in two different ways based on the type of breaks argument. 
-In the conventional case, where a breaks vector is supplied, right = TRUE indicates that bins should be closed on the right (and open 
-on the left) or vice versa. If a single integer breaks value is provided, then right = TRUE indicates that bins will be determined 
-such that those on the right are larger (if it is not possible for all bins to be evenly sized).}
+In the conventional case, where a breaks vector is supplied, \code{right = TRUE} indicates that bins should be closed on the right 
+(and open on the left) or vice versa. If a single integer breaks value is provided, then right = TRUE indicates that bins will be 
+determined such that those on the right are larger (if it is not possible for all bins to be evenly sized).}
 
 \item{ordered_result}{Logical: should the result be an ordered factor?}
 
@@ -37,6 +37,8 @@ such that those on the right are larger (if it is not possible for all bins to b
 
 \item{label_sep}{A single or short character string used to generate labels for the intervals e.g. the default value of "-" 
 will result in labels like 1-10 11-20 21-30 etc}
+
+\item{...}{further arguments passed to or from other methods.}
 }
 \value{
 A factor is returned, unless labels = FALSE which results in an integer vector of level codes.
