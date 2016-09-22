@@ -117,7 +117,7 @@ test_that("cut.integer returns expected (natural) intervals with better labels f
   expect_equal(levels(case30), c("1-3", "4-10"))
 
   # when breaks need to be rounde
-  expect_equal(levels(case31), c("1-3", "4-5", "6-10"))
+  expect_equal(levels(case31), c("1-2", "3-5", "6-10"))
 })
 
 test_that("cut.integer with user-defined labels", {
@@ -163,7 +163,7 @@ test_that("cut.integer warning cases", {
   
   # when breaks are to be rounded to coerce to integers
   expect_warning(cut(sample(10), breaks = c(1, 2.6, 5.1, 10)), 
-                 "^When coerced to integers, the following breaks were rounded")
+                 "^When coerced to integers, the following breaks were truncated")
   
   # when bins with width 1 are produced
   expect_warning(cut(sample(10), breaks = c(1, 4, 6, 8, 9, 10)),

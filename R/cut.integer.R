@@ -54,7 +54,7 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, right =
   assert_class(include.lowest, "logical")
   assert_class(right, "logical")
   assert_class(ordered_result, "logical")
-  assert_choice(breaks_mode, c("default", "pretty", "quantile"))
+  assert_choice(breaks_mode, c("default", "pretty"))
   assert_class(label_sep, "character")
   
   # NAs in breaks
@@ -64,10 +64,10 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, right =
   }
   
   # corece breaks to integers
-  new_breaks <- round(breaks)
+  new_breaks <- floor(breaks)
   if(!setequal(new_breaks, breaks)){
     differ <- new_breaks != breaks
-    warning(paste("When coerced to integers, the following breaks were rounded: \n ", 
+    warning(paste("When coerced to integers, the following breaks were truncated (rounded down): \n ", 
           paste(paste(breaks[differ], "to", new_breaks[differ]), " \n ", collapse = " ")))
           
     breaks <- new_breaks
@@ -108,10 +108,6 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, right =
     if(breaks_mode == "pretty"){
       
       breakpoints <- pretty(x, breaks)
-      
-    } else if(breaks_mode == "quantile"){
-      
-      # not yet implemented
       
     } else if(breaks_mode == "default"){
       
