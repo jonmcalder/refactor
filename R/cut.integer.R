@@ -53,10 +53,10 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, right =
   }
   
   # corece breaks to integers
-  new_breaks <- round(breaks)
+  new_breaks <- floor(breaks)
   if(!setequal(new_breaks, breaks)){
     differ <- new_breaks != breaks
-    warning(paste("When coerced to integers, the following breaks were rounded: \n ", 
+    warning(paste("When coerced to integers, the following breaks were truncated (rounded down): \n ", 
           paste(paste(breaks[differ], "to", new_breaks[differ]), " \n ", collapse = " ")))
           
     breaks <- new_breaks
