@@ -12,7 +12,7 @@
 
 <meta name="author" content="Lorenz Walthert and Jon Calder" />
 
-<meta name="date" content="2016-09-19" />
+<meta name="date" content="2016-09-23" />
 
 <title>refactor</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">refactor</h1>
 <h4 class="author"><em>Lorenz Walthert and Jon Calder</em></h4>
-<h4 class="date"><em>2016-09-19</em></h4>
+<h4 class="date"><em>2016-09-23</em></h4>
 
 
 
@@ -89,8 +89,8 @@ upper &lt;-<span class="st"> </span><span class="kw">factor</span>(LETTERS[<span
 </ul>
 <p>The goal of the <code>refactor</code> package is to make working with factors more natural and fun by providing</p>
 <ul>
-<li>the wrapper <code>cfactor</code> for <code>factor</code> to enhance control at the point of factor creation</li>
-<li>a function <code>index_cfactor</code> to decode numerical data into (ordered) factors given the encoding</li>
+<li>the wrapper <code>cfactor</code> for <code>factor</code> to enhance control at the point of factor creation.</li>
+<li>a function <code>index_cfactor</code> to decode numerical data into (ordered) factors given the encoding.</li>
 <li>S3 generics for existing R base classes (mainly <code>ordered</code> and <code>factor</code>) where current methods are not tailored for categorical data.</li>
 </ul>
 </div>
@@ -117,24 +117,24 @@ string &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">
 <strong>A “clean” example</strong></p>
 <p>With all numbers having the same number of digits, <code>factor</code> can detect the order correctly.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">easy_to_dectect &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;EUR 11 - EUR 20&quot;</span>, <span class="st">&quot;EUR 1 - EUR 10&quot;</span>, <span class="st">&quot;EUR 21 - EUR 22&quot;</span>)
-<span class="kw">factor</span>(easy_to_dectect, <span class="dt">ordered =</span> T) <span class="co"># correctly detects level</span></code></pre></div>
+<span class="kw">factor</span>(easy_to_dectect, <span class="dt">ordered =</span> <span class="ot">TRUE</span>) <span class="co"># correctly detects level</span></code></pre></div>
 <pre><code>## [1] EUR 11 - EUR 20 EUR 1 - EUR 10  EUR 21 - EUR 22
 ## Levels: EUR 1 - EUR 10 &lt; EUR 11 - EUR 20 &lt; EUR 21 - EUR 22</code></pre>
 <p><br />
 <strong>A more “dirty” example</strong></p>
 <p>However, in the general case, where number of digits might be destinct, this does not work anymore. The category “EUR 100 - 101” comes second, but it should be last.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hard_to_dectect &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;EUR 21 - EUR 22&quot;</span>, <span class="st">&quot;EUR 100 - 101&quot;</span>, <span class="st">&quot;EUR 1 - EUR 10&quot;</span>, <span class="st">&quot;EUR 11 - EUR 20&quot;</span>)
-<span class="kw">factor</span>(hard_to_dectect, <span class="dt">ordered =</span> T)</code></pre></div>
+<span class="kw">factor</span>(hard_to_dectect, <span class="dt">ordered =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## [1] EUR 21 - EUR 22 EUR 100 - 101   EUR 1 - EUR 10  EUR 11 - EUR 20
 ## 4 Levels: EUR 1 - EUR 10 &lt; EUR 100 - 101 &lt; ... &lt; EUR 21 - EUR 22</code></pre>
 <p><code>cfactor</code> detects levels using regular expressions. Concretely, it extracts the substrings preceding <code>sep</code>, removes everything except digits and the decimal point in <code>x</code> and orders the remaining numbers to find the order of the levels.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cfactor</span>(hard_to_dectect, <span class="dt">ordered =</span> T, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cfactor</span>(hard_to_dectect, <span class="dt">ordered =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">&quot;-&quot;</span>)</code></pre></div>
 <pre><code>## [1] EUR 21 - EUR 22 EUR 100 - 101   EUR 1 - EUR 10  EUR 11 - EUR 20
 ## 4 Levels: EUR 1 - EUR 10 &lt; EUR 11 - EUR 20 &lt; ... &lt; EUR 100 - 101</code></pre>
 <p>This detection algorithm can be turned off and the default ordering of <code>factor</code> can be applied by setting the <code>sep</code> argument to <code>NULL</code>. Also, in the absence of any numbers, the default ordering of <code>factor</code> is applied.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">identical</span>(
-  <span class="kw">cfactor</span>(hard_to_dectect, <span class="dt">ordered =</span> T, <span class="dt">sep =</span> <span class="ot">NULL</span>),
-   <span class="kw">factor</span>(hard_to_dectect, <span class="dt">ordered =</span> T)
+  <span class="kw">cfactor</span>(hard_to_dectect, <span class="dt">ordered =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="ot">NULL</span>),
+   <span class="kw">factor</span>(hard_to_dectect, <span class="dt">ordered =</span> <span class="ot">TRUE</span>)
 )</code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 </div>
@@ -142,31 +142,29 @@ string &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">
 <div id="index_cfactor" class="section level2">
 <h2><code>index_cfactor</code></h2>
 <p>If data is encoded, the <code>labels</code> argument of <code>factor()</code> can be used to label the data, which is a common data pre-processing step. This works the same as with <code>cfactor()</code>. Here, we want to give an example where the relationship beteween the encoding and the label is stored in a <code>data.frame</code>, e.g. after it was imported from a spread sheet.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dt">x =</span> <span class="dv">1</span>:<span class="dv">10</span>, <span class="dt">size =</span> <span class="dv">20</span>, <span class="dt">replace =</span> T)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dt">x =</span> <span class="dv">1</span>:<span class="dv">10</span>, <span class="dt">size =</span> <span class="dv">20</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>)
 index &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">encoding =</span> <span class="dv">1</span>:<span class="dv">10</span>,
                     <span class="dt">label =</span> letters[<span class="dv">1</span>:<span class="dv">10</span>])
 
 <span class="kw">cfactor</span>(data, <span class="dt">levels =</span> index$encoding, <span class="dt">labels =</span> index$label)</code></pre></div>
-<pre><code>## Warning: the following levels were empty: 
-##  10</code></pre>
-<pre><code>##  [1] h b b e i g a a c i g g b f c b f a d f
+<pre><code>##  [1] h h d j h e h d i f g e h a b f c a j f
 ## Levels: a b c d e f g h i j</code></pre>
 <p><br />
 In a real-world situation, it is likely that a lot of variables have to be decoded. <code>index_cfactor</code> was created to assist with this task. First, we need some sample data.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">var1 =</span> <span class="kw">sample</span>(<span class="dt">x =</span> <span class="dv">1</span>:<span class="dv">10</span>, <span class="dt">size =</span> <span class="dv">20</span>, <span class="dt">replace =</span> T),
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">var1 =</span> <span class="kw">sample</span>(<span class="dt">x =</span> <span class="dv">1</span>:<span class="dv">10</span>, <span class="dt">size =</span> <span class="dv">20</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>),
                   <span class="dt">var2 =</span> <span class="kw">rep</span>(<span class="dv">1</span>:<span class="dv">2</span>, <span class="dv">20</span>),
                   <span class="dt">var3 =</span> <span class="kw">sample</span>(<span class="dv">20</span>),
                   <span class="dt">var4 =</span> <span class="dv">2</span>, 
                   <span class="dt">var5 =</span> <span class="kw">sample</span>(<span class="kw">row.names</span>(USArrests), <span class="dt">size =</span> <span class="dv">20</span>),
-                  <span class="dt">stringsAsFactors =</span> F)
+                  <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 <span class="kw">head</span>(data)</code></pre></div>
-<pre><code>##   var1 var2 var3 var4       var5
-## 1    6    1    3    2 California
-## 2    9    2   15    2   New York
-## 3    4    1    6    2   Nebraska
-## 4    2    2   10    2     Alaska
-## 5    2    1   12    2      Maine
-## 6    5    2    9    2   Michigan</code></pre>
+<pre><code>##   var1 var2 var3 var4          var5
+## 1    7    1    9    2       Alabama
+## 2    8    2    8    2     Tennessee
+## 3    8    1   18    2      Delaware
+## 4    6    2   10    2    New Jersey
+## 5    9    1    4    2      Oklahoma
+## 6    3    2   17    2 New Hampshire</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">index &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">var =</span> <span class="kw">rep</span>(<span class="kw">paste0</span>(<span class="st">&quot;var&quot;</span>, <span class="dv">1</span>:<span class="dv">3</span>), <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">2</span>, <span class="dv">20</span>)),
                     <span class="dt">encoding =</span> <span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">10</span>, <span class="dv">1</span>:<span class="dv">2</span>, <span class="dv">1</span>:<span class="dv">20</span>),
                     <span class="dt">label =</span> <span class="kw">c</span>(letters[<span class="dv">1</span>:<span class="dv">10</span>], <span class="kw">c</span>(<span class="st">&quot;male&quot;</span>, <span class="st">&quot;female&quot;</span>), LETTERS[<span class="dv">1</span>:<span class="dv">20</span>]))
@@ -179,15 +177,17 @@ In a real-world situation, it is likely that a lot of variables have to be decod
 ## 5 var1        5     e
 ## 6 var1        6     f</code></pre>
 <p>Now we use <code>index_cfactor</code> to decode the <code>data.frame</code>. Note that <code>var4</code> and <code>var5</code> are left as is, since no variable encoding for them is defined in <code>index</code>. Using the <code>...</code> argument of <code>index_cfactor</code>, we can pass additional arguments to <code>cfactor</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">final &lt;-<span class="st"> </span><span class="kw">head</span>(<span class="kw">index_cfactor</span>(<span class="dt">data =</span> data, <span class="dt">index =</span> index, <span class="dt">variable =</span> <span class="st">&quot;var&quot;</span>, <span class="dt">ordered =</span> <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)))
-<span class="kw">print</span>(final)</code></pre></div>
-<pre><code>##   var1   var2 var3 var4       var5
-## 1    f   male    C    2 California
-## 2    i female    O    2   New York
-## 3    d   male    F    2   Nebraska
-## 4    b female    J    2     Alaska
-## 5    b   male    L    2      Maine
-## 6    e female    I    2   Michigan</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">final &lt;-<span class="st"> </span><span class="kw">head</span>(<span class="kw">index_cfactor</span>(<span class="dt">data =</span> data, <span class="dt">index =</span> index, <span class="dt">variable =</span> <span class="st">&quot;var&quot;</span>, <span class="dt">ordered =</span> <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)))</code></pre></div>
+<pre><code>## Warning: the following levels were empty: 
+##  10</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(final)</code></pre></div>
+<pre><code>##   var1   var2 var3 var4          var5
+## 1    g   male    I    2       Alabama
+## 2    h female    H    2     Tennessee
+## 3    h   male    R    2      Delaware
+## 4    f female    J    2    New Jersey
+## 5    i   male    D    2      Oklahoma
+## 6    c female    Q    2 New Hampshire</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sapply</span>(final, class)</code></pre></div>
 <pre><code>## $var1
 ## [1] &quot;ordered&quot; &quot;factor&quot; 
@@ -222,52 +222,99 @@ In a real-world situation, it is likely that a lot of variables have to be decod
 <p><code>cut.default</code> provides rather inappropriate labels for integer values.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">random &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">100</span>)
 <span class="kw">cut.default</span>(random, <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">10</span>))[<span class="dv">1</span>:<span class="dv">10</span>]</code></pre></div>
-<pre><code>##  [1] (90,100] (20,30]  (90,100] (30,40]  (80,90]  (70,80]  (80,90] 
-##  [8] (20,30]  (40,50]  (60,70] 
+<pre><code>##  [1] (80,90]  (60,70]  (0,10]   (10,20]  (0,10]   (30,40]  (70,80] 
+##  [8] (90,100] (90,100] (10,20] 
 ## 10 Levels: (0,10] (10,20] (20,30] (30,40] (40,50] (50,60] ... (90,100]</code></pre>
 <p><code>refactor</code> extends the S3 method <code>cut</code> with <code>cut.integer</code> to provide more natural labels for this data type.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(random, <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">10</span>))[<span class="dv">1</span>:<span class="dv">10</span>]</code></pre></div>
-<pre><code>##  [1] 91-100 21-30  91-100 31-40  81-90  71-80  81-90  21-30  41-50  61-70 
+<pre><code>##  [1] 81-90  61-70  0-10   11-20  0-10   31-40  71-80  91-100 91-100 11-20 
 ## Levels: 0-10 11-20 21-30 31-40 41-50 51-60 61-70 71-80 81-90 91-100</code></pre>
 <p>The remainder of the section will outline and describe how <code>cut.integer</code> deviates from the default <code>cut</code> method.<br />
 <br><br> Creating missing values will yield a warning.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">5</span>))</code></pre></div>
 <pre><code>## Warning in cut.integer(sample(10), breaks = c(0, 3, 5)): 5 missing values
 ## generated</code></pre>
-<pre><code>##  [1] 0-3  &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; 4-5  &lt;NA&gt; 4-5  0-3  0-3 
+<pre><code>##  [1] &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; 4-5  &lt;NA&gt; 0-3  0-3  4-5  &lt;NA&gt; 0-3 
 ## Levels: 0-3 4-5</code></pre>
 <p>It is possible to define bins with width 1. This will generate a label with just the value of the integer containted (e.g. 2 instead of 2-2) and issue a warning.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>))</code></pre></div>
 <pre><code>## Warning in cut.integer(sample(10), breaks = c(1, 4, 6, 8, 9, 10)): this
 ## break specification produces 2 bin(s) of width 1. The corresponding
 ## label(s) are: 9, 10</code></pre>
-<pre><code>##  [1] 9   5-6 10  1-4 1-4 5-6 7-8 7-8 1-4 1-4
+<pre><code>##  [1] 7-8 5-6 9   1-4 5-6 1-4 1-4 10  7-8 1-4
 ## Levels: 1-4 5-6 7-8 9 10</code></pre>
 <p>Unordered breaks will be ordered before proceeding and a warning will be issued.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">3</span>))</code></pre></div>
 <pre><code>## Warning in cut.integer(sample(10), breaks = c(10, 0, 3)): breaks were
 ## unsorted and are now sorted in the following order: 0 3 10</code></pre>
-<pre><code>##  [1] 0-3  4-10 4-10 4-10 0-3  4-10 0-3  4-10 4-10 4-10
+<pre><code>##  [1] 4-10 4-10 0-3  4-10 0-3  4-10 4-10 0-3  4-10 4-10
 ## Levels: 0-3 4-10</code></pre>
 <p>Decimal values for <code>breaks</code> will be rounded to integers and a warning will be issued.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="fl">2.6</span>, <span class="fl">5.1</span>, <span class="dv">10</span>))</code></pre></div>
-<pre><code>## Warning in cut.integer(sample(10), breaks = c(1, 2.6, 5.1, 10)): When coerced to integers, the following breaks were rounded: 
-##   2.6 to 3  
+<pre><code>## Warning in cut.integer(sample(10), breaks = c(1, 2.6, 5.1, 10)): When coerced to integers, the following breaks were truncated (rounded down): 
+##   2.6 to 2  
 ##   5.1 to 5  
 ## </code></pre>
-<pre><code>##  [1] 6-10 6-10 6-10 4-5  1-3  1-3  1-3  6-10 6-10 4-5 
-## Levels: 1-3 4-5 6-10</code></pre>
+<pre><code>##  [1] 1-2  6-10 6-10 3-5  3-5  6-10 3-5  6-10 1-2  6-10
+## Levels: 1-2 3-5 6-10</code></pre>
 </div>
 <div id="a-cut-method-for-ordered-factors" class="section level4">
 <h4>a <code>cut</code> method for ordered factors</h4>
 <p>This method allows one to combine the levels of a factor into fewer categories given some break points:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(refactor)
-timeX &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;very low&quot;</span>, <span class="st">&quot;rather low&quot;</span>, <span class="st">&quot;low&quot;</span>, <span class="st">&quot;medium&quot;</span>, <span class="st">&quot;upper medium&quot;</span>, <span class="st">&quot;high&quot;</span>)
-time &lt;-<span class="st"> </span><span class="kw">factor</span>(timeX, <span class="dt">levels =</span> <span class="kw">unique</span>(timeX), <span class="dt">ordered =</span> T)
-
-<span class="kw">cut</span>(time, <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;low&quot;</span>, <span class="st">&quot;medium&quot;</span>, <span class="st">&quot;high&quot;</span>))</code></pre></div>
-<pre><code>## [1] low    low    low    medium high   high  
-## Levels: low medium high</code></pre>
+some_letters &lt;-<span class="st"> </span><span class="kw">cfactor</span>(<span class="kw">sample</span>(letters, <span class="dv">100</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>), <span class="dt">ordered =</span> <span class="ot">TRUE</span>)
+<span class="kw">cut</span>(some_letters, <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;q&quot;</span>, <span class="st">&quot;z&quot;</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;beginning of the alphabet&quot;</span>, <span class="st">&quot;the rest of the alphabeth&quot;</span>), <span class="dt">right =</span> <span class="ot">TRUE</span>, <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>)</code></pre></div>
+<pre><code>##   [1] the rest of the alphabeth beginning of the alphabet
+##   [3] beginning of the alphabet the rest of the alphabeth
+##   [5] beginning of the alphabet beginning of the alphabet
+##   [7] the rest of the alphabeth the rest of the alphabeth
+##   [9] beginning of the alphabet the rest of the alphabeth
+##  [11] the rest of the alphabeth beginning of the alphabet
+##  [13] beginning of the alphabet the rest of the alphabeth
+##  [15] beginning of the alphabet the rest of the alphabeth
+##  [17] beginning of the alphabet beginning of the alphabet
+##  [19] beginning of the alphabet the rest of the alphabeth
+##  [21] the rest of the alphabeth beginning of the alphabet
+##  [23] beginning of the alphabet beginning of the alphabet
+##  [25] beginning of the alphabet the rest of the alphabeth
+##  [27] beginning of the alphabet the rest of the alphabeth
+##  [29] beginning of the alphabet beginning of the alphabet
+##  [31] beginning of the alphabet beginning of the alphabet
+##  [33] beginning of the alphabet beginning of the alphabet
+##  [35] the rest of the alphabeth beginning of the alphabet
+##  [37] beginning of the alphabet the rest of the alphabeth
+##  [39] beginning of the alphabet beginning of the alphabet
+##  [41] beginning of the alphabet beginning of the alphabet
+##  [43] beginning of the alphabet the rest of the alphabeth
+##  [45] the rest of the alphabeth beginning of the alphabet
+##  [47] the rest of the alphabeth beginning of the alphabet
+##  [49] beginning of the alphabet the rest of the alphabeth
+##  [51] beginning of the alphabet the rest of the alphabeth
+##  [53] beginning of the alphabet the rest of the alphabeth
+##  [55] beginning of the alphabet the rest of the alphabeth
+##  [57] the rest of the alphabeth beginning of the alphabet
+##  [59] the rest of the alphabeth beginning of the alphabet
+##  [61] the rest of the alphabeth beginning of the alphabet
+##  [63] the rest of the alphabeth beginning of the alphabet
+##  [65] beginning of the alphabet beginning of the alphabet
+##  [67] the rest of the alphabeth the rest of the alphabeth
+##  [69] the rest of the alphabeth the rest of the alphabeth
+##  [71] the rest of the alphabeth the rest of the alphabeth
+##  [73] beginning of the alphabet beginning of the alphabet
+##  [75] the rest of the alphabeth beginning of the alphabet
+##  [77] the rest of the alphabeth beginning of the alphabet
+##  [79] the rest of the alphabeth the rest of the alphabeth
+##  [81] beginning of the alphabet beginning of the alphabet
+##  [83] beginning of the alphabet beginning of the alphabet
+##  [85] beginning of the alphabet the rest of the alphabeth
+##  [87] beginning of the alphabet beginning of the alphabet
+##  [89] beginning of the alphabet beginning of the alphabet
+##  [91] beginning of the alphabet beginning of the alphabet
+##  [93] the rest of the alphabeth the rest of the alphabeth
+##  [95] the rest of the alphabeth beginning of the alphabet
+##  [97] beginning of the alphabet beginning of the alphabet
+##  [99] beginning of the alphabet beginning of the alphabet
+## Levels: beginning of the alphabet the rest of the alphabeth</code></pre>
 </div>
 </div>
 </div>
