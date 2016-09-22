@@ -40,8 +40,7 @@ test_that("error handling", {
   
   # invalid recycling
   expect_error(index_cfactor(data = data, index = index, variable = "var", ordered = c(TRUE,FALSE)), 
-                paste("argument 'ordered' is not recycled fully. Number of columns to be decoded should",
-                "match the length of 'ordered' or mulitiple thereof."))
+                paste("argument 'ordered has unexpected length. Only arguments of length 1 are recycled."))
   # when the class is character, but it could be coreced to integer. Test not implemented though.
   expect_error(index_cfactor(data = data, index = index3, variable = "var"),
                "The following columns in 'data' cannot be decoded since they do not inherit from class numeric or integer: \n var6")
