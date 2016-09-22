@@ -16,18 +16,13 @@ case1b <- cut(cfactor1, breaks = c("a", "q", "z"), labels = c("group one", "grou
 case2b <- cut(cfactor1, breaks = c("a", "q", "z"), labels = c("a first group", "another one"), right = F, include.lowest = T)
 
 
+
 test_that("cut.ordered with breaks_mode = 'default'", {
   # simple cases
   expect_equal(levels(case1a), c("a-q", "r-z"))
   expect_equal(levels(case2a), c("a-p", "q-z"))
   expect_equal(levels(case1b), c("group one", "group 2"))
   expect_equal(levels(case2b), c("a first group", "another one"))
-
-  # simple cases
-  q_pos <- which(letters) == "q"
-  expect_equal(case1b[1:q_pos], rep("group one", 1:q_pos))
-  expect_equal(case1b[q_pos+1:length(case1b)], rep("group 2", (q_pos+1):length(case1b)))
-  expect_equal(levels(case2b), c("a-r", "s-z"))
 
 })
 
@@ -36,5 +31,5 @@ test_that("cut.ordered with breaks_mode = 'default'", {
 # specify breaks out of range
 test_that("warnings", {
   expect_warning(cut(cfactor1, breaks = c("a", "q", "y"), right = T, include.lowest = T), 
-                 "missing values generated")
+                 "[[:digit:]] missing values generated")
 })
