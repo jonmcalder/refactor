@@ -21,6 +21,7 @@ upper <- factor(LETTERS[1:5], levels = LETTERS[1:4])
 ```
 
 
+
 One can note the following issues:
 
 * `factor()` does not yield an error when `NA`s are created silently, neither when levels do not match x nor when too few levels are specified. 
@@ -169,8 +170,6 @@ cut(sample(10), breaks = c(1, 2.6, 5.1, 10))
 This method allows one to combine the levels of a factor into fewer categories given some break points:
 ```{r}
 library(refactor)
-timeX <- c("very low", "rather low", "low", "medium", "upper medium", "high")
-time <- factor(timeX, levels = unique(timeX), ordered = T)
-
-cut(time, breaks = c("low", "medium", "high"))
+some_letters <- cfactor(sample(letters, 100, replace = T), ordered = T)
+cut(some_letters, breaks = c("a", "q", "z"), labels = c("beginning of the alphabet", "the rest of the alphabeth"), right = T, include.lowest = T)
 ```

@@ -6,7 +6,9 @@
 #' @param index A data frame containing the names of the variable to encode, the encoding for \code{data} and labels to assign.
 #' @param variable The name of the column in \code{index} that indicates the variable.
 #' @param encoding The name of the column in \code{index} that indicates the encoding.
-#' @param ... Further arguments to pass to \code{\link{cfactor}}. 
+#' @param label The name of the column in \code{index} that indicates the label that will be given.
+#' @param ... Further arguments to be passed to or from other methods, 
+#'  in particular to \code{\link{cfactor}}.
 #' @details Arguments passed via \code{...} to \code{cfactor} are only recycled if of length 1. Otherwise, an error is thrown. 
 #'  All arguments passed via \code{...} are applied in the order of the data columns but columns not to convert are skipped (see example).
 #'  

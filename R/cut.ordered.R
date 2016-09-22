@@ -1,22 +1,35 @@
-#' Convert Numeric to Factor
+#' Create Bins for ordered Factors
 #'
-#' cut divides the range of x into intervals and codes the values in x according to the interval they fall into.
+#' cut divides the range of \code{x} into intervals and codes the values in \code{x} according to the interval they fall into.
 #'
 #' @param x A numeric vector which is to be converted to a factor by cutting.
 #' @param breaks Either a numeric vector of two or more unique cut points or a single number (greater than or equal to 2) giving the
-#' number of intervals into which x is to be cut.
-#' @param labels Labels for the levels of the resulting category. By default, labels are constructed using \code{(a,b]} interval notation.
+#' number of intervals into which \code{x} is to be cut.
+#' @param labels Labels for the levels of the resulting category. By default, labels are constructed using \code{a-b, c-d} interval notation.
 #' If \code{labels = FALSE}, simple integer codes are returned instead of a factor.
 #' @param include.lowest Logical, indicating if an \code{x[i]} equal to the lowest (or highest, for \code{right = FALSE}) breaks value 
 #' should be included.
 #' @param right	Logical, indicating if the intervals should be closed on the right (and open on the left) or vice versa.
 #' @param ordered_result Logical: should the result be an ordered factor?
-#' @param breaks_mode Either pretty or default.
+#' @param breaks_mode A parameter indicating how to determine the intervals when
+#'   breaks is specified as a scalar. \itemize{ \item 'default' will result in
+#'   intervals spread as evenly as possible over the exact range of \code{x}. \item
+#'   'pretty' will generate rounded breakpoints for the intervals (often
+#'   extending slightly beyond the range of \code{x}) based on \link[base]{pretty}.}
 #' @param label_sep A single or short character string used to generate labels for the intervals e.g. the default value of "-" 
-#'  will result in labels like a-c d-g i-z etc#.
-#' @return A factor is returned, unless labels = FALSE which results in an integer vector of level codes.
-#' @examples Z <- stats::rnorm(10000)
-#' cut(Z, breaks = -6:6)
+#'  will result in labels like a-c d-g i-z etc.
+#' @param ... Further arguments to be passed to or from other methods, 
+#'  in particular to \code{\link{cut.default}}.
+#' @details In deviation from \code{cut.default}, \code{cut.ordered} does not have
+#'  an argument \code{dig.lab}, but instead has two arguments that do not exist
+#'  for \code{cut.default}: \code{breaks_mode} and \code{label_sep}.
+#'  Note that unlike \code{\link[base]{cut.default}}, here \code{include.lowest} defaults to \code{TRUE},
+#'   since this is more intuitive for integer intervals.
+#' @return A factor is returned, unless \code{labels = FALSE} which results in an integer vector of level codes.
+#' @examples 
+#'  some_letters <- cfactor(sample(letters, 100, replace = TRUE), ordered = TRUE)
+#'  cut(some_letters, breaks = c("a", "q", "z"), labels = c("beginning of the alphabet", "the rest of the alphabeth"), right = TRUE, include.lowest = TRUE)
+#'  
 #' @export
 cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
                         right = TRUE, ordered_result = FALSE, breaks_mode = "default", label_sep = "-", ...) {

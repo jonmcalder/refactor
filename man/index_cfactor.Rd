@@ -16,7 +16,10 @@ index_cfactor(data, index, variable = "variable", encoding = "encoding",
 
 \item{encoding}{The name of the column in \code{index} that indicates the encoding.}
 
-\item{...}{Further arguments to pass to \code{\link{cfactor}}.}
+\item{label}{The name of the column in \code{index} that indicates the label that will be given.}
+
+\item{...}{Further arguments to be passed to or from other methods, 
+in particular to \code{\link{cfactor}}.}
 }
 \value{
 The original data frame is returned whereas the variables for which an encoding was provided are turned into (ordered) factors. All other columns are returned unmodified.
@@ -25,7 +28,7 @@ The original data frame is returned whereas the variables for which an encoding 
 Decode numerical columns in a data frame into (ordered) factors given the encoding in another data frame.
 }
 \details{
-Arguments passed via \code{...} to \code{cfactor} are recycled, but only if they can be recycled in full length. Otherwise, an error is thrown. 
+Arguments passed via \code{...} to \code{cfactor} are only recycled if of length 1. Otherwise, an error is thrown. 
  All arguments passed via \code{...} are applied in the order of the data columns but columns not to convert are skipped (see example).
 }
 \examples{
