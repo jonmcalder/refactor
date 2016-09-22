@@ -2,39 +2,44 @@
 % Please edit documentation in R/index_cfactor.R
 \name{index_cfactor}
 \alias{index_cfactor}
-\title{index_cfactor}
+\title{Decode numerical into categorical data}
 \usage{
 index_cfactor(data, index, variable = "variable", encoding = "encoding",
   label = "label", ...)
 }
 \arguments{
-\item{data}{A data frame containing integers to decode.}
+\item{data}{A data frame containing at least one integer column to decode.}
 
-\item{index}{A data frame containing the encoding for \code{data}.}
+\item{index}{A data frame containing the names of the variable to encode, the encoding for \code{data} and labels to assign.}
 
 \item{variable}{The name of the column in \code{index} that indicates the variable.}
 
 \item{encoding}{The name of the column in \code{index} that indicates the encoding.}
 
-\item{label}{The name of the column in \code{index} that indicates the label to be assigned.}
-
 \item{...}{Further arguments to pass to \code{\link{cfactor}}.}
 }
+\value{
+The original data frame is returned whereas the variables for which an encoding was provided are turned into (ordered) factors. All other columns are returned unmodified.
+}
 \description{
-Decode numerical data into (ordered) factors given the encoding
+Decode numerical columns in a data frame into (ordered) factors given the encoding in another data frame.
+}
+\details{
+Arguments passed via \code{...} to \code{cfactor} are recycled, but only if they can be recycled in full length. Otherwise, an error is thrown. 
+ All arguments passed via \code{...} are applied in the order of the data columns but columns not to convert are skipped (see example).
 }
 \examples{
-data <- data.frame(var1 = sample(x = 1:10, size = 20, replace = TRUE),
+ data <- data.frame(var1 = sample(x = 1:10, size = 20, replace = TRUE),
                    var2 = rep(1:2, 20),
                    var3 = sample(20),
                    var4 = 2, 
                    var5 = sample(row.names(USArrests), size = 20),
                    stringsAsFactors = FALSE)
 
-index <- data.frame(var = rep(paste0("var", 1:3), c(10, 2, 20)),
+ index <- data.frame(var = rep(paste0("var", 1:3), c(10, 2, 20)),
                    encoding = c(1:10, 1:2, 1:20),
                    label = c(letters[1:10], c("male", "female"), LETTERS[1:20]))
                    
-index_cfactor(data = data, index = index, variable = "var", ordered = c(TRUE, TRUE, FALSE))
+ index_cfactor(data = data, index = index, variable = "var", ordered = c(TRUE, TRUE, FALSE))
 }
 

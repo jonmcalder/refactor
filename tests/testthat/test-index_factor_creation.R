@@ -45,13 +45,7 @@ test_that("error handling", {
   # when the class is character, but it could be coreced to integer. Test not implemented though.
   expect_error(index_cfactor(data = data, index = index3, variable = "var"),
                "The following columns in 'data' cannot be decoded since they do not inherit from class numeric or integer: \n var6")
-  
-  # when the variables of index can't be found in data
-  expect_error(index_cfactor(data = data, index = index4, variable = "var"),
-               "The variables in 'index' do not match any of the variables in 'data'")
-})
 
-test_that("warnings", {
   # not all variabels from index are used in data
   expect_warning(index_cfactor(data = data, index = index5, variable = "var"), 
                  "The following variables from 'index' are not found in 'data': \n var99")

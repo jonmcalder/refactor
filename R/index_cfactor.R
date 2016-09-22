@@ -12,7 +12,7 @@
 #'  
 #' @return The original data frame is returned whereas the variables for which an encoding was provided are turned into (ordered) factors. All other columns are returned unmodified.
 #' @examples 
-#'  data <- data.frame(var1 = as.character(sample(x = 1:10, size = 20, replace = TRUE)),
+#'  data <- data.frame(var1 = sample(x = 1:10, size = 20, replace = TRUE),
 #'                    var2 = rep(1:2, 20),
 #'                    var3 = sample(20),
 #'                    var4 = 2, 
