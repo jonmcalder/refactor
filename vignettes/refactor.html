@@ -80,7 +80,8 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lower &lt;-<span class="st"> </span><span class="kw">factor</span>(letters[<span class="dv">1</span>:<span class="dv">3</span>], <span class="dt">levels =</span> letters[<span class="dv">2</span>:<span class="dv">4</span>])
 upper &lt;-<span class="st"> </span><span class="kw">factor</span>(LETTERS[<span class="dv">1</span>:<span class="dv">5</span>], <span class="dt">levels =</span> LETTERS[<span class="dv">1</span>:<span class="dv">4</span>])
 (combined &lt;-<span class="st"> </span><span class="kw">c</span>(lower, upper))</code></pre></div>
-<pre><code>## [1] NA  1  2  1  2  3  4 NA</code></pre>
+<pre><code>## [1] &lt;NA&gt; b    c    A    B    C    D    &lt;NA&gt;
+## Levels: A b B c C D</code></pre>
 <p>One can note the following issues:</p>
 <ul>
 <li><code>factor()</code> does not yield an error when <code>NA</code>s are created silently, neither when levels do not match x nor when too few levels are specified.</li>
@@ -123,7 +124,9 @@ string &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">
 <p><br />
 <strong>A more “dirty” example</strong></p>
 <p>However, in the general case, where number of digits might be destinct, this does not work anymore. The category “EUR 100 - 101” comes second, but it should be last.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hard_to_dectect &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;EUR 21 - EUR 22&quot;</span>, <span class="st">&quot;EUR 100 - 101&quot;</span>, <span class="st">&quot;EUR 1 - EUR 10&quot;</span>, <span class="st">&quot;EUR 11 - EUR 20&quot;</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">hard_to_dectect &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">&quot;EUR 21 - EUR 22&quot;</span>, <span class="st">&quot;EUR 100 - 101&quot;</span>, 
+                     <span class="st">&quot;EUR 1 - EUR 10&quot;</span>, <span class="st">&quot;EUR 11 - EUR 20&quot;</span>)
+
 <span class="kw">factor</span>(hard_to_dectect, <span class="dt">ordered =</span> <span class="ot">TRUE</span>)</code></pre></div>
 <pre><code>## [1] EUR 21 - EUR 22 EUR 100 - 101   EUR 1 - EUR 10  EUR 11 - EUR 20
 ## 4 Levels: EUR 1 - EUR 10 &lt; EUR 100 - 101 &lt; ... &lt; EUR 21 - EUR 22</code></pre>
@@ -141,13 +144,13 @@ string &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">
 </div>
 <div id="index_cfactor" class="section level2">
 <h2><code>index_cfactor</code></h2>
-<p>If data is encoded, the <code>labels</code> argument of <code>factor()</code> can be used to label the data, which is a common data pre-processing step. This works the same as with <code>cfactor()</code>. Here, we want to give an example where the relationship beteween the encoding and the label is stored in a <code>data.frame</code>, e.g. after it was imported from a spread sheet.</p>
+<p>If data is encoded, the <code>labels</code> argument of <code>factor()</code> can be used to label the data, which is a common data pre-processing step. This works the same as with <code>cfactor()</code>. Here, we want to give an example where the relationship b eteween the encoding and the label is stored in a <code>data.frame</code>, e.g. after it was imported from a spread sheet.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dt">x =</span> <span class="dv">1</span>:<span class="dv">10</span>, <span class="dt">size =</span> <span class="dv">20</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>)
 index &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">encoding =</span> <span class="dv">1</span>:<span class="dv">10</span>,
                     <span class="dt">label =</span> letters[<span class="dv">1</span>:<span class="dv">10</span>])
 
 <span class="kw">cfactor</span>(data, <span class="dt">levels =</span> index$encoding, <span class="dt">labels =</span> index$label)</code></pre></div>
-<pre><code>##  [1] h h d j h e h d i f g e h a b f c a j f
+<pre><code>##  [1] f i a f a d e c j b a g h a g h c i d e
 ## Levels: a b c d e f g h i j</code></pre>
 <p><br />
 In a real-world situation, it is likely that a lot of variables have to be decoded. <code>index_cfactor</code> was created to assist with this task. First, we need some sample data.</p>
@@ -159,12 +162,12 @@ In a real-world situation, it is likely that a lot of variables have to be decod
                   <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 <span class="kw">head</span>(data)</code></pre></div>
 <pre><code>##   var1 var2 var3 var4          var5
-## 1    7    1    9    2       Alabama
-## 2    8    2    8    2     Tennessee
-## 3    8    1   18    2      Delaware
-## 4    6    2   10    2    New Jersey
-## 5    9    1    4    2      Oklahoma
-## 6    3    2   17    2 New Hampshire</code></pre>
+## 1    2    1    3    2       Vermont
+## 2    7    2   13    2         Texas
+## 3    1    1   19    2       Wyoming
+## 4    6    2    8    2       Georgia
+## 5    9    1    1    2 West Virginia
+## 6    7    2   12    2 Massachusetts</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">index &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">var =</span> <span class="kw">rep</span>(<span class="kw">paste0</span>(<span class="st">&quot;var&quot;</span>, <span class="dv">1</span>:<span class="dv">3</span>), <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">2</span>, <span class="dv">20</span>)),
                     <span class="dt">encoding =</span> <span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">10</span>, <span class="dv">1</span>:<span class="dv">2</span>, <span class="dv">1</span>:<span class="dv">20</span>),
                     <span class="dt">label =</span> <span class="kw">c</span>(letters[<span class="dv">1</span>:<span class="dv">10</span>], <span class="kw">c</span>(<span class="st">&quot;male&quot;</span>, <span class="st">&quot;female&quot;</span>), LETTERS[<span class="dv">1</span>:<span class="dv">20</span>]))
@@ -177,17 +180,19 @@ In a real-world situation, it is likely that a lot of variables have to be decod
 ## 5 var1        5     e
 ## 6 var1        6     f</code></pre>
 <p>Now we use <code>index_cfactor</code> to decode the <code>data.frame</code>. Note that <code>var4</code> and <code>var5</code> are left as is, since no variable encoding for them is defined in <code>index</code>. Using the <code>...</code> argument of <code>index_cfactor</code>, we can pass additional arguments to <code>cfactor</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">final &lt;-<span class="st"> </span><span class="kw">head</span>(<span class="kw">index_cfactor</span>(<span class="dt">data =</span> data, <span class="dt">index =</span> index, <span class="dt">variable =</span> <span class="st">&quot;var&quot;</span>, <span class="dt">ordered =</span> <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">final &lt;-<span class="st"> </span><span class="kw">head</span>(<span class="kw">index_cfactor</span>(<span class="dt">data =</span> data, <span class="dt">index =</span> index, <span class="dt">variable =</span> <span class="st">&quot;var&quot;</span>, 
+                            <span class="dt">ordered =</span> <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)))</code></pre></div>
 <pre><code>## Warning: the following levels were empty: 
-##  10</code></pre>
+##  4
+## 8</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(final)</code></pre></div>
 <pre><code>##   var1   var2 var3 var4          var5
-## 1    g   male    I    2       Alabama
-## 2    h female    H    2     Tennessee
-## 3    h   male    R    2      Delaware
-## 4    f female    J    2    New Jersey
-## 5    i   male    D    2      Oklahoma
-## 6    c female    Q    2 New Hampshire</code></pre>
+## 1    b   male    C    2       Vermont
+## 2    g female    M    2         Texas
+## 3    a   male    S    2       Wyoming
+## 4    f female    H    2       Georgia
+## 5    i   male    A    2 West Virginia
+## 6    g female    L    2 Massachusetts</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sapply</span>(final, class)</code></pre></div>
 <pre><code>## $var1
 ## [1] &quot;ordered&quot; &quot;factor&quot; 
@@ -222,32 +227,32 @@ In a real-world situation, it is likely that a lot of variables have to be decod
 <p><code>cut.default</code> provides rather inappropriate labels for integer values.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">random &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">100</span>)
 <span class="kw">cut.default</span>(random, <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">10</span>))[<span class="dv">1</span>:<span class="dv">10</span>]</code></pre></div>
-<pre><code>##  [1] (80,90]  (60,70]  (0,10]   (10,20]  (0,10]   (30,40]  (70,80] 
-##  [8] (90,100] (90,100] (10,20] 
+<pre><code>##  [1] (60,70] (50,60] (30,40] (10,20] (70,80] (80,90] (0,10]  (30,40]
+##  [9] (60,70] (60,70]
 ## 10 Levels: (0,10] (10,20] (20,30] (30,40] (40,50] (50,60] ... (90,100]</code></pre>
 <p><code>refactor</code> extends the S3 method <code>cut</code> with <code>cut.integer</code> to provide more natural labels for this data type.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(random, <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">10</span>))[<span class="dv">1</span>:<span class="dv">10</span>]</code></pre></div>
-<pre><code>##  [1] 81-90  61-70  0-10   11-20  0-10   31-40  71-80  91-100 91-100 11-20 
+<pre><code>##  [1] 61-70 51-60 31-40 11-20 71-80 81-90 0-10  31-40 61-70 61-70
 ## Levels: 0-10 11-20 21-30 31-40 41-50 51-60 61-70 71-80 81-90 91-100</code></pre>
 <p>The remainder of the section will outline and describe how <code>cut.integer</code> deviates from the default <code>cut</code> method.<br />
 <br><br> Creating missing values will yield a warning.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">5</span>))</code></pre></div>
 <pre><code>## Warning in cut.integer(sample(10), breaks = c(0, 3, 5)): 5 missing values
 ## generated</code></pre>
-<pre><code>##  [1] &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; 4-5  &lt;NA&gt; 0-3  0-3  4-5  &lt;NA&gt; 0-3 
+<pre><code>##  [1] &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; 4-5  0-3  &lt;NA&gt; 0-3  &lt;NA&gt; 4-5  0-3 
 ## Levels: 0-3 4-5</code></pre>
 <p>It is possible to define bins with width 1. This will generate a label with just the value of the integer containted (e.g. 2 instead of 2-2) and issue a warning.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>))</code></pre></div>
 <pre><code>## Warning in cut.integer(sample(10), breaks = c(1, 4, 6, 8, 9, 10)): this
 ## break specification produces 2 bin(s) of width 1. The corresponding
 ## label(s) are: 9, 10</code></pre>
-<pre><code>##  [1] 7-8 5-6 9   1-4 5-6 1-4 1-4 10  7-8 1-4
+<pre><code>##  [1] 10  1-4 7-8 1-4 5-6 1-4 5-6 1-4 7-8 9  
 ## Levels: 1-4 5-6 7-8 9 10</code></pre>
 <p>Unordered breaks will be ordered before proceeding and a warning will be issued.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">3</span>))</code></pre></div>
 <pre><code>## Warning in cut.integer(sample(10), breaks = c(10, 0, 3)): breaks were
 ## unsorted and are now sorted in the following order: 0 3 10</code></pre>
-<pre><code>##  [1] 4-10 4-10 0-3  4-10 0-3  4-10 4-10 0-3  4-10 4-10
+<pre><code>##  [1] 4-10 0-3  4-10 4-10 4-10 4-10 0-3  4-10 4-10 0-3 
 ## Levels: 0-3 4-10</code></pre>
 <p>Decimal values for <code>breaks</code> will be rounded to integers and a warning will be issued.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="fl">2.6</span>, <span class="fl">5.1</span>, <span class="dv">10</span>))</code></pre></div>
@@ -255,65 +260,19 @@ In a real-world situation, it is likely that a lot of variables have to be decod
 ##   2.6 to 2  
 ##   5.1 to 5  
 ## </code></pre>
-<pre><code>##  [1] 1-2  6-10 6-10 3-5  3-5  6-10 3-5  6-10 1-2  6-10
+<pre><code>##  [1] 3-5  6-10 3-5  6-10 6-10 3-5  6-10 6-10 1-2  1-2 
 ## Levels: 1-2 3-5 6-10</code></pre>
 </div>
 <div id="a-cut-method-for-ordered-factors" class="section level4">
 <h4>a <code>cut</code> method for ordered factors</h4>
 <p>This method allows one to combine the levels of a factor into fewer categories given some break points:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(refactor)
-some_letters &lt;-<span class="st"> </span><span class="kw">cfactor</span>(<span class="kw">sample</span>(letters, <span class="dv">100</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>), <span class="dt">ordered =</span> <span class="ot">TRUE</span>)
-<span class="kw">cut</span>(some_letters, <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;q&quot;</span>, <span class="st">&quot;z&quot;</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;beginning of the alphabet&quot;</span>, <span class="st">&quot;the rest of the alphabeth&quot;</span>), <span class="dt">right =</span> <span class="ot">TRUE</span>, <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>)</code></pre></div>
-<pre><code>##   [1] the rest of the alphabeth beginning of the alphabet
-##   [3] beginning of the alphabet the rest of the alphabeth
-##   [5] beginning of the alphabet beginning of the alphabet
-##   [7] the rest of the alphabeth the rest of the alphabeth
-##   [9] beginning of the alphabet the rest of the alphabeth
-##  [11] the rest of the alphabeth beginning of the alphabet
-##  [13] beginning of the alphabet the rest of the alphabeth
-##  [15] beginning of the alphabet the rest of the alphabeth
-##  [17] beginning of the alphabet beginning of the alphabet
-##  [19] beginning of the alphabet the rest of the alphabeth
-##  [21] the rest of the alphabeth beginning of the alphabet
-##  [23] beginning of the alphabet beginning of the alphabet
-##  [25] beginning of the alphabet the rest of the alphabeth
-##  [27] beginning of the alphabet the rest of the alphabeth
-##  [29] beginning of the alphabet beginning of the alphabet
-##  [31] beginning of the alphabet beginning of the alphabet
-##  [33] beginning of the alphabet beginning of the alphabet
-##  [35] the rest of the alphabeth beginning of the alphabet
-##  [37] beginning of the alphabet the rest of the alphabeth
-##  [39] beginning of the alphabet beginning of the alphabet
-##  [41] beginning of the alphabet beginning of the alphabet
-##  [43] beginning of the alphabet the rest of the alphabeth
-##  [45] the rest of the alphabeth beginning of the alphabet
-##  [47] the rest of the alphabeth beginning of the alphabet
-##  [49] beginning of the alphabet the rest of the alphabeth
-##  [51] beginning of the alphabet the rest of the alphabeth
-##  [53] beginning of the alphabet the rest of the alphabeth
-##  [55] beginning of the alphabet the rest of the alphabeth
-##  [57] the rest of the alphabeth beginning of the alphabet
-##  [59] the rest of the alphabeth beginning of the alphabet
-##  [61] the rest of the alphabeth beginning of the alphabet
-##  [63] the rest of the alphabeth beginning of the alphabet
-##  [65] beginning of the alphabet beginning of the alphabet
-##  [67] the rest of the alphabeth the rest of the alphabeth
-##  [69] the rest of the alphabeth the rest of the alphabeth
-##  [71] the rest of the alphabeth the rest of the alphabeth
-##  [73] beginning of the alphabet beginning of the alphabet
-##  [75] the rest of the alphabeth beginning of the alphabet
-##  [77] the rest of the alphabeth beginning of the alphabet
-##  [79] the rest of the alphabeth the rest of the alphabeth
-##  [81] beginning of the alphabet beginning of the alphabet
-##  [83] beginning of the alphabet beginning of the alphabet
-##  [85] beginning of the alphabet the rest of the alphabeth
-##  [87] beginning of the alphabet beginning of the alphabet
-##  [89] beginning of the alphabet beginning of the alphabet
-##  [91] beginning of the alphabet beginning of the alphabet
-##  [93] the rest of the alphabeth the rest of the alphabeth
-##  [95] the rest of the alphabeth beginning of the alphabet
-##  [97] beginning of the alphabet beginning of the alphabet
-##  [99] beginning of the alphabet beginning of the alphabet
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">some_letters &lt;-<span class="st"> </span><span class="kw">cfactor</span>(<span class="kw">sample</span>(letters, <span class="dv">100</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>), <span class="dt">ordered =</span> <span class="ot">TRUE</span>)
+<span class="kw">head</span>(<span class="kw">cut</span>(some_letters, <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;q&quot;</span>, <span class="st">&quot;z&quot;</span>), 
+         <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;beginning of the alphabet&quot;</span>, <span class="st">&quot;the rest of the alphabeth&quot;</span>), 
+         <span class="dt">right =</span> <span class="ot">TRUE</span>, <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>))</code></pre></div>
+<pre><code>## [1] beginning of the alphabet the rest of the alphabeth
+## [3] the rest of the alphabeth beginning of the alphabet
+## [5] the rest of the alphabeth the rest of the alphabeth
 ## Levels: beginning of the alphabet the rest of the alphabeth</code></pre>
 </div>
 </div>

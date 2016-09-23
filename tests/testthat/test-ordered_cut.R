@@ -12,8 +12,11 @@ case1a <- cut(cfactor1, breaks = c("a", "q", "z"), right = T, include.lowest = T
 case2a <- cut(cfactor1, breaks = c("a", "q", "z"), right = F, include.lowest = T)
 
 # custom labels
-case1b <- cut(cfactor1, breaks = c("a", "q", "z"), labels = c("group one", "group 2"), right = T, include.lowest = T)
-case2b <- cut(cfactor1, breaks = c("a", "q", "z"), labels = c("a first group", "another one"), right = F, include.lowest = T)
+case1b <- cut(cfactor1, breaks = c("a", "q", "z"), 
+              labels = c("group one", "group 2"), right = T, include.lowest = T)
+case2b <- cut(cfactor1, breaks = c("a", "q", "z"), 
+              labels = c("a first group", "another one"), 
+              right = F, include.lowest = T)
 
 
 
@@ -31,13 +34,15 @@ test_that("cut.ordered with breaks_mode = 'default'", {
 # specify breaks out of range
 test_that("warnings", {
   # breaks that create missing values
-  expect_warning(cut(cfactor1, breaks = c("a", "q", "y"), right = T, include.lowest = T), 
+  expect_warning(cut(cfactor1, breaks = c("a", "q", "y"), 
+                     right = T, include.lowest = T), 
                  "[[:digit:]] missing values generated")
 })
 
 test_that("errors", {
   # breaks that do not exist in data
-  expect_error(cut(cfactor2, breaks = c("a", "q", "y"), right = T, include.lowest = T), 
+  expect_error(cut(cfactor2, breaks = c("a", "q", "y"), 
+                   right = T, include.lowest = T), 
                  "specified breakpoints inexistent in data")
 })
 

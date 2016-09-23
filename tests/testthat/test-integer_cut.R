@@ -39,7 +39,9 @@ case23 <- cut(sample(10), breaks = 3, labels = F)
 
 # for extremely few values in breaks
 ## breaks as scalar
-case24 <- cut(sample(10), breaks = 1, labels = F) # desired outcome although not in line with cut.defalt
+
+case24 <- cut(sample(10), breaks = 1, labels = F) # desired outcome although 
+# not in line with cut.defalt
 case25 <- cut(sample(10), breaks = 1, labels = NULL)
 case26 <- cut(sample(10), breaks = 1, labels = "lion") 
 
@@ -57,7 +59,8 @@ case30 <- cut(sample(10), breaks = c(1L, 3L, 10L))
 # when breaks need to be rounded
 case31 <- cut(sample(10), breaks = c(1, 2.6, 5.1, 10))
 
-test_that("cut.integer returns same as cut.default but with better labels for length(break) > 1", {
+test_that(paste("cut.integer returns same as cut.default but with better", 
+                "labels for length(break) > 1"), {
   # right = T
   expect_equal(levels(case1), c("2-5", "6-10"))
   expect_equal(levels(case2), c("1-5", "6-10"))
@@ -74,7 +77,8 @@ test_that("cut.integer returns same as cut.default but with better labels for le
 
 
 
-test_that("cut.integer returns expected (natural) intervals with better labels for length(break) == 1", {
+test_that(paste("cut.integer returns expected (natural) intervals with better",  
+                "labels for length(break) == 1"), {
   
   # 1:10 - 2 breaks ("left & "right")
   expect_equal(levels(case5), c("1-5", "6-10"))
@@ -136,16 +140,20 @@ test_that("cut.integer error cases", {
   ## should not produce an error if breaks are already given
   expect_equal(levels(case21), c("0-1", "2-9"))
   
-  ## should produce an error if breaks > length(x), since integer bins can't be created if bins should contain at least two integers.
+  ## should produce an error if breaks > length(x), since integer bins can't be 
+  # created if bins should contain at least two integers.
   expect_error(cut(sample(2), breaks = 3), 
                "range too small for the number of breaks specified")
   expect_error(cut(sample(10), breaks = 3, labels = letters[1:4]), 
-               "if labels not 'NULL' and not 'F', it must be the same length as the number of bins resulting from 'breaks'")
+               paste("if labels not 'NULL' and not 'F', it must be the same", 
+                     "length as the number of bins resulting from 'breaks'"))
   expect_error(cut(sample(10), breaks = 3, labels = letters[1:99]), 
-               "if labels not 'NULL' and not 'F', it must be the same length as the number of bins resulting from 'breaks'")
+               paste("if labels not 'NULL' and not 'F', it must be the same", 
+                      "length as the number of bins resulting from 'breaks'"))
   # edge case
   expect_error(cut(sample(10), breaks = 1, labels = c("lion", "tiger")),
-    "if labels not 'NULL' and not 'F', it must be the same length as the number of bins resulting from 'breaks'")
+    paste("if labels not 'NULL' and not 'F', it must be the same length as the", 
+          "number of bins resulting from 'breaks'"))
   
 })
 
@@ -167,7 +175,9 @@ test_that("cut.integer warning cases", {
   
   # when bins with width 1 are produced
   expect_warning(cut(sample(10), breaks = c(1, 4, 6, 8, 9, 10)),
-                 "^this break specification produces [[:digit:]]+ bin\\(s\\) of width 1. The corresponding label\\(s\\) are: 9, 10")
+                 paste("^this break specification produces [[:digit:]]+", 
+                       "bin\\(s\\) of width 1. The corresponding label\\(s\\)", 
+                       "are: 9, 10"))
   
 })
 

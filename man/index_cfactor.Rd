@@ -10,26 +10,35 @@ index_cfactor(data, index, variable = "variable", encoding = "encoding",
 \arguments{
 \item{data}{A data frame containing at least one integer column to decode.}
 
-\item{index}{A data frame containing the names of the variable to encode, the encoding for \code{data} and labels to assign.}
+\item{index}{A data frame containing the names of the variable to encode, 
+the encoding for \code{data} and labels to assign.}
 
-\item{variable}{The name of the column in \code{index} that indicates the variable.}
+\item{variable}{The name of the column in \code{index} that indicates the 
+variable.}
 
-\item{encoding}{The name of the column in \code{index} that indicates the encoding.}
+\item{encoding}{The name of the column in \code{index} that indicates the 
+encoding.}
 
-\item{label}{The name of the column in \code{index} that indicates the label that will be given.}
+\item{label}{The name of the column in \code{index} that indicates the label 
+that will be given.}
 
 \item{...}{Further arguments to be passed to or from other methods, 
 in particular to \code{\link{cfactor}}.}
 }
 \value{
-The original data frame is returned whereas the variables for which an encoding was provided are turned into (ordered) factors. All other columns are returned unmodified.
+The original data frame is returned whereas the variables for which 
+ an encoding was provided are turned into (ordered) factors. All other 
+ columns are returned unmodified.
 }
 \description{
-Decode numerical columns in a data frame into (ordered) factors given the encoding in another data frame.
+Decode numerical columns in a data frame into (ordered) factors given the 
+ encoding in another data frame.
 }
 \details{
-Arguments passed via \code{...} to \code{cfactor} are only recycled if of length 1. Otherwise, an error is thrown. 
- All arguments passed via \code{...} are applied in the order of the data columns but columns not to convert are skipped (see example).
+Arguments passed via \code{...} to \code{cfactor} are only recycled 
+ if of length 1. Otherwise, an error is thrown. 
+ All arguments passed via \code{...} are applied in the order of the data 
+ columns but columns not to convert are skipped (see example).
 }
 \examples{
  data <- data.frame(var1 = sample(x = 1:10, size = 20, replace = TRUE),

@@ -12,7 +12,9 @@ test_that("cfactor returns a factor", {
 
 test_that("cfactor returns expected levels", {
   expect_equal(levels(case1), "x")
-  expect_equal(levels(case2), paste("letter", 1:26, sep = "")) # is this really desired
+  
+  # is this really desired?
+  expect_equal(levels(case2), paste("letter", 1:26, sep = "")) 
   expect_equal(levels(case3), letters)
 
 })

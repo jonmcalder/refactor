@@ -16,29 +16,35 @@ single integer (greater than or equal to 2) giving the number of intervals
 into which \code{x} is to be cut.}
 
 \item{labels}{Labels for the levels of the resulting category. By default,
-labels are constructed using "a-b c-d" interval notation. If \code{labels =
-FALSE}, simple integer codes are returned instead of a factor.}
+labels are constructed using "a-b c-d" interval notation. If 
+\code{labels = FALSE}, simple integer codes are returned instead of a 
+factor.}
 
 \item{include.lowest}{Logical, indicating if an "x[i]" equal to the lowest
-(or highest, for \code{right = FALSE)} "breaks" value should be included. Note
-that unlike \code{\link[base]{cut.default}}, here \code{include.lowest} defaults to \code{TRUE},
-since this is more intuitive for integer intervals.}
+(or highest, for \code{right = FALSE)} "breaks" value should be included. 
+Note that unlike \code{\link[base]{cut.default}}, here 
+\code{include.lowest} defaults to \code{TRUE}, since this is more 
+intuitive for integer intervals.}
 
 \item{right}{Logical, indicating how to create the bins. This is utilized in
 two different ways based on the type of breaks argument. In the
 conventional case, where a breaks vector is supplied, \code{right = TRUE}
 indicates that bins should be closed on the right (and open on the left) or
-vice versa. If a single integer breaks value is provided, then \code{right = TRUE}
-indicates that bins will be determined such that those on the right are
-larger (if it is not possible for all bins to be evenly sized).}
+vice versa. If a single integer breaks value is provided, then 
+\code{right = TRUE} indicates that bins will be determined such that those 
+on the right are larger (if it is not possible for all bins to be evenly 
+sized).}
 
 \item{ordered_result}{Logical: should the result be an ordered factor?}
 
-\item{breaks_mode}{A parameter indicating how to determine the intervals when
-breaks is specified as a scalar. \itemize{ \item 'default' will result in
-intervals spread as evenly as possible over the exact range of \code{x}. \item
-'pretty' will generate rounded breakpoints for the intervals (often
-extending slightly beyond the range of \code{x}) based on \link[base]{pretty}.}}
+\item{breaks_mode}{A parameter indicating how to determine the intervals 
+when breaks is specified as a scalar. 
+\itemize{ 
+  \item 'default' will result in intervals spread as evenly as possible 
+  over the exact range of \code{x}. 
+  \item 'pretty' will generate rounded breakpoints for the intervals (often
+  extending slightly beyond the range of \code{x}) based on 
+  \link[base]{pretty}.}}
 
 \item{label_sep}{A single or short character string used to generate labels
 for the intervals e.g. the default value of "-" will result in labels like
@@ -48,19 +54,20 @@ for the intervals e.g. the default value of "-" will result in labels like
 in particular to \code{\link{cut.default}}.}
 }
 \value{
-A factor is returned, unless \code{labels = FALSE} which results in an
-  integer vector of level codes.
+A factor is returned, unless \code{labels = FALSE} which results in 
+an integer vector of level codes.
 }
 \description{
 cut divides the range of \code{x} into intervals and codes the values in \code{x} according
 to the interval they fall into.
 }
 \details{
-In deviation from \code{cut.default}, \code{cut.integer} does not have
- an argument \code{dig.lab}, but instead has two arguments that do not exist
- for \code{cut.default}: \code{breaks_mode} and \code{label_sep}.
- Note that unlike \code{\link[base]{cut.default}}, here \code{include.lowest} defaults to \code{TRUE},
-  since this is more intuitive for integer intervals.
+In deviation from \code{cut.default}, \code{cut.integer} does not 
+ have an argument \code{dig.lab}, but instead has two arguments that do not 
+ exist for \code{cut.default}: \code{breaks_mode} and \code{label_sep}.
+ Note that unlike \code{\link[base]{cut.default}}, here 
+ \code{include.lowest} defaults to \code{TRUE}, since this is more intuitive 
+ for integer intervals.
 }
 \examples{
 random <- sample(10)

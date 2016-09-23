@@ -12,7 +12,11 @@ vignette: >
 
 ## Introduction
 
-Working with factors in R can be frustrating. As described well by [John Mount](http://www.win-vector.com/blog/2014/09/factors-are-not-first-class-citizens-in-r/), factors are not first-class citizens in R. Even the most basic code often behaves in an unexpected manner and without any warning. Let's start off with a simple example - creating two factor vectors and combining them together - that illustrates some of the issues:
+Working with factors in R can be frustrating. As described well by [John Mount](http://www.win-vector.com/blog/2014/09/factors-are-not-first-class-citizens-in-r/), 
+factors are not first-class citizens in R. Even the most basic code often 
+behaves in an unexpected manner and without any warning. Let's start off with a
+simple example - creating two factor vectors and combining them together - that
+illustrates some of the issues:
 
 ```{r}
 lower <- factor(letters[1:3], levels = letters[2:4])
@@ -24,18 +28,32 @@ upper <- factor(LETTERS[1:5], levels = LETTERS[1:4])
 
 One can note the following issues:
 
-* `factor()` does not yield an error when `NA`s are created silently, neither when levels do not match x nor when too few levels are specified. 
-* When `c()` is used to combine the two, the levels of the two elements (which are just attributes to integer vectors) are not conveyed, R simply combines the underlying integers from each vector.
-* This not only changes the data representation but fundamentally changes the data values and makes it impossible to restore the information. e.g. 1 now represents the first level of both `lower` and `upper`, so a 1 in the combined vector could be either `b` or an `A` from one of the original vectors.
+* `factor()` does not yield an error when `NA`s are created silently, neither 
+when levels do not match x nor when too few levels are specified. 
+* When `c()` is used to combine the two, the levels of the two elements (which 
+are just attributes to integer vectors) are not conveyed, R simply combines the
+underlying integers from each vector.
+* This not only changes the data representation but fundamentally changes the 
+data values and makes it impossible to restore the information. e.g. 1 now 
+represents the first level of both `lower` and `upper`, so a 1 in the combined 
+vector could be either `b` or an `A` from one of the original vectors.
 
-The goal of the `refactor` package is to make working with factors more natural and fun by providing
+The goal of the `refactor` package is to make working with factors more natural 
+and fun by providing
 
-* the wrapper `cfactor` for `factor` to enhance control at the point of factor creation.
-* a function `index_cfactor` to decode numerical data into (ordered) factors given the encoding.
-* S3 generics for existing R base classes (mainly `ordered` and `factor`) where current methods are not tailored for categorical data.
+* the wrapper `cfactor` for `factor` to enhance control at the point of factor 
+creation.
+* a function `index_cfactor` to decode numerical data into (ordered) factors 
+given the encoding.
+* S3 generics for existing R base classes (mainly `ordered` and `factor`) where 
+current methods are not tailored for categorical data.
 
 ## `cfactor`
-`cfactor` has been defined to give warnings in cases when empty factors are created from strings or when existing strings are not preserved. Essentially, it is a wrapper for `factor()`, and the 'c' stands for enhanced control. It also has improved level order detection based on numerical values within strings that is superior to the way `factor` assesses this order in certain cases.
+`cfactor` has been defined to give warnings in cases when empty factors are 
+created from strings or when existing strings are not preserved. Essentially, 
+it is a wrapper for `factor()`, and the 'c' stands for enhanced control. It also 
+has improved level order detection based on numerical values within strings that 
+is superior to the way `factor` assesses this order in certain cases.
 
 ### unmatched factors
 ```{r}
@@ -46,12 +64,17 @@ cfactor(string, levels = c("b", "c", "d"))
 ```
 
 ### detect levels
-The default behavior of `factor` (if levels are not explicitly supplied), is to first convert `x` to character, and then to take the unique values and sort the characters (`sort(unique(as.character(x)))`). This approach is fine if the string ordering was the same as ordering the numbers within the string, but in general this is not the case, as the following examples will illustrate:
+The default behavior of `factor` (if levels are not explicitly supplied), is to 
+first convert `x` to character, and then to take the unique values and sort the 
+characters (`sort(unique(as.character(x)))`). This approach is fine if the 
+string ordering was the same as ordering the numbers within the string, but in 
+general this is not the case, as the following examples will illustrate:
 
 \
 **A "clean" example**
 
-With all numbers having the same number of digits, `factor` can detect the order correctly.
+With all numbers having the same number of digits, `factor` can detect the order 
+correctly.
 ```{r}
 easy_to_dectect <- c("EUR 11 - EUR 20", "EUR 1 - EUR 10", "EUR 21 - EUR 22")
 factor(easy_to_dectect, ordered = TRUE) # correctly detects level
@@ -60,18 +83,26 @@ factor(easy_to_dectect, ordered = TRUE) # correctly detects level
 \
 **A more "dirty" example**
 
-However, in the general case, where number of digits might be destinct, this does not work anymore. The category "EUR 100 - 101" comes second, but it should be last.
+However, in the general case, where number of digits might be destinct, this 
+does not work anymore. The category "EUR 100 - 101" comes second, but it should 
+be last.
 ```{r}
-hard_to_dectect <- c("EUR 21 - EUR 22", "EUR 100 - 101", "EUR 1 - EUR 10", "EUR 11 - EUR 20")
+hard_to_dectect <- c("EUR 21 - EUR 22", "EUR 100 - 101", 
+                     "EUR 1 - EUR 10", "EUR 11 - EUR 20")
+
 factor(hard_to_dectect, ordered = TRUE)
 ```
 
-`cfactor` detects levels using regular expressions. Concretely, it extracts the substrings preceding `sep`, removes everything except digits and the decimal point in `x` and orders the remaining numbers to find the order of the levels.
+`cfactor` detects levels using regular expressions. Concretely, it extracts the 
+substrings preceding `sep`, removes everything except digits and the decimal 
+point in `x` and orders the remaining numbers to find the order of the levels.
 ```{r}
 cfactor(hard_to_dectect, ordered = TRUE, sep = "-")
 ```
 
-This detection algorithm can be turned off and the default ordering of `factor` can be applied by setting the `sep` argument to `NULL`. Also, in the absence of any numbers, the default ordering of `factor` is applied.
+This detection algorithm can be turned off and the default ordering of `factor` 
+can be applied by setting the `sep` argument to `NULL`. Also, in the absence of 
+any numbers, the default ordering of `factor` is applied.
 
 ```{r}
 identical(
@@ -82,7 +113,11 @@ identical(
 
 ## `index_cfactor`
 
-If data is encoded, the `labels` argument of `factor()` can be used to label the data, which is a common data pre-processing step. This works the same as with `cfactor()`. Here, we want to give an example where the relationship beteween the encoding and the label is stored in a `data.frame`, e.g. after it was imported from a spread sheet.
+If data is encoded, the `labels` argument of `factor()` can be used to label 
+the data, which is a common data pre-processing step. This works the same as 
+with `cfactor()`. Here, we want to give an example where the relationship b
+eteween the encoding and the label is stored in a `data.frame`, e.g. after it 
+was imported from a spread sheet.
 
 ```{r}
 data <- sample(x = 1:10, size = 20, replace = TRUE)
@@ -92,7 +127,9 @@ index <- data.frame(encoding = 1:10,
 cfactor(data, levels = index$encoding, labels = index$label)
 ```
 \
-In a real-world situation, it is likely that a lot of variables have to be decoded. `index_cfactor` was created to assist with this task. First, we need some sample data.
+In a real-world situation, it is likely that a lot of variables have to be 
+decoded. `index_cfactor` was created to assist with this task. First, we need 
+some sample data.
 ```{r}
 data <- data.frame(var1 = sample(x = 1:10, size = 20, replace = TRUE),
                   var2 = rep(1:2, 20),
@@ -107,13 +144,21 @@ index <- data.frame(var = rep(paste0("var", 1:3), c(10, 2, 20)),
                     label = c(letters[1:10], c("male", "female"), LETTERS[1:20]))
 head(index)
 ```
-Now we use `index_cfactor` to decode the `data.frame`. Note that `var4` and `var5` are left as is, since no variable encoding for them is defined in `index`. Using the `...` argument of `index_cfactor`, we can pass additional arguments to `cfactor`. 
+Now we use `index_cfactor` to decode the `data.frame`. Note that `var4` and 
+`var5` are left as is, since no variable encoding for them is defined in 
+`index`. Using the `...` argument of `index_cfactor`, we can pass additional 
+arguments to `cfactor`. 
 ```{r}
-final <- head(index_cfactor(data = data, index = index, variable = "var", ordered = c(TRUE, TRUE, FALSE)))
+final <- head(index_cfactor(data = data, index = index, variable = "var", 
+                            ordered = c(TRUE, TRUE, FALSE)))
+
 print(final)
 sapply(final, class)
 ```
-`index_cfactor` converts all columns in `data` that have a match in `index` to factors with the respective encoding using `cfactor`. Further arguments are `variable`, `label` and `encoding` referring to the column names in index that contain the respective information.
+`index_cfactor` converts all columns in `data` that have a match in `index` to 
+factors with the respective encoding using `cfactor`. Further arguments are 
+`variable`, `label` and `encoding` referring to the column names in index that 
+contain the respective information.
 
 **Other example strings**
 ```{r, echo = FALSE, include = TRUE}
@@ -125,10 +170,14 @@ c("one minute", "three minutes", "1 hour")
 ```
 
 ## tailored methods for categorical data
-Instead of defining completely new functions, we decided to provide some S3 generics to extend the functionality of existing R functions and tailor them so they are better suited for categorical data. Also, a more extensive warning and error behavior than for their base R counterparts is implemented. 
+Instead of defining completely new functions, we decided to provide some S3 
+generics to extend the functionality of existing R functions and tailor them so 
+they are better suited for categorical data. Also, a more extensive warning and 
+error behavior than for their base R counterparts is implemented. 
 
 ### `cut`
-Applying cut can result in categorical data, for example if integers are binned or if ordered factor levels are summarized into larger categories.
+Applying cut can result in categorical data, for example if integers are binned 
+or if ordered factor levels are summarized into larger categories.
 
 #### a `cut` method for integers
 `cut.default` provides rather inappropriate labels for integer values.
@@ -137,12 +186,14 @@ random <- sample(100)
 cut.default(random, breaks = seq(0, 100, by = 10))[1:10]
 ```
 
-`refactor` extends the S3 method `cut` with `cut.integer` to provide more natural labels for this data type.
+`refactor` extends the S3 method `cut` with `cut.integer` to provide more 
+natural labels for this data type.
 ```{r}
 cut(random, breaks = seq(0, 100, by = 10))[1:10]
 ```
 
-The remainder of the section will outline and describe how `cut.integer` deviates from the default `cut` method.    
+The remainder of the section will outline and describe how `cut.integer` 
+deviates from the default `cut` method.    
 <br><br>
 Creating missing values will yield a warning.
 
@@ -150,7 +201,9 @@ Creating missing values will yield a warning.
 cut(sample(10), breaks = c(0, 3, 5))
 ```
 
-It is possible to define bins with width 1. This will generate a label with just the value of the integer containted (e.g. 2 instead of 2-2) and issue a warning.
+It is possible to define bins with width 1. This will generate a label with 
+just the value of the integer containted (e.g. 2 instead of 2-2) and issue a 
+warning.
 ```{r}
 cut(sample(10), breaks = c(1, 4, 6, 8, 9, 10))
 ```
@@ -160,15 +213,19 @@ Unordered breaks will be ordered before proceeding and a warning will be issued.
 cut(sample(10), breaks = c(10, 0, 3))
 ```
 
-Decimal values for `breaks` will be rounded to integers and a warning will be issued.
+Decimal values for `breaks` will be rounded to integers and a warning will be 
+issued.
 ```{r}
 cut(sample(10), breaks = c(1, 2.6, 5.1, 10))
 ```
 
 
 #### a `cut` method for ordered factors
-This method allows one to combine the levels of a factor into fewer categories given some break points:
+This method allows one to combine the levels of a factor into fewer categories 
+given some break points:
 ```{r}
 some_letters <- cfactor(sample(letters, 100, replace = TRUE), ordered = TRUE)
-head(cut(some_letters, breaks = c("a", "q", "z"), labels = c("beginning of the alphabet", "the rest of the alphabeth"), right = TRUE, include.lowest = TRUE))
+head(cut(some_letters, breaks = c("a", "q", "z"), 
+         labels = c("beginning of the alphabet", "the rest of the alphabeth"), 
+         right = TRUE, include.lowest = TRUE))
 ```

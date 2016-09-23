@@ -11,43 +11,56 @@
 \arguments{
 \item{x}{A numeric vector which is to be converted to a factor by cutting.}
 
-\item{breaks}{Either a numeric vector of two or more unique cut points or a single number (greater than or equal to 2) giving the
+\item{breaks}{Either a numeric vector of two or more unique cut points or a 
+ single number (greater than or equal to 2) giving the
 number of intervals into which \code{x} is to be cut.}
 
-\item{labels}{Labels for the levels of the resulting category. By default, labels are constructed using \code{a-b, c-d} interval notation.
-If \code{labels = FALSE}, simple integer codes are returned instead of a factor.}
+\item{labels}{Labels for the levels of the resulting category. By default, 
+labels are constructed using \code{a-b, c-d} interval notation.
+If \code{labels = FALSE}, simple integer codes are returned instead of a 
+factor.}
 
-\item{include.lowest}{Logical, indicating if an \code{x[i]} equal to the lowest (or highest, for \code{right = FALSE}) breaks value 
-should be included.}
+\item{include.lowest}{Logical, indicating if an \code{x[i]} equal to the 
+lowest (or highest, for \code{right = FALSE}) breaks value should be 
+included.}
 
-\item{right}{Logical, indicating if the intervals should be closed on the right (and open on the left) or vice versa.}
+\item{right}{Logical, indicating if the intervals should be closed on the 
+right (and open on the left) or vice versa.}
 
 \item{ordered_result}{Logical: should the result be an ordered factor?}
 
 \item{breaks_mode}{A parameter indicating how to determine the intervals when
-breaks is specified as a scalar. \itemize{ \item 'default' will result in
-intervals spread as evenly as possible over the exact range of \code{x}. \item
+breaks is specified as a scalar. 
+\itemize{ 
+ \item 'default' will result in
+ intervals spread as evenly as possible over the exact range of \code{x}. 
+ \item
 'pretty' will generate rounded breakpoints for the intervals (often
-extending slightly beyond the range of \code{x}) based on \link[base]{pretty}.}}
+extending slightly beyond the range of \code{x}) based on 
+\link[base]{pretty}.}}
 
-\item{label_sep}{A single or short character string used to generate labels for the intervals e.g. the default value of "-" 
-will result in labels like a-c d-g i-z etc.}
+\item{label_sep}{A single or short character string used to generate labels 
+for the intervals e.g. the default value of "-" will result in labels like 
+a-c d-g i-z etc.}
 
 \item{...}{Further arguments to be passed to or from other methods, 
 in particular to \code{\link{cut.default}}.}
 }
 \value{
-A factor is returned, unless \code{labels = FALSE} which results in an integer vector of level codes.
+A factor is returned, unless \code{labels = FALSE} which results in 
+ an integer vector of level codes.
 }
 \description{
-cut divides the range of \code{x} into intervals and codes the values in \code{x} according to the interval they fall into.
+cut divides the range of \code{x} into intervals and codes the values in 
+ \code{x} according to the interval they fall into.
 }
 \details{
-In deviation from \code{cut.default}, \code{cut.ordered} does not have
- an argument \code{dig.lab}, but instead has two arguments that do not exist
- for \code{cut.default}: \code{breaks_mode} and \code{label_sep}.
- Note that unlike \code{\link[base]{cut.default}}, here \code{include.lowest} defaults to \code{TRUE},
-  since this is more intuitive for integer intervals.
+In deviation from \code{cut.default}, \code{cut.ordered} does not 
+ have an argument \code{dig.lab}, but instead has two arguments that do not 
+ exist for \code{cut.default}: \code{breaks_mode} and \code{label_sep}.
+ Note that unlike \code{\link[base]{cut.default}}, here 
+ \code{include.lowest} defaults to \code{TRUE}, since this is more intuitive 
+ for integer intervals.
 }
 \examples{
  some_letters <- cfactor(sample(letters, 100, replace = TRUE), ordered = TRUE)
