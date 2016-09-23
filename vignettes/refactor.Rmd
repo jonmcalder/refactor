@@ -169,7 +169,6 @@ cut(sample(10), breaks = c(1, 2.6, 5.1, 10))
 #### a `cut` method for ordered factors
 This method allows one to combine the levels of a factor into fewer categories given some break points:
 ```{r}
-library(refactor)
 some_letters <- cfactor(sample(letters, 100, replace = TRUE), ordered = TRUE)
-cut(some_letters, breaks = c("a", "q", "z"), labels = c("beginning of the alphabet", "the rest of the alphabeth"), right = TRUE, include.lowest = TRUE)
+head(cut(some_letters, breaks = c("a", "q", "z"), labels = c("beginning of the alphabet", "the rest of the alphabeth"), right = TRUE, include.lowest = TRUE))
 ```
