@@ -203,14 +203,14 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
       recode_labels <- labels
     } else if(length(labels) != length(breakpoints) - 1) {
       if(length(labels) == 1) {
-        if(labels == F) {
+        if(labels == FALSE) {
           recode_labels <- labels
-        } else if(labels != F) {
-          stop(paste("if labels not 'NULL' and not 'F', it must be the same", 
+        } else if(labels != FALSE) {
+          stop(paste("if labels not 'NULL' and not 'FALSE', it must be the same", 
                      "length as the number of bins resulting from 'breaks'"))
         }
       } else if(length(labels) != 1) {
-        stop(paste("if labels not 'NULL' and not 'F', it must be the same", 
+        stop(paste("if labels not 'NULL' and not 'FALSE', it must be the same", 
                    "length as the number of bins resulting from 'breaks'"))
       }
       
