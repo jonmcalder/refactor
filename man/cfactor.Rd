@@ -30,20 +30,26 @@ cfactor(x, levels, labels = levels, exclude = NA, ordered = is.ordered(x),
 
 \item{nmax}{an upper bound on the number of levels; see \sQuote{Details}.}
 
-\item{sep}{A character vector giving all strings that are used to separate the lower numerical boundary of a range from the upper 
+\item{sep}{A character vector giving all strings that are used to separate 
+the lower numerical boundary of a range from the upper 
 numerical boundary within \code{x}.}
 }
 \value{
-An object of class "factor" which has a set of integer codes the length of \code{x} with a "levels" attribute of mode character
- and unique (!anyDuplicated(.)) entries. If argument ordered is true (or ordered() is used) the result has class c("ordered", "factor").
+An object of class "factor" which has a set of integer codes the 
+ length of \code{x} with a "levels" attribute of mode character
+ and unique (!anyDuplicated(.)) entries. If argument ordered is true (or 
+ ordered() is used) the result has class c("ordered", "factor").
 }
 \description{
 A wrapper for \code{factor} with enhanced control.
 }
 \details{
-\code{cfactor} wraps \code{\link{factor}} but provides enhanced control. \cr
- The order of the levels is determined by sorting the numerical values preceeding the separators indicated in \code{sep}. If 
- \code{sep} is set to \code{NULL} or if not every value of \code{x} contains numbers, the same ordering as in \code{factor} is applied.
+\code{cfactor} wraps \code{\link{factor}} but provides enhanced 
+ control. \cr
+ The order of the levels is determined by sorting the numerical values 
+ preceeding the separators indicated in \code{sep}. If 
+ \code{sep} is set to \code{NULL} or if not every value of \code{x} contains 
+ numbers, the same ordering as in \code{factor} is applied.
 }
 \examples{
 cfactor(c("a", "c", "b", "c", "d"))
