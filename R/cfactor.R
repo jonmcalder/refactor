@@ -57,14 +57,14 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
     if(!all(posterior %in% prior)) {
       warning(paste("the following levels were empty: \n", 
                     paste(c(posterior %w/o% prior), collapse = "\n")), 
-              call. = F)
+              call. = FALSE)
     }
 
     # current names that don't become levels
     if(!all(prior %in% posterior)) {
       warning(paste("the following levels were removed: \n", 
                     paste(prior[!(prior %in% posterior)], collapse = "\n")), 
-              call. = F)
+              call. = FALSE)
     }
   }
   output
