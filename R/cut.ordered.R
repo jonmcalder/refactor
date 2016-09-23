@@ -28,7 +28,9 @@
 #' @return A factor is returned, unless \code{labels = FALSE} which results in an integer vector of level codes.
 #' @examples 
 #'  some_letters <- cfactor(sample(letters, 100, replace = TRUE), ordered = TRUE)
-#'  cut(some_letters, breaks = c("a", "q", "z"), labels = c("beginning of the alphabet", "the rest of the alphabeth"), right = TRUE, include.lowest = TRUE)
+#'  head(cut(some_letters, breaks = c("a", "q", "z"), 
+#'           labels = c("beginning of the alphabet", "the rest of the alphabeth"), 
+#'           right = TRUE, include.lowest = TRUE))
 #'  
 #' @export
 cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,

@@ -51,7 +51,9 @@ In deviation from \code{cut.default}, \code{cut.ordered} does not have
 }
 \examples{
  some_letters <- cfactor(sample(letters, 100, replace = TRUE), ordered = TRUE)
- cut(some_letters, breaks = c("a", "q", "z"), labels = c("beginning of the alphabet", "the rest of the alphabeth"), right = TRUE, include.lowest = TRUE)
+ head(cut(some_letters, breaks = c("a", "q", "z"), 
+          labels = c("beginning of the alphabet", "the rest of the alphabeth"), 
+          right = TRUE, include.lowest = TRUE))
  
 }
 
