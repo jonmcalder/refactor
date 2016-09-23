@@ -19,14 +19,33 @@ case2b <- cut(cfactor1, breaks = c("a", "q", "z"),
               right = F, include.lowest = T)
 
 
+# breaks of length 1
+case3a <- cut(cfactor1, breaks = 2, labels = c("a first group", "another one"), 
+              right = F, include.lowest = T)
+case3b <- cut(cfactor1, breaks = 2, labels = c("a first group", "another one"), 
+              right = T, include.lowest = F)
+
+## labels
+# labels = F
+case4a <- cut(cfactor1, breaks = 2, labels = F, 
+              right = T, include.lowest = T)
 
 test_that("cut.ordered with breaks_mode = 'default'", {
+  ## breaks of length > 1
   # simple cases
   expect_equal(levels(case1a), c("a-q", "r-z"))
   expect_equal(levels(case2a), c("a-p", "q-z"))
   expect_equal(levels(case1b), c("group one", "group 2"))
   expect_equal(levels(case2b), c("a first group", "another one"))
-
+  
+  
+  # breaks of length 1
+  expect_equal(levels(case3a), c("a first group", "another one"))
+  expect_equal(levels(case3b), c("a first group", "another one"))
+  
+  
+  # labels F
+  expect_error(case4a, NA)
 })
 
 
@@ -44,5 +63,7 @@ test_that("errors", {
   expect_error(cut(cfactor2, breaks = c("a", "q", "y"), 
                    right = T, include.lowest = T), 
                  "specified breakpoints inexistent in data")
+  expect_error(cut(cfactor1, breaks = 2, labels = "a label", 
+                   right = T, include.lowest = T))
 })
 

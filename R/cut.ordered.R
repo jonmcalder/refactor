@@ -49,13 +49,8 @@
 cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
                         right = TRUE, ordered_result = FALSE, 
                         breaks_mode = "default", label_sep = "-", ...) {
-  xnum <- as.numeric(x)
+  x_num <- as.numeric(x)
   x_lev <- levels(x)
-  breakpos <- match(breaks, x_lev)
-  if(anyNA(breakpos)){
-    stop(paste("specified breakpoints inexistent in data: \n", 
-               paste(breaks[is.na(breakpos)], collapse = "\n")))
-  }
   
   ######## 
   # if breaks are not specified (i.e. only the number of breaks is provided)
@@ -98,8 +93,13 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
     
     # use breakpoints as is if provided  
   } else if(length(breaks > 1)){
+    breakpos <- match(breaks, x_lev)
+    if(anyNA(breakpos)){
+      stop(paste("specified breakpoints inexistent in data: \n", 
+                 paste(breaks[is.na(breakpos)], collapse = "\n")))
+    }
     
-    breakpoints <- breaks
+    breakpoints <- breakpos
     
     numLabels <- length(breakpoints) - 1
     
@@ -123,15 +123,15 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
   
   # create integer-based interval labels using label_sep
   if(is.null(labels)) {
-    recode_labels <- paste(x_lev[head(breakpos, -1) + floorInc], 
-                           x_lev[tail(breakpos, -1) - ceilingDec], 
+    recode_labels <- paste(x_lev[head(breakpoints, -1) + floorInc], 
+                           x_lev[tail(breakpoints, -1) - ceilingDec], 
                            sep = label_sep) 
     
     # correct labels with binwidth 1, that is where to elements separated by 
     # label_sep are the same, i.e. the label "10-10"
     # deactivated
-    same <- head(breakpos, -1) + floorInc == tail(breakpos, -1) - ceilingDec
-    # recode_labels[same] <- (tail(breakpos, -1) - ceilingDec)[same] 
+    same <- head(breakpoints, -1) + floorInc == tail(breakpoints, -1) - ceilingDec
+    # recode_labels[same] <- (tail(breakpoints, -1) - ceilingDec)[same] 
     
   } else if(!is.null(labels)) {
     if(length(labels) == length(breakpoints) - 1) {
@@ -151,7 +151,7 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
       
     }
   }
-  output <- cut.default(xnum, breaks = breakpos, labels = recode_labels, 
+  output <- cut.default(x_num, breaks = breakpoints, labels = recode_labels, 
                         include.lowest = include.lowest, right = right, 
                         ordered_result = ordered_result, ...)
   
