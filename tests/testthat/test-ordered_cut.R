@@ -30,6 +30,16 @@ case3b <- cut(cfactor1, breaks = 2, labels = c("a first group", "another one"),
 case4a <- cut(cfactor1, breaks = 2, labels = F, 
               right = T, include.lowest = T)
 
+## separator
+case5a <- cut(cfactor1, breaks = 2, labels = NULL, 
+              right = T, include.lowest = T, label_sep = "|")
+
+## binwidth 1
+
+
+case6a <- cut(cfactor1, breaks = letters)
+################################################################################
+
 test_that("cut.ordered with breaks_mode = 'default'", {
   ## breaks of length > 1
   # simple cases
@@ -37,7 +47,7 @@ test_that("cut.ordered with breaks_mode = 'default'", {
   expect_equal(levels(case2a), c("a-p", "q-z"))
   expect_equal(levels(case1b), c("group one", "group 2"))
   expect_equal(levels(case2b), c("a first group", "another one"))
-  
+  expect_equal(levels(case5a), c("a|m", "n|z"))
   
   # breaks of length 1
   expect_equal(levels(case3a), c("a first group", "another one"))
@@ -67,3 +77,4 @@ test_that("errors", {
                    right = T, include.lowest = T))
 })
 
+# binwidth 1 
