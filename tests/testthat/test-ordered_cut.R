@@ -37,7 +37,7 @@ case5a <- cut(cfactor1, breaks = 2, labels = NULL,
 ## binwidth 1
 
 
-case6a <- cut(cfactor1, breaks = letters)
+case6a <- cut(cfactor(sample(letters), ordered = T), breaks = letters)
 ################################################################################
 
 test_that("cut.ordered with breaks_mode = 'default'", {
