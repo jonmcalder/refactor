@@ -4,9 +4,6 @@ context("ordered_cut")
 cfactor1 <- cfactor(sample(c(letters, sample(letters, 100, replace = T))), ordered = T)
 cfactor2 <- cfactor(sample(letters[3:16], 100, replace = T), ordered = T)
 
-
-# breaks_mode = 'default'
-
 ## no labels
 case1a <- cut(cfactor1, breaks = c("a", "q", "z"), right = T, include.lowest = T)
 case2a <- cut(cfactor1, breaks = c("a", "q", "z"), right = F, include.lowest = T)
@@ -44,7 +41,7 @@ case5a <- cut(cfactor1, breaks = 2, labels = NULL,
 case6a <- cut(cfactor(sample(letters), ordered = T), breaks = letters)
 ################################################################################
 
-test_that("cut.ordered with breaks_mode = 'default'", {
+test_that("cut.ordered simple tests", {
   ## breaks of length > 1
   # simple cases
   expect_equal(levels(case1a), c("a-q", "r-z"))

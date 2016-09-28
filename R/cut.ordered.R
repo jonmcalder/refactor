@@ -17,23 +17,14 @@
 #' @param right	Logical, indicating if the intervals should be closed on the 
 #'  right (and open on the left) or vice versa.
 #' @param ordered_result Logical: should the result be an ordered factor?
-#' @param breaks_mode A parameter indicating how to determine the intervals when
-#'   breaks is specified as a scalar. 
-#'   \itemize{ 
-#'    \item 'default' will result in
-#'    intervals spread as evenly as possible over the exact range of \code{x}. 
-#'    \item
-#'   'pretty' will generate rounded breakpoints for the intervals (often
-#'   extending slightly beyond the range of \code{x}) based on 
-#'   \link[base]{pretty}.}
 #' @param label_sep A single or short character string used to generate labels 
 #'  for the intervals e.g. the default value of "-" will result in labels like 
 #'  a-c d-g i-z etc.
 #' @param ... Further arguments to be passed to or from other methods, 
 #'  in particular to \code{\link{cut.default}}.
 #' @details In deviation from \code{cut.default}, \code{cut.ordered} does not 
-#'  have an argument \code{dig.lab}, but instead has two arguments that do not 
-#'  exist for \code{cut.default}: \code{breaks_mode} and \code{label_sep}.
+#'  have an argument \code{dig.lab}, but instead has an argument that does not 
+#'  exist for \code{cut.default}: \code{label_sep}.
 #'  Note that unlike \code{\link[base]{cut.default}}, here 
 #'  \code{include.lowest} defaults to \code{TRUE}, since this is more intuitive 
 #'  for integer intervals.
@@ -49,7 +40,7 @@
 #' @export
 cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
                         right = TRUE, ordered_result = FALSE, label_sep = "-", 
-                        breaks_mode = "default", ...) {
+                        ...) {
 
   # simple input checkoung 
   assert_factor(x, ordered = T)
@@ -89,32 +80,31 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
     
     numLabels <- breaks
     breakpos <- quantile(x_num, seq(0, 1, 1/breaks))
-    # should the breaks be "pretty"? 
+    
     # (‘floor’ values which cover the range of the values in x_num)
     # or evenly spaced over the range of the data? ("default")
-    if(breaks_mode == "default"){
+    
       
-      range <- max(x_num)-min(x_num)+1
-      avg_bin_width <- floor(range/breaks)
-      rem <- range %% breaks
-      num <- breaks+1
-      if(rem == 0){
+    range <- max(x_num)-min(x_num)+1
+    avg_bin_width <- floor(range/breaks)
+    rem <- range %% breaks
+    num <- breaks+1
+    if(rem == 0){
+      breakpoints <- seq(from=min(x_num)-1, by = avg_bin_width, length.out = num)
+      breakpoints[1] <- min(x_num)
+    } else if(rem != 0) {
+      if(right == FALSE){
+        breakpoints <- rev(seq(from=max(x_num), by = - avg_bin_width, length.out = num))
+        breakpoints[1] <- min(x_num)
+        for(i in 1:rem){
+          breakpoints[i+1] <- min(x_num)-1+avg_bin_width*i+i
+        }
+      } else if(right == TRUE){
         breakpoints <- seq(from=min(x_num)-1, by = avg_bin_width, length.out = num)
         breakpoints[1] <- min(x_num)
-      } else if(rem != 0) {
-        if(right == FALSE){
-          breakpoints <- rev(seq(from=max(x_num), by = - avg_bin_width, length.out = num))
-          breakpoints[1] <- min(x_num)
-          for(i in 1:rem){
-            breakpoints[i+1] <- min(x_num)-1+avg_bin_width*i+i
-          }
-        } else if(right == TRUE){
-          breakpoints <- seq(from=min(x_num)-1, by = avg_bin_width, length.out = num)
-          breakpoints[1] <- min(x_num)
-          breakpoints[num] <- max(x_num)
-          for(i in num:(num-rem+1)){
-            breakpoints[i-1] <- max(x_num)-(avg_bin_width+1)*(num-i+1)
-          }
+        breakpoints[num] <- max(x_num)
+        for(i in num:(num-rem+1)){
+          breakpoints[i-1] <- max(x_num)-(avg_bin_width+1)*(num-i+1)
         }
       }
     }
