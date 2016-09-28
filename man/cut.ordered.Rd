@@ -67,6 +67,5 @@ In deviation from \code{cut.default}, \code{cut.ordered} does not
  head(cut(some_letters, breaks = c("a", "q", "z"), 
           labels = c("beginning of the alphabet", "the rest of the alphabeth"), 
           right = TRUE, include.lowest = TRUE))
- 
 }
 

@@ -1,7 +1,7 @@
 library("testthat")
 
 context("ordered_cut")
-cfactor1 <- cfactor(sample(letters, 100, replace = T), ordered = T)
+cfactor1 <- cfactor(sample(c(letters, sample(letters, 100, replace = T))), ordered = T)
 cfactor2 <- cfactor(sample(letters[3:16], 100, replace = T), ordered = T)
 
 
@@ -17,6 +17,10 @@ case1b <- cut(cfactor1, breaks = c("a", "q", "z"),
 case2b <- cut(cfactor1, breaks = c("a", "q", "z"), 
               labels = c("a first group", "another one"), 
               right = F, include.lowest = T)
+
+# breaks as integer with no label
+some_letters <- cfactor(sample(letters), ordered = TRUE)
+case7a <- cut(some_letters, breaks = 2, include.lowest = TRUE)
 
 
 # breaks of length 1
@@ -56,6 +60,8 @@ test_that("cut.ordered with breaks_mode = 'default'", {
   
   # labels F
   expect_error(case4a, NA)
+  expect_equal(levels(case7a), c("a-m", "n-z"))
+  
 })
 
 
@@ -72,9 +78,10 @@ test_that("errors", {
   # breaks that do not exist in data
   expect_error(cut(cfactor2, breaks = c("a", "q", "y"), 
                    right = T, include.lowest = T), 
-                 "specified breakpoints inexistent in data")
+               "specified breakpoints inexistent in data")
   expect_error(cut(cfactor1, breaks = 2, labels = "a label", 
                    right = T, include.lowest = T))
 })
 
 # binwidth 1 
+# when braks are integer, right argument does not work

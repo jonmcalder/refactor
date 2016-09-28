@@ -31,27 +31,62 @@ cfactor(x, levels, labels = levels, exclude = NA, ordered = is.ordered(x),
 \item{nmax}{an upper bound on the number of levels; see \sQuote{Details}.}
 
 \item{sep}{A character vector giving all strings that are used to separate 
-the lower numerical boundary of a range from the upper 
-numerical boundary within \code{x}.}
+the lower numerical boundary of a range from the upper numerical boundary 
+within \code{x}. See 'Details' for more information.}
 }
 \value{
-An object of class "factor" which has a set of integer codes the 
- length of \code{x} with a "levels" attribute of mode character
- and unique (!anyDuplicated(.)) entries. If argument ordered is true (or 
- ordered() is used) the result has class c("ordered", "factor").
+See \code{\link{factor}}.
 }
 \description{
 A wrapper for \code{factor} with enhanced control.
 }
 \details{
 \code{cfactor} wraps \code{\link{factor}} but provides enhanced 
- control. \cr
- The order of the levels is determined by sorting the numerical values 
- preceeding the separators indicated in \code{sep}. If 
- \code{sep} is set to \code{NULL} or if not every value of \code{x} contains 
- numbers, the same ordering as in \code{factor} is applied.
+ control. The enhanced control has the following elements:
+ \itemize{
+   \item{more warnings: \code{NA}s are never produced silently. Empty levels
+   also produce a warning. If \code{levels} and \code{labels} intersect, a
+   warning is produced too.}
+   \item{flexible order detection: By default, a regular expression approach 
+   is used to determine the order of the levels of data containing numerical 
+   values. Further more, it is possible to implicitly specify the order by 
+   first appearance in \code{x}.
+   }
+ } \cr
+ Apart from the newly introduced argument \code{sep}, \code{cfactor} has 
+ the same arguments and defaults as \code{factor}.
+ \cr
+ Levels of the factor or detetmined by the \code{levels} argument. If 
+ \code{levels} is missing, the order of the levels is determined as 
+ follows: 
+ \itemize{
+   \item{If \code{sep} is set to \code{NULL}: Levels are determined by 
+   sorting the unique values in \code{x}, which is the same behaivour as in 
+   \code{factor}.}
+   \item{If \code{sep} is set to \code{NA}, the order is given by first
+   appearance in \code{x}.} 
+   \item{Otherwise, 
+   \itemize{
+     \item{If every value in \code{x} contains numbers: Levels are determined
+     by sorting the numerical values preceeding the separators indicated in 
+     \code{sep}.}
+     \item{If not every value in \code{x} contains numbers: Levels are 
+     determined by sorting the unique values in \code{x}, which is the same 
+     behaivour as in \code{factor}.}
+       }
+     }
+   }
 }
 \examples{
-cfactor(c("a", "c", "b", "c", "d"))
+\dontrun{
+## create warnings with unused and removed levels
+string <- c("a", "b", "c")
+cfactor(string, levels = c("b", "c", "d"))}
+
+## detecting levels: compare factor and cfactor
+hard_to_dectect <- c("EUR 21 - EUR 22", "EUR 100 - 101", 
+"EUR 1 - EUR 10", "EUR 11 - EUR 20")
+factor(hard_to_dectect, ordered = TRUE)
+cfactor(hard_to_dectect, ordered = TRUE)
 }
 

@@ -48,7 +48,6 @@
 #' an integer vector of level codes.
 #' @examples random <- sample(10)
 #'  cut(random, breaks = seq(0, 100, by = 10))[1:10]
-
 #' @export
 
 cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, 

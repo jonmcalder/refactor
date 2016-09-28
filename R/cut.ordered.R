@@ -44,11 +44,13 @@
 #'  head(cut(some_letters, breaks = c("a", "q", "z"), 
 #'           labels = c("beginning of the alphabet", "the rest of the alphabeth"), 
 #'           right = TRUE, include.lowest = TRUE))
-#'  
+#' @importFrom utils head tail
+#' @importFrom stats quantile
 #' @export
 cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
                         right = TRUE, ordered_result = FALSE, 
                         breaks_mode = "default", label_sep = "-", ...) {
+
   x_num <- as.numeric(x)
   x_lev <- levels(x)
   unique_x <- unique(x)
@@ -58,7 +60,7 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
   if(length(breaks) == 1){
     
     numLabels <- breaks
-    
+    breakpos <- quantile(x_num, seq(0, 1, 1/breaks))
     # should the breaks be "pretty"? 
     # (‘floor’ values which cover the range of the values in x_num)
     # or evenly spaced over the range of the data? ("default")
@@ -100,8 +102,16 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
                  paste(breaks[is.na(breakpos)], collapse = "\n")))
     }
     
-    breakpoints <- breakpos
+
+    breakpos <- match(breaks, x_lev)
+    # check for breakpoint existence
+    if(anyNA(breakpos)){
+      stop(paste("specified breakpoints inexistent in data: \n", 
+                 paste(breaks[is.na(breakpos)], collapse = "\n")))
+    }
     
+    breakpoints <- breakpos
+
     numLabels <- length(breakpoints) - 1
     
   }
