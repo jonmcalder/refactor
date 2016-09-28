@@ -38,8 +38,21 @@ test_that("warnings", {
   expect_warning(cfactor(x = c("a", "b", "c"), levels = c("b", "c")), 
                  "the following levels were removed")
   
+  # intersecting x and levels
+  ## case 1: only is represented
+  expect_warning(cfactor(x = c("a", "b", "c"), levels = c("a", "b", "c"), 
+                         labels = c("b", "a", "laste")), 
+                 "Some values now used .* is now represented")
   
+  ## case 2: only still message
+  expect_warning(cfactor(x = c("a", "b", "c"), levels = c("a", "b", "c"), 
+                         labels = c("a", "g", "laste")), 
+                 "Some values now used .* still represents")
   
+  ## case 1 and 2
+  expect_warning(cfactor(x = c("a", "b", "c"), levels = c("a", "b", "c"), 
+                         labels = c("a", "now", "b")), 
+                 "Some values now used .* is now represented .* still represents")
 })
 # connector esape hatch
 

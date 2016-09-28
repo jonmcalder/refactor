@@ -99,19 +99,25 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
     same_represent <- levels == labels
     duplicates <- levels[same_represent] 
     
-    no_duplicate_level <- levels[-which(same_represent)]
-    no_duplicate_label <- labels[-which(same_represent)]
+    no_duplicate_level <- levels[!same_represent]
+    no_duplicate_label <- labels[!same_represent]
+    if(any(no_duplicate_level %in% no_duplicate_label) || any(same_represent)){
+      warning(paste("Some values now used for the labels existed in the data", 
+                    "vector 'x' already: \n ", 
+                    if(any(no_duplicate_level %in% no_duplicate_label)) {
+                      paste("'", no_duplicate_level[no_duplicate_level %in% no_duplicate_label], "' is now represented with '", 
+                            no_duplicate_label[no_duplicate_level %in% no_duplicate_label], "', ",
+                            "'", no_duplicate_level[no_duplicate_level %in% no_duplicate_label], "' now represents '",
+                            no_duplicate_level[no_duplicate_label %in% no_duplicate_level], "' \n ",
+                            sep = "", collapse = " \n")
+                    }, 
+                    if(any(same_represent)) {
+                      paste("'", duplicates, "' still represents '", duplicates, "'",
+                            sep = "", collapse = " \n")
+                    },
+                    sep = " "))
+    }
     
-    warning(paste("Some values now used for the labels existed in the data", 
-                  "vector 'x' already:", 
-                  paste("'", no_duplicate_level[no_duplicate_level %in% no_duplicate_label], "' is now represented with '", 
-                             no_duplicate_label[no_duplicate_level %in% no_duplicate_label], "', ",
-                        "'", no_duplicate_level[no_duplicate_level %in% no_duplicate_label], "' now represents '",
-                             no_duplicate_level[no_duplicate_label %in% no_duplicate_level], "'",
-                        sep = "", collapse = " \n"), 
-                  paste("'", duplicates, "' still representes '", duplicates, "'",
-                        sep = "", collapse = " \n"),
-                  sep = " \n"))
   }
   
   # check if new levels differ from old unique character strings

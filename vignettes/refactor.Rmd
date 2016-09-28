@@ -111,6 +111,20 @@ identical(
 )
 ```
 
+### Intersection of underlying values and labels
+When creating a `factor` you sometimes want to label that data, that is, assign 
+a label to each value supplied in `x`. A situation to avoid is using labels 
+that are identical to its underlaying value for some but not all levels. 
+```{r}
+cfactor(x = c("a", "b", "c"), levels = c("a", "b", "c"), labels = c("a", "letter b", "b"))
+```
+The outcome of this is kind of messy. Whereas `factor` lets you do that without 
+returing any warning, `cfactor` will issue a such.
+In adition, a second warning that indicates that `a` is choosen as a 
+representation of `a` itself is issuesd. In a context where data are given 
+labels distinct from their values, which is the whole point of labeling, this 
+in many cases proabably not what the programmer wanted to see happening.
+
 ## `index_cfactor`
 
 If data is encoded, the `labels` argument of `factor()` can be used to label 
@@ -224,7 +238,7 @@ cut(sample(10), breaks = c(1, 2.6, 5.1, 10))
 This method allows one to combine the levels of a factor into fewer categories 
 given some break points:
 ```{r}
-some_letters <- cfactor(sample(letters, 100, replace = TRUE), ordered = TRUE)
+some_letters <- cfactor(letters, ordered = TRUE)
 head(cut(some_letters, breaks = c("a", "q", "z"), 
          labels = c("beginning of the alphabet", "the rest of the alphabeth"), 
          right = TRUE, include.lowest = TRUE))
