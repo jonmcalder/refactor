@@ -48,9 +48,37 @@
 #' @importFrom stats quantile
 #' @export
 cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
-                        right = TRUE, ordered_result = FALSE, 
-                        breaks_mode = "default", label_sep = "-", ...) {
+                        right = TRUE, ordered_result = FALSE, label_sep = "-", 
+                        breaks_mode = "default", ...) {
 
+  # simple input checkoung 
+  assert_factor(x, ordered = T)
+  
+  # breaks are either numeric or integer
+  assert(
+    test_class(breaks, "numeric"),
+    test_class(breaks, "integer"),
+    test_class(breaks, "character")
+  )
+  
+  # labels
+  assert(
+    test_null(labels),
+    test_logical(labels),
+    test_character(labels)
+  )
+  
+  # include.lowest
+  test_logical(include.lowest)
+  
+  # right
+  test_logical(right)
+  
+  # ordered_result
+  test_logical(ordered_result)
+  
+  ######################### assertive checks completed  ########################
+  
   x_num <- as.numeric(x)
   x_lev <- levels(x)
   unique_x <- unique(x)

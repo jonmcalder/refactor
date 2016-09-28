@@ -5,8 +5,8 @@
 \title{Create Bins for ordered Factors}
 \usage{
 \method{cut}{ordered}(x, breaks, labels = NULL, include.lowest = FALSE,
-  right = TRUE, ordered_result = FALSE, breaks_mode = "default",
-  label_sep = "-", ...)
+  right = TRUE, ordered_result = FALSE, label_sep = "-",
+  breaks_mode = "default", ...)
 }
 \arguments{
 \item{x}{A numeric vector which is to be converted to a factor by cutting.}
@@ -29,6 +29,10 @@ right (and open on the left) or vice versa.}
 
 \item{ordered_result}{Logical: should the result be an ordered factor?}
 
+\item{label_sep}{A single or short character string used to generate labels 
+for the intervals e.g. the default value of "-" will result in labels like 
+a-c d-g i-z etc.}
+
 \item{breaks_mode}{A parameter indicating how to determine the intervals when
 breaks is specified as a scalar. 
 \itemize{ 
@@ -38,10 +42,6 @@ breaks is specified as a scalar.
 'pretty' will generate rounded breakpoints for the intervals (often
 extending slightly beyond the range of \code{x}) based on 
 \link[base]{pretty}.}}
-
-\item{label_sep}{A single or short character string used to generate labels 
-for the intervals e.g. the default value of "-" will result in labels like 
-a-c d-g i-z etc.}
 
 \item{...}{Further arguments to be passed to or from other methods, 
 in particular to \code{\link{cut.default}}.}

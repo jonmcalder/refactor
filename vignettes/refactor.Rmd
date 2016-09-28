@@ -119,9 +119,11 @@ that are identical to its underlaying value for some but not all levels.
 cfactor(x = c("a", "b", "c"), levels = c("a", "b", "c"), labels = c("a", "letter b", "b"))
 ```
 The outcome of this is kind of messy. Whereas `factor` lets you do that without 
-returing any warning, `cfactor` will issue a such.
+returing any warning, `cfactor` will issue a such to inform about the 
+intersection.
+\
 In adition, a second warning that indicates that `a` is choosen as a 
-representation of `a` itself is issuesd. In a context where data are given 
+representation of `a` itself is issued. In a context where data are given 
 labels distinct from their values, which is the whole point of labeling, this 
 in many cases proabably not what the programmer wanted to see happening.
 
