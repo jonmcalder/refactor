@@ -77,14 +77,8 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
   ######## 
   # if breaks are not specified (i.e. only the number of breaks is provided)
   if(length(breaks) == 1){
-    
     numLabels <- breaks
-    breakpos <- quantile(x_num, seq(0, 1, 1/breaks))
     
-    # (‘floor’ values which cover the range of the values in x_num)
-    # or evenly spaced over the range of the data? ("default")
-    
-      
     range <- max(x_num)-min(x_num)+1
     avg_bin_width <- floor(range/breaks)
     rem <- range %% breaks
@@ -108,27 +102,17 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
         }
       }
     }
-    
-    right <- TRUE
+    include.lowest <- TRUE # override default 
+    right <- TRUE # since labels are already set, we need to stick to T
     
     
     # use breakpoints as is if provided  
   } else if(length(breaks > 1)){
-    breakpos <- match(breaks, x_lev)
-    if(anyNA(breakpos)){
+    breakpoints <- match(breaks, x_lev)
+    if(anyNA(breakpoints)){
       stop(paste("specified breakpoints inexistent in data: \n", 
-                 paste(breaks[is.na(breakpos)], collapse = "\n")))
+                 paste(breaks[is.na(breakpoints)], collapse = "\n")))
     }
-    
-
-    breakpos <- match(breaks, x_lev)
-    # check for breakpoint existence
-    if(anyNA(breakpos)){
-      stop(paste("specified breakpoints inexistent in data: \n", 
-                 paste(breaks[is.na(breakpos)], collapse = "\n")))
-    }
-    
-    breakpoints <- breakpos
 
     numLabels <- length(breakpoints) - 1
     
