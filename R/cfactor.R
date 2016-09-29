@@ -9,14 +9,13 @@
 #' @details \code{cfactor} wraps \code{\link{factor}} but provides enhanced 
 #'  control. The enhanced control has the following elements:
 #'  \itemize{
-#'    \item{more warnings: \code{NA}s are never produced silently. Empty levels
+#'    \item more warnings: \code{NA}s are never produced silently. Empty levels
 #'    also produce a warning. If \code{levels} and \code{labels} intersect, a
-#'    warning is produced too.}
-#'    \item{flexible order detection: By default, a regular expression approach 
+#'    warning is produced too.
+#'    \item flexible order detection: By default, a regular expression approach 
 #'    is used to determine the order of the levels of data containing numerical 
 #'    values. Further more, it is possible to implicitly specify the order by 
 #'    first appearance in \code{x}.
-#'    }
 #'  } \cr
 #'  Apart from the newly introduced argument \code{sep}, \code{cfactor} has 
 #'  the same arguments and defaults as \code{factor}.
