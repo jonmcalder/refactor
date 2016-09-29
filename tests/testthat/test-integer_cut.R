@@ -1,18 +1,18 @@
 context("integer_cut")
 
-int_norep <- sample(10, replace = F)
+int_norep <- sample(10, replace = FALSE)
 
-case1 <- cut(int_norep, breaks = c(1, 5, 10), right = T, include.lowest = F)
-case2 <- cut(int_norep, breaks = c(1, 5, 10), right = T, include.lowest = T)
-case3 <- cut(int_norep, breaks = c(1, 5, 10), right = F, include.lowest = F)
-case4 <- cut(int_norep, breaks = c(1, 5, 10), right = F, include.lowest = T)
+case1 <- cut(int_norep, breaks = c(1, 5, 10), right = TRUE, include.lowest = FALSE)
+case2 <- cut(int_norep, breaks = c(1, 5, 10), right = TRUE, include.lowest = TRUE)
+case3 <- cut(int_norep, breaks = c(1, 5, 10), right = FALSE, include.lowest = FALSE)
+case4 <- cut(int_norep, breaks = c(1, 5, 10), right = FALSE, include.lowest = TRUE)
 
 case5 <- cut(int_norep, breaks = 2, right = FALSE)
 case6 <- cut(int_norep, breaks = 2, right = TRUE)
 case7 <- cut(int_norep, breaks = 3, right = FALSE)
 case8 <- cut(int_norep, breaks = 3, right = TRUE)
 
-int2_norep <- sample(15, replace = F)
+int2_norep <- sample(15, replace = FALSE)
 
 case9 <- cut(int2_norep, breaks = 3, right = FALSE)
 case10 <- cut(int2_norep, breaks = 3, right = TRUE)
@@ -21,7 +21,7 @@ case12 <- cut(int2_norep, breaks = 4, right = TRUE)
 case13 <- cut(int2_norep, breaks = 5, right = FALSE)
 case14 <- cut(int2_norep, breaks = 5, right = TRUE)
 
-int3_norep <- sample(99, replace = F)
+int3_norep <- sample(99, replace = FALSE)
 
 case15 <- cut(int3_norep, breaks = 3, right = FALSE)
 case16 <- cut(int3_norep, breaks = 3, right = TRUE)
@@ -31,27 +31,27 @@ case19 <- cut(int3_norep, breaks = 5, right = FALSE)
 case20 <- cut(int3_norep, breaks = 5, right = TRUE)
 
 # for extremely few values in x 
-case21 <- cut(1L, breaks = c(0, 1, 9), include.lowest = T)
+case21 <- cut(1L, breaks = c(0, 1, 9), include.lowest = TRUE)
 
 # non-default labels
 case22 <- cut(sample(10), breaks = 3, labels = letters[1:3])
-case23 <- cut(sample(10), breaks = 3, labels = F)
+case23 <- cut(sample(10), breaks = 3, labels = FALSE)
 
 # for extremely few values in breaks
 ## breaks as scalar
 
-case24 <- cut(sample(10), breaks = 1, labels = F) # desired outcome although 
+case24 <- cut(sample(10), breaks = 1, labels = FALSE) # desired outcome although 
 # not in line with cut.defalt
 case25 <- cut(sample(10), breaks = 1, labels = NULL)
 case26 <- cut(sample(10), breaks = 1, labels = "lion") 
 
 # breaks as vector
-case27 <- cut(sample(10), breaks = c(1, 10), labels = F) 
+case27 <- cut(sample(10), breaks = c(1, 10), labels = FALSE) 
 case28 <- cut(sample(10), breaks = c(1, 10), labels = NULL)
 case29 <- cut(sample(10), breaks = c(1, 10), labels = "lion")
 
 # not desired outcome although it should be without 
-# cut.default(sample(10), breaks = 1, labels = F)
+# cut.default(sample(10), breaks = 1, labels = FALSE)
 
 # when breaks are of class integer
 case30 <- cut(sample(10), breaks = c(1L, 3L, 10L))
@@ -61,11 +61,11 @@ case31 <- cut(sample(10), breaks = c(1, 2.6, 5.1, 10))
 
 test_that(paste("cut.integer returns same as cut.default but with better", 
                 "labels for length(break) > 1"), {
-  # right = T
+  # right = TRUE
   expect_equal(levels(case1), c("2-5", "6-10"))
   expect_equal(levels(case2), c("1-5", "6-10"))
   
-  # right = F
+  # right = FALSE
   expect_equal(levels(case3), c("1-4", "5-9"))
   expect_equal(levels(case4), c("1-4", "5-10"))
   
@@ -145,14 +145,14 @@ test_that("cut.integer error cases", {
   expect_error(cut(sample(2), breaks = 3), 
                "range too small for the number of breaks specified")
   expect_error(cut(sample(10), breaks = 3, labels = letters[1:4]), 
-               paste("if labels not 'NULL' and not 'F', it must be the same", 
+               paste("if labels not 'NULL' and not 'FALSE', it must be the same", 
                      "length as the number of bins resulting from 'breaks'"))
   expect_error(cut(sample(10), breaks = 3, labels = letters[1:99]), 
-               paste("if labels not 'NULL' and not 'F', it must be the same", 
+               paste("if labels not 'NULL' and not 'FALSE', it must be the same", 
                       "length as the number of bins resulting from 'breaks'"))
   # edge case
   expect_error(cut(sample(10), breaks = 1, labels = c("lion", "tiger")),
-    paste("if labels not 'NULL' and not 'F', it must be the same length as the", 
+    paste("if labels not 'NULL' and not 'FALSE', it must be the same length as the", 
           "number of bins resulting from 'breaks'"))
   
 })
@@ -190,4 +190,4 @@ test_that("cut.integer if breaks outside range(x)", {
 
 # what happens in binwidth 1 if none is this width (line 99)
 # not optimal:
-# cut(int_norep, breaks = c(1, 2, 3, 10), right = T, include.lowest = F)
+# cut(int_norep, breaks = c(1, 2, 3, 10), right = T, include.lowest = FALSE)

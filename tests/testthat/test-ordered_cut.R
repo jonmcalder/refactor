@@ -1,19 +1,19 @@
 library("testthat")
 
 context("ordered_cut")
-cfactor1 <- cfactor(sample(c(letters, sample(letters, 100, replace = T))), ordered = T)
-cfactor2 <- cfactor(sample(letters[3:16], 100, replace = T), ordered = T)
+cfactor1 <- cfactor(sample(c(letters, sample(letters, 100, replace = TRUE))), ordered = TRUE)
+cfactor2 <- cfactor(sample(letters[3:16], 100, replace = TRUE), ordered = TRUE)
 
 ## no labels
-case1a <- cut(cfactor1, breaks = c("a", "q", "z"), right = T, include.lowest = T)
-case2a <- cut(cfactor1, breaks = c("a", "q", "z"), right = F, include.lowest = T)
+case1a <- cut(cfactor1, breaks = c("a", "q", "z"), right = TRUE, include.lowest = TRUE)
+case2a <- cut(cfactor1, breaks = c("a", "q", "z"), right = FALSE, include.lowest = TRUE)
 
 # custom labels
 case1b <- cut(cfactor1, breaks = c("a", "q", "z"), 
-              labels = c("group one", "group 2"), right = T, include.lowest = T)
+              labels = c("group one", "group 2"), right = TRUE, include.lowest = TRUE)
 case2b <- cut(cfactor1, breaks = c("a", "q", "z"), 
               labels = c("a first group", "another one"), 
-              right = F, include.lowest = T)
+              right = FALSE, include.lowest = TRUE)
 
 # breaks as integer with no label
 some_letters <- cfactor(sample(letters), ordered = TRUE)
@@ -22,23 +22,23 @@ case7a <- cut(some_letters, breaks = 2, include.lowest = TRUE)
 
 # breaks of length 1
 case3a <- cut(cfactor1, breaks = 2, labels = c("a first group", "another one"), 
-              right = F, include.lowest = T)
+              right = FALSE, include.lowest = TRUE)
 case3b <- cut(cfactor1, breaks = 2, labels = c("a first group", "another one"), 
-              right = T, include.lowest = F)
+              right = TRUE, include.lowest = FALSE)
 
 ## labels
-# labels = F
-case4a <- cut(cfactor1, breaks = 2, labels = F, 
-              right = T, include.lowest = T)
+# labels = FALSE
+case4a <- cut(cfactor1, breaks = 2, labels = FALSE, 
+              right = TRUE, include.lowest = TRUE)
 
 ## separator
 case5a <- cut(cfactor1, breaks = 2, labels = NULL, 
-              right = T, include.lowest = T, label_sep = "|")
+              right = TRUE, include.lowest = TRUE, label_sep = "|")
 
 ## binwidth 1
 
 
-case6a <- cut(cfactor(sample(letters), ordered = T), breaks = letters)
+case6a <- cut(cfactor(sample(letters), ordered = TRUE), breaks = letters)
 ################################################################################
 
 test_that("cut.ordered simple tests", {
@@ -67,17 +67,17 @@ test_that("cut.ordered simple tests", {
 test_that("warnings", {
   # breaks that create missing values
   expect_warning(cut(cfactor1, breaks = c("a", "q", "y"), 
-                     right = T, include.lowest = T), 
+                     right = TRUE, include.lowest = TRUE), 
                  "[[:digit:]] missing values generated")
 })
 
 test_that("errors", {
   # breaks that do not exist in data
   expect_error(cut(cfactor2, breaks = c("a", "q", "y"), 
-                   right = T, include.lowest = T), 
+                   right = TRUE, include.lowest = TRUE), 
                "specified breakpoints inexistent in data")
   expect_error(cut(cfactor1, breaks = 2, labels = "a label", 
-                   right = T, include.lowest = T))
+                   right = TRUE, include.lowest = TRUE))
 })
 
 # binwidth 1 

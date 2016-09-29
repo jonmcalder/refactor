@@ -56,12 +56,12 @@ A wrapper for \code{factor} with enhanced control.
  Apart from the newly introduced argument \code{sep}, \code{cfactor} has 
  the same arguments and defaults as \code{factor}.
  \cr
- Levels of the factor or detetmined by the \code{levels} argument. If 
+ Levels of the factor or determined by the \code{levels} argument. If 
  \code{levels} is missing, the order of the levels is determined as 
  follows: 
  \itemize{
    \item{If \code{sep} is set to \code{NULL}: Levels are determined by 
-   sorting the unique values in \code{x}, which is the same behaivour as in 
+   sorting the unique values in \code{x}, which is the same behaviour as in 
    \code{factor}.}
    \item{If \code{sep} is set to \code{NA}, the order is given by first
    appearance in \code{x}.} 
@@ -72,7 +72,7 @@ A wrapper for \code{factor} with enhanced control.
      \code{sep}.}
      \item{If not every value in \code{x} contains numbers: Levels are 
      determined by sorting the unique values in \code{x}, which is the same 
-     behaivour as in \code{factor}.}
+     behaviour as in \code{factor}.}
        }
      }
    }
@@ -84,9 +84,9 @@ string <- c("a", "b", "c")
 cfactor(string, levels = c("b", "c", "d"))}
 
 ## detecting levels: compare factor and cfactor
-hard_to_dectect <- c("EUR 21 - EUR 22", "EUR 100 - 101", 
+hard_to_detect <- c("EUR 21 - EUR 22", "EUR 100 - 101", 
 "EUR 1 - EUR 10", "EUR 11 - EUR 20")
-factor(hard_to_dectect, ordered = TRUE)
-cfactor(hard_to_dectect, ordered = TRUE)
+factor(hard_to_detect, ordered = TRUE)
+cfactor(hard_to_detect, ordered = TRUE)
 }
 
