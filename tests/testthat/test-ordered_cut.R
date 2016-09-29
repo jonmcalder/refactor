@@ -2,12 +2,14 @@ library("testthat")
 
 context("ordered_cut")
 cfactor1 <- cfactor(sample(c(letters, sample(letters, 100, replace = TRUE))), ordered = TRUE)
-cfactor2 <- cfactor(sample(letters[3:16], 100, replace = TRUE), ordered = TRUE)
+cfactor2 <- cfactor(sample(letters[3:16], 9, replace = TRUE), ordered = TRUE)
 
 ## no labels
+# with braks
 case1a <- cut(cfactor1, breaks = c("a", "q", "z"), right = TRUE, include.lowest = TRUE)
 case2a <- cut(cfactor1, breaks = c("a", "q", "z"), right = FALSE, include.lowest = TRUE)
-
+# without breaks
+cut(cfactor1, breaks = c("a", "q", "z"), right = TRUE, include.lowest = TRUE)
 # custom labels
 case1b <- cut(cfactor1, breaks = c("a", "q", "z"), 
               labels = c("group one", "group 2"), right = TRUE, include.lowest = TRUE)
