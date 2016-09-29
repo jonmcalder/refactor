@@ -48,7 +48,6 @@
 #' an integer vector of level codes.
 #' @examples random <- sample(10)
 #'  cut(random, breaks = seq(0, 100, by = 10))[1:10]
-
 #' @export
 
 cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, 
@@ -58,7 +57,7 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
   # check function arguments
   assert_class(x, "integer")
   
-  # breaks are either numeric or integer
+  
   assert(
     test_class(breaks, "numeric"),
     test_class(breaks, "integer")
@@ -117,8 +116,7 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
       warning("breaks is a scalar not smaller than the length of x")
     }
   }
-
-  ############################################### assertive checks completed  ###############################################
+  ######################### assertive checks completed  ########################
   
   # if breaks are not specified (i.e. only the number of breaks is provided)
   if(length(breaks) == 1){

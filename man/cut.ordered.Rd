@@ -5,8 +5,7 @@
 \title{Create Bins for ordered Factors}
 \usage{
 \method{cut}{ordered}(x, breaks, labels = NULL, include.lowest = FALSE,
-  right = TRUE, ordered_result = FALSE, breaks_mode = "default",
-  label_sep = "-", ...)
+  right = TRUE, ordered_result = FALSE, label_sep = "-", ...)
 }
 \arguments{
 \item{x}{A numeric vector which is to be converted to a factor by cutting.}
@@ -29,16 +28,6 @@ right (and open on the left) or vice versa.}
 
 \item{ordered_result}{Logical: should the result be an ordered factor?}
 
-\item{breaks_mode}{A parameter indicating how to determine the intervals when
-breaks is specified as a scalar. 
-\itemize{ 
- \item 'default' will result in
- intervals spread as evenly as possible over the exact range of \code{x}. 
- \item
-'pretty' will generate rounded breakpoints for the intervals (often
-extending slightly beyond the range of \code{x}) based on 
-\link[base]{pretty}.}}
-
 \item{label_sep}{A single or short character string used to generate labels 
 for the intervals e.g. the default value of "-" will result in labels like 
 a-c d-g i-z etc.}
@@ -56,8 +45,8 @@ cut divides the range of \code{x} into intervals and codes the values in
 }
 \details{
 In deviation from \code{cut.default}, \code{cut.ordered} does not 
- have an argument \code{dig.lab}, but instead has two arguments that do not 
- exist for \code{cut.default}: \code{breaks_mode} and \code{label_sep}.
+ have an argument \code{dig.lab}, but instead has an argument that does not 
+ exist for \code{cut.default}: \code{label_sep}.
  Note that unlike \code{\link[base]{cut.default}}, here 
  \code{include.lowest} defaults to \code{TRUE}, since this is more intuitive 
  for integer intervals.
@@ -67,6 +56,5 @@ In deviation from \code{cut.default}, \code{cut.ordered} does not
  head(cut(some_letters, breaks = c("a", "q", "z"), 
           labels = c("beginning of the alphabet", "the rest of the alphabeth"), 
           right = TRUE, include.lowest = TRUE))
- 
 }
 

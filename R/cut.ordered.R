@@ -17,23 +17,14 @@
 #' @param right	Logical, indicating if the intervals should be closed on the 
 #'  right (and open on the left) or vice versa.
 #' @param ordered_result Logical: should the result be an ordered factor?
-#' @param breaks_mode A parameter indicating how to determine the intervals when
-#'   breaks is specified as a scalar. 
-#'   \itemize{ 
-#'    \item 'default' will result in
-#'    intervals spread as evenly as possible over the exact range of \code{x}. 
-#'    \item
-#'   'pretty' will generate rounded breakpoints for the intervals (often
-#'   extending slightly beyond the range of \code{x}) based on 
-#'   \link[base]{pretty}.}
 #' @param label_sep A single or short character string used to generate labels 
 #'  for the intervals e.g. the default value of "-" will result in labels like 
 #'  a-c d-g i-z etc.
 #' @param ... Further arguments to be passed to or from other methods, 
 #'  in particular to \code{\link{cut.default}}.
 #' @details In deviation from \code{cut.default}, \code{cut.ordered} does not 
-#'  have an argument \code{dig.lab}, but instead has two arguments that do not 
-#'  exist for \code{cut.default}: \code{breaks_mode} and \code{label_sep}.
+#'  have an argument \code{dig.lab}, but instead has an argument that does not 
+#'  exist for \code{cut.default}: \code{label_sep}.
 #'  Note that unlike \code{\link[base]{cut.default}}, here 
 #'  \code{include.lowest} defaults to \code{TRUE}, since this is more intuitive 
 #'  for integer intervals.
@@ -44,51 +35,76 @@
 #'  head(cut(some_letters, breaks = c("a", "q", "z"), 
 #'           labels = c("beginning of the alphabet", "the rest of the alphabeth"), 
 #'           right = TRUE, include.lowest = TRUE))
-#'  
+#' @importFrom utils head tail
+#' @importFrom stats quantile
 #' @export
 cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
-                        right = TRUE, ordered_result = FALSE, 
-                        breaks_mode = "default", label_sep = "-", ...) {
-  xnum <- as.numeric(x)
+                        right = TRUE, ordered_result = FALSE, label_sep = "-", 
+                        ...) {
+
+  # simple input checkoung 
+  assert_factor(x, ordered = T)
+  
+  # breaks are either numeric or integer
+  assert(
+    test_class(breaks, "numeric"),
+    test_class(breaks, "integer"),
+    test_class(breaks, "character")
+  )
+  
+  # labels
+  assert(
+    test_null(labels),
+    test_logical(labels),
+    test_character(labels)
+  )
+  
+  # include.lowest
+  test_logical(include.lowest)
+  
+  # right
+  test_logical(right)
+  
+  # ordered_result
+  test_logical(ordered_result)
+  
+  ######################### assertive checks completed  ########################
+  
+  x_num <- as.numeric(x)
   x_lev <- levels(x)
-  breakpos <- match(breaks, x_lev)
-  if(anyNA(breakpos)){
-    stop(paste("specified breakpoints inexistent in data: \n", 
-               paste(breaks[is.na(breakpos)], collapse = "\n")))
-  }
+  unique_x <- unique(x)
   
   ######## 
   # if breaks are not specified (i.e. only the number of breaks is provided)
   if(length(breaks) == 1){
     
     numLabels <- breaks
+    breakpos <- quantile(x_num, seq(0, 1, 1/breaks))
     
-    # should the breaks be "pretty"? 
     # (‘floor’ values which cover the range of the values in x_num)
     # or evenly spaced over the range of the data? ("default")
-    if(breaks_mode == "default"){
+    
       
-      range <- max(x_num)-min(x_num)+1
-      avg_bin_width <- floor(range/breaks)
-      rem <- range %% breaks
-      num <- breaks+1
-      if(rem == 0){
+    range <- max(x_num)-min(x_num)+1
+    avg_bin_width <- floor(range/breaks)
+    rem <- range %% breaks
+    num <- breaks+1
+    if(rem == 0){
+      breakpoints <- seq(from=min(x_num)-1, by = avg_bin_width, length.out = num)
+      breakpoints[1] <- min(x_num)
+    } else if(rem != 0) {
+      if(right == FALSE){
+        breakpoints <- rev(seq(from=max(x_num), by = - avg_bin_width, length.out = num))
+        breakpoints[1] <- min(x_num)
+        for(i in 1:rem){
+          breakpoints[i+1] <- min(x_num)-1+avg_bin_width*i+i
+        }
+      } else if(right == TRUE){
         breakpoints <- seq(from=min(x_num)-1, by = avg_bin_width, length.out = num)
         breakpoints[1] <- min(x_num)
-      } else if(rem != 0) {
-        if(right == FALSE){
-          breakpoints <- rev(seq(from=max(x_num), by = - avg_bin_width, length.out = num))
-          breakpoints[1] <- min(x_num)
-          for(i in 1:rem){
-            breakpoints[i+1] <- min(x_num)-1+avg_bin_width*i+i
-          }
-        } else if(right == TRUE){
-          breakpoints <- seq(from=min(x_num)-1, by = avg_bin_width, length.out = num)
-          breakpoints[1] <- min(x_num)
-          breakpoints[num] <- max(x_num)
-          for(i in num:(num-rem+1)){
-            breakpoints[i-1] <- max(x_num)-(avg_bin_width+1)*(num-i+1)
-          }
+        breakpoints[num] <- max(x_num)
+        for(i in num:(num-rem+1)){
+          breakpoints[i-1] <- max(x_num)-(avg_bin_width+1)*(num-i+1)
         }
       }
     }
@@ -98,9 +114,22 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
     
     # use breakpoints as is if provided  
   } else if(length(breaks > 1)){
+    breakpos <- match(breaks, x_lev)
+    if(anyNA(breakpos)){
+      stop(paste("specified breakpoints inexistent in data: \n", 
+                 paste(breaks[is.na(breakpos)], collapse = "\n")))
+    }
     
-    breakpoints <- breaks
+
+    breakpos <- match(breaks, x_lev)
+    # check for breakpoint existence
+    if(anyNA(breakpos)){
+      stop(paste("specified breakpoints inexistent in data: \n", 
+                 paste(breaks[is.na(breakpos)], collapse = "\n")))
+    }
     
+    breakpoints <- breakpos
+
     numLabels <- length(breakpoints) - 1
     
   }
@@ -123,15 +152,23 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
   
   # create integer-based interval labels using label_sep
   if(is.null(labels)) {
-    recode_labels <- paste(x_lev[head(breakpos, -1) + floorInc], 
-                           x_lev[tail(breakpos, -1) - ceilingDec], 
-                           sep = label_sep) 
+    if(length(breaks) < length(unique_x)) { # the standard case
+      recode_labels <- paste(x_lev[head(breakpoints, -1) + floorInc], 
+                             x_lev[tail(breakpoints, -1) - ceilingDec], 
+                             sep = label_sep)
+      
+      # correct labels with binwidth 1, that is where to elements separated by 
+      # label_sep are the same, i.e. the label "10-10"
+      same <- head(breakpoints, -1) + floorInc == tail(breakpoints, -1) - ceilingDec
+      recode_labels[same] <- x_lev[tail(breakpoints, -1) - ceilingDec][same] 
+      
+      
+    } else if(length(breaks) == length(unique_x)){ # if we have the same number 
+      # of breaks as unique x, each level is a break value itself
+      return(cfactor(x, levels = breaks))
+      
+    }
     
-    # correct labels with binwidth 1, that is where to elements separated by 
-    # label_sep are the same, i.e. the label "10-10"
-    # deactivated
-    same <- head(breakpos, -1) + floorInc == tail(breakpos, -1) - ceilingDec
-    # recode_labels[same] <- (tail(breakpos, -1) - ceilingDec)[same] 
     
   } else if(!is.null(labels)) {
     if(length(labels) == length(breakpoints) - 1) {
@@ -151,7 +188,7 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
       
     }
   }
-  output <- cut.default(xnum, breaks = breakpos, labels = recode_labels, 
+  output <- cut.default(x_num, breaks = breakpoints, labels = recode_labels, 
                         include.lowest = include.lowest, right = right, 
                         ordered_result = ordered_result, ...)
   
