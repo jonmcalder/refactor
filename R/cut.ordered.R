@@ -33,7 +33,7 @@
 #' @examples 
 #'  some_letters <- cfactor(sample(letters, 100, replace = TRUE), ordered = TRUE)
 #'  head(cut(some_letters, breaks = c("a", "q", "z"), 
-#'           labels = c("beginning of the alphabet", "the rest of the alphabeth"), 
+#'           labels = c("beginning of the alphabet", "the rest of the alphabet"), 
 #'           right = TRUE, include.lowest = TRUE))
 #' @importFrom utils head tail
 #' @importFrom stats quantile
