@@ -16,7 +16,7 @@
 #'    is used to determine the order of the levels of data containing numerical 
 #'    values. Further more, it is possible to implicitly specify the order by 
 #'    first appearance in \code{x}.
-#'  } \cr
+#'  }
 #'  Apart from the newly introduced argument \code{sep}, \code{cfactor} has 
 #'  the same arguments and defaults as \code{factor}.
 #'  \cr
@@ -24,23 +24,22 @@
 #'  \code{levels} is missing, the order of the levels is determined as 
 #'  follows: 
 #'  \itemize{
-#'    \item{If \code{sep} is set to \code{NULL}: Levels are determined by 
+#'    \item If \code{sep} is set to \code{NULL}: Levels are determined by 
 #'    sorting the unique values in \code{x}, which is the same behaviour as in 
-#'    \code{factor}.}
-#'    \item{If \code{sep} is set to \code{NA}, the order is given by first
-#'    appearance in \code{x}.} 
-#'    \item{Otherwise, 
-#'    \itemize{
-#'      \item{If every value in \code{x} contains numbers: Levels are determined
-#'      by sorting the numerical values preceeding the separators indicated in 
-#'      \code{sep}.}
-#'      \item{If not every value in \code{x} contains numbers: Levels are 
-#'      determined by sorting the unique values in \code{x}, which is the same 
-#'      behaviour as in \code{factor}.}
-#'        }
+#'    \code{factor}.
+#'    \item If \code{sep} is set to \code{NA}, the order is given by first
+#'    appearance in \code{x}. 
+#'    \item Otherwise, 
+#'      \itemize{
+#'        \item If every value in \code{x} contains numbers: Levels are determined
+#'        by sorting the numerical values preceeding the separators indicated in 
+#'        \code{sep}.
+#'        \item If not every value in \code{x} contains numbers: Levels are 
+#'        determined by sorting the unique values in \code{x}, which is the same 
+#'        behaviour as in \code{factor}.2
 #'      }
 #'    }
-#'  
+
 #' @examples \dontrun{
 #' ## create warnings with unused and removed levels
 #' string <- c("a", "b", "c")
