@@ -57,7 +57,7 @@ test_that("cut.ordered simple tests", {
   expect_equal(levels(case3b), c("a first group", "another one"))
   
   
-  # labels F
+  # labels = FALSE
   expect_error(case4a, NA)
   expect_equal(levels(case7a), c("a-m", "n-z"))
   
