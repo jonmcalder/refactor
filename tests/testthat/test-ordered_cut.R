@@ -82,5 +82,18 @@ test_that("errors", {
                    right = TRUE, include.lowest = TRUE))
 })
 
+test_that("return type" , {
+  # returns ordered factor
+  expect_factor(case1a, ordered = TRUE)
+  expect_factor(case1b, ordered = TRUE)
+  expect_factor(case2a, ordered = TRUE)
+  expect_factor(case2b, ordered = TRUE)
+  expect_factor(case3a, ordered = TRUE)
+  expect_factor(case3b, ordered = TRUE)
+  expect_factor(case5a, ordered = TRUE)
+  expect_factor(case6a, ordered = TRUE)
+  expect_factor(case7a, ordered = TRUE)
+})
+
 # binwidth 1 
 # when braks are integer, right argument does not work

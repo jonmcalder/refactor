@@ -5,7 +5,7 @@
 \title{Create Bins for ordered Factors}
 \usage{
 \method{cut}{ordered}(x, breaks, labels = NULL, include.lowest = FALSE,
-  right = TRUE, ordered_result = FALSE, label_sep = "-", ...)
+  right = TRUE, ordered_result = TRUE, label_sep = "-", ...)
 }
 \arguments{
 \item{x}{A numeric vector which is to be converted to a factor by cutting.}
@@ -26,7 +26,9 @@ included.}
 \item{right}{Logical, indicating if the intervals should be closed on the 
 right (and open on the left) or vice versa.}
 
-\item{ordered_result}{Logical: should the result be an ordered factor?}
+\item{ordered_result}{Logical: should the result be an ordered factor? Note 
+that since the input data is ordered this argument is \code{TRUE} by 
+default.}
 
 \item{label_sep}{A single or short character string used to generate labels 
 for the intervals e.g. the default value of "-" will result in labels like 

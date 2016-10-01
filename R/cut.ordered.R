@@ -16,7 +16,9 @@
 #'  included.
 #' @param right	Logical, indicating if the intervals should be closed on the 
 #'  right (and open on the left) or vice versa.
-#' @param ordered_result Logical: should the result be an ordered factor?
+#' @param ordered_result Logical: should the result be an ordered factor? Note 
+#'  that since the input data is ordered this argument is \code{TRUE} by 
+#'  default.
 #' @param label_sep A single or short character string used to generate labels 
 #'  for the intervals e.g. the default value of "-" will result in labels like 
 #'  a-c d-g i-z etc.
@@ -39,7 +41,7 @@
 #' @importFrom stats quantile
 #' @export
 cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
-                        right = TRUE, ordered_result = FALSE, label_sep = "-", 
+                        right = TRUE, ordered_result = TRUE, label_sep = "-", 
                         ...) {
 
   # simple input checking 
