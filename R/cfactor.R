@@ -55,6 +55,47 @@
 cfactor <- function(x, levels, labels = levels, exclude = NA,
                     ordered = is.ordered(x), nmax = NA, sep = c("-", "to")) {
 
+  ############################ assertive tests #################################
+  ## simple checks
+  
+  # x
+  assert(
+    # use check within assert
+    check_character(x),
+    check_factor(x),
+    check_numeric(x)
+  )
+  
+  # levels 
+  if(!missing(levels)) {
+    assert(
+      check_character(levels),
+      check_integer(levels),
+      check_numeric(levels))
+      
+  }
+  # labels
+  if(!missing(labels)){
+    assert(
+      check_character(labels),
+      check_numeric(labels),
+      check_factor(labels)
+      )
+  }
+  
+  # exclude
+  assert(
+    check_scalar_na(exclude, null.ok = TRUE),
+    check_class(exclude, class(x))
+  )
+  
+  # ordered
+  assert_class(ordered, "logical")
+  
+  # nmax
+  check_int(nmax, na.ok = TRUE)
+  
+  ######################### assertive tests completed ##########################
   `%w/o%` <- function(x, y) x[!x %in% y] # opposite of %in%
   uniq_x <- unique(na.omit(x))
   

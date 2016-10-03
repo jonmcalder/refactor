@@ -54,6 +54,23 @@ test_that("warnings", {
                          labels = c("a", "now", "b")), 
                  "Some values now used .* is now represented .* still represents")
 })
+
+
+test_that("errors because of wrong input types", {
+  # exclude
+  expect_error(cfactor(letters, exclude = TRUE), 
+               "Must have class 'character'")
+  expect_error(cfactor(1:26, exclude = "a"), 
+               "Must have class 'integer'")
+  
+  # ordered
+  expect_error(cfactor(1:26, ordered = 3), 
+               "Must have class 'logical'")
+  expect_error(cfactor(sample(letters), nmax = 4), 
+               NA)
+})
 # connector esape hatch
 
 # width-1-categories with no separator
+# labels as character of length 1
+# cfactor(1:26, ordered = NA) should not yield error
