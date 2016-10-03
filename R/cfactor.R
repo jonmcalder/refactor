@@ -97,7 +97,7 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
   
   ######################### assertive tests completed ##########################
   `%w/o%` <- function(x, y) x[!x %in% y] # opposite of %in%
-  uniq_x <- unique(na.omit(x))
+  uniq_x <- unique(na.omit(x), nmax = nmax)
   
   if(missing(levels)){ # detect factor levels if not given
     has_numbers <- all(grepl("[[:digit:]]", uniq_x))

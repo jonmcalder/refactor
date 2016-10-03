@@ -67,7 +67,7 @@ test_that("errors because of wrong input types", {
   expect_error(cfactor(1:26, ordered = 3), 
                "Must have class 'logical'")
   expect_error(cfactor(sample(letters), nmax = 4), 
-               NA)
+               "hash table is full")
 })
 # connector esape hatch
 
