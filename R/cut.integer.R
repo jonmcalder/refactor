@@ -54,6 +54,8 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
                         right = TRUE, ordered_result = FALSE,
                         breaks_mode = "default", label_sep = "-", ...) {
   
+############################## assertive checks ################################
+  
   # check function arguments
   assert_class(x, "integer")
   
@@ -116,16 +118,18 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
       warning("breaks is a scalar not smaller than the length of x")
     }
   }
-  ######################### assertive checks completed  ########################
   
+############################## assertive checks completed ######################
+
+############################## determine breakpoints ###########################
+    
   # if breaks are not specified (i.e. only the number of breaks is provided)
   if(length(breaks) == 1){
     
     numLabels <- breaks
     
-    # should the breaks be "pretty"? (‘round’ values which cover the range of 
-    # the values in x)
-    # or based on quantiles?
+    # create breakpoints based on breaks_mode
+    # should the breaks be "pretty"? (‘round’ values which cover the range of x)
     # or evenly spaced over the range of the data? ("default")
     if(breaks_mode == "pretty"){
       
@@ -137,16 +141,24 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
       avg_bin_width <- floor(range/breaks)
       rem <- range %% breaks
       num <- breaks+1
+      
+      # if data range can be evenly split into desired number of breaks
       if(rem == 0){
         breakpoints <- seq(from=min(x)-1, by = avg_bin_width, length.out = num)
         breakpoints[1] <- min(x)
+      
+      # if data range cant be evenly split into desired number of breaks
       } else if(rem != 0) {
+        
+        # make leftmost bins slightly larger
         if(right == FALSE){
           breakpoints <- rev(seq(from=max(x), by = -avg_bin_width, length.out = num))
           breakpoints[1] <- min(x)
           for(i in 1:rem){
             breakpoints[i+1] <- min(x)-1+avg_bin_width*i+i
           }
+          
+          # make rightmost bins slightly larger
         } else if(right == TRUE){
           breakpoints <- seq(from=min(x)-1, by = avg_bin_width, length.out = num)
           breakpoints[1] <- min(x)
@@ -158,8 +170,10 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
       }
     }
     
+    # Now that the breakpoints have been determined, set right = TRUE since this 
+    # is (by convention) the required interpretation of these breakpoints for 
+    # the purpose of the labeling which follows
     right <- TRUE
-  
     
   # use breakpoints as is if provided  
   } else if(length(breaks > 1)){
@@ -169,6 +183,10 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
     numLabels <- length(breakpoints) - 1
     
   }
+  
+############################## breakpoints completed ###########################
+
+############################## determine labels ################################
   
   # handle break offsets for 'right' and 'left' intervals
   # and also handle include.lowest = TRUE
@@ -214,6 +232,9 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
       
     }
   }
+  
+############################## labels completed ################################
+  
   output <- cut.default(x, breaks = breakpoints, labels = recode_labels, 
                         include.lowest = include.lowest, right = right, 
                         ordered_result = ordered_result, ...)
