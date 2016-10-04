@@ -44,6 +44,8 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
                         right = TRUE, ordered_result = TRUE, label_sep = "-", 
                         ...) {
 
+############################## assertive checks ################################
+  
   # simple input checking 
   assert_factor(x, ordered = T)
   
@@ -70,8 +72,10 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
   # ordered_result
   test_logical(ordered_result)
   
-  ######################### assertive checks completed  ########################
-  
+########################### assertive checks completed  ########################
+
+############################## determine breakpoints ###########################
+    
   x_num <- as.numeric(x)
   x_lev <- levels(x)
   unique_x <- unique(x)
@@ -119,6 +123,10 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
     numLabels <- length(breakpoints) - 1
     
   }
+  
+############################## breakpoints completed ###########################
+  
+############################## determine labels ################################
   
   # handle break offsets for 'right' and 'left' intervals
   # and also handle include.lowest = TRUE
@@ -174,6 +182,9 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = FALSE,
       
     }
   }
+  
+############################## labels completed ################################
+  
   output <- cut.default(x_num, breaks = breakpoints, labels = recode_labels, 
                         include.lowest = include.lowest, right = right, 
                         ordered_result = ordered_result, ...)
