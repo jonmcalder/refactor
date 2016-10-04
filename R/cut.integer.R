@@ -147,25 +147,49 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
         breakpoints <- seq(from=min(x)-1, by = avg_bin_width, length.out = num)
         breakpoints[1] <- min(x)
       
-      # if data range cant be evenly split into desired number of breaks
+      # if data range can't be evenly split into desired number of breaks
       } else if(rem != 0) {
         
         # make leftmost bins slightly larger
         if(right == FALSE){
+          
+          # start from the right and work backwards creating the breakpoints
+          # then reverse the vector to get it in the correct direction
           breakpoints <- rev(seq(from=max(x), by = -avg_bin_width, length.out = num))
+          # set correct point (lowest value) for first breakpoint
           breakpoints[1] <- min(x)
+          
+          # allocate remaning 'bin space' by widening intervals starting from 
+          # the left
           for(i in 1:rem){
             breakpoints[i+1] <- min(x)-1+avg_bin_width*i+i
           }
           
           # make rightmost bins slightly larger
         } else if(right == TRUE){
+          
+          # start from the left and work forwards creating the breakpoints
           breakpoints <- seq(from=min(x)-1, by = avg_bin_width, length.out = num)
-          breakpoints[1] <- min(x)
+          # set correct point (highest value) for last breakpoint
           breakpoints[num] <- max(x)
+          
+          # allocate remaning 'bin space' by widening intervals starting from 
+          # the right
           for(i in num:(num-rem+1)){
             breakpoints[i-1] <- max(x)-(avg_bin_width+1)*(num-i+1)
           }
+          
+          # handle edge case of bin width 1 with lowest breakpoint equal to 
+          # min(x)
+          if (breakpoints[2] == min(x)){
+            # start from 1 below the min value for x and override include.lowest 
+            # so that label will be correct for (expected) bin width of 1
+            breakpoints[1] <- min(x)-1
+            include.lowest = FALSE
+          } else {
+            breakpoints[1] <- min(x)
+          }
+          
         }
       }
     }

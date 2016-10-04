@@ -179,6 +179,14 @@ test_that("cut.integer warning cases", {
                        "bin\\(s\\) of width 1. The corresponding label\\(s\\)", 
                        "are: 9, 10"))
   
+  # correct levels when bins with width 1 are produced with right = FALSE
+  expect_equal(levels(cut(1:10, breaks = 9, right = FALSE)), 
+               c("1-2", "3", "4", "5", "6", "7", "8", "9", "10"))
+  
+  # correct levels when bins with width 1 are produced with right = TRUE
+  expect_equal(levels(cut(1:10, breaks = 9, right = TRUE)),
+              c("1", "2", "3", "4", "5", "6", "7", "8", "9-10"))
+  
 })
 
 
