@@ -16,6 +16,11 @@
 \description{
 Combine Values into a Factor
 }
+\details{
+Note that the order of the levels is internally determined by
+\code{\link{cfactor}} and thus its ordering scheme. Refer to the section 
+'Details' in the \code{\link{cfactor}} documentation.
+}
 \examples{
 char1 <- as.factor(sample(letters, 5))
 char2 <- as.factor(sample(letters, 5))
