@@ -104,7 +104,7 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
   if(!missing(levels) && any(duplicated(levels))) {
     
     warning(paste("the following duplicated levels were removed: \n", 
-                  paste(levels[duplicated(levels)], collapse = " \n")))
+                  paste(unique(levels[duplicated(levels)]), collapse = " \n")))
     
     levels <- unique(levels)
   }
