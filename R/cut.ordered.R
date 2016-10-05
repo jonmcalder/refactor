@@ -134,7 +134,15 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = TRUE,
     same <- head(breakpoints, -1) + adjust$floorInc == tail(breakpoints, -1) - adjust$ceilingDec
     recode_labels[same] <- x_lev[tail(breakpoints, -1) - adjust$ceilingDec][same] 
     
-    
+    # warning: breaks that create bins of width 1 (warning only if breaks is 
+    # supplied a scalar)
+    if(length(breaks) == 1) {
+      if(sum(same) > 0) {
+        warning(paste("this break specification produces", sum(same), 
+                      "bin(s) of width 1. The corresponding label(s) are:", 
+                      paste(recode_labels[same], collapse = ", "))) 
+      }
+    }
     
   } else if(!is.null(labels)) {
       
