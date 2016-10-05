@@ -59,6 +59,11 @@ case30 <- cut(sample(10), breaks = c(1L, 3L, 10L))
 # when breaks need to be rounded
 case31 <- cut(sample(10), breaks = c(1, 2.6, 5.1, 10))
 
+
+## where binwidth is 1
+case32a <- cut(1:10, breaks = 9, right = FALSE)
+
+
 test_that(paste("cut.integer returns same as cut.default but with better", 
                 "labels for length(break) > 1"), {
   # right = TRUE
@@ -173,22 +178,27 @@ test_that("cut.integer warning cases", {
   expect_warning(cut(sample(10), breaks = c(1, 2.6, 5.1, 10)), 
                  "^When coerced to integers, the following breaks were truncated")
   
-  # when bins with width 1 are produced
-  expect_warning(cut(sample(10), breaks = c(1, 4, 6, 8, 9, 10)),
-                 paste("^this break specification produces [[:digit:]]+", 
-                       "bin\\(s\\) of width 1. The corresponding label\\(s\\)", 
-                       "are: 9, 10"))
-  
-  # correct levels when bins with width 1 are produced with right = FALSE
-  expect_equal(levels(cut(1:10, breaks = 9, right = FALSE)), 
-               c("1-2", "3", "4", "5", "6", "7", "8", "9", "10"))
-  
-  # correct levels when bins with width 1 are produced with right = TRUE
-  expect_equal(levels(cut(1:10, breaks = 9, right = TRUE)),
-              c("1", "2", "3", "4", "5", "6", "7", "8", "9-10"))
+  # when bins with width 1 are produced from breaks, this does not produce a warning
+  expect_warning(cut(sample(10), breaks = c(1, 4, 6, 8, 9, 10)), NA)
   
 })
-
+test_that("binwidth 1", {
+  # the level itself
+  expect_equal(levels(case32a),
+               c("1-2", "3", "4", "5", "6", "7", "8", "9", "10"))
+  
+  # the waring that goes with it for right = FALSE
+  ## x is even
+  expect_warning(cut(1:10, breaks = 9, right = FALSE), 
+                "are: 3, 4, 5, 6, 7, 8, 9, 10")
+  ## x is odd
+  expect_warning(cut(1:11, breaks = 9, right = FALSE), 
+                 "are: 5, 6, 7, 8, 9, 10, 11")
+  # the waring that goes with it for right = TRUE
+  ## breaks are even
+  expect_warning(cut(1:10, breaks = 8, right = TRUE), 
+                 "are: 1, 2, 3, 4, 5, 6")
+})
 
 
 

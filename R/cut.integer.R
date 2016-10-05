@@ -97,14 +97,10 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
       paste0(breaks, collapse = " ")))
   }
   
-  # breaks that create bins of width 1
-  n_of_1bins <- diff(breaks)[-1] == 1
-  if(sum(n_of_1bins > 0)) {
-    warning(paste("this break specification produces", sum(n_of_1bins), 
-                  "bin(s) of width 1. The corresponding label(s) are:", 
-                  paste(breaks[c(F, F, n_of_1bins)], collapse = ", "))) 
-  }
-
+  # breaks that create bins of width 1 (warning only if breaks is supplied as
+  # scalar). Since breaks need to be created first, this warning is not issued
+  # in this section
+  
   # break / x interaction
   if(length(x) == 1 & length(breaks) == 1) {
     stop("if x is a scalar, breaks must be given in intervals")
@@ -199,6 +195,7 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
     # the purpose of the labeling which follows
     right <- TRUE
     
+    
   # use breakpoints as is if provided  
   } else if(length(breaks > 1)){
     
@@ -207,6 +204,7 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
     numLabels <- length(breakpoints) - 1
     
   }
+
   
 ############################## breakpoints completed ###########################
 
@@ -237,6 +235,17 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
     # label_sep are the same, i.e. the label "10-10"
     same <- head(breakpoints, -1) + floorInc == tail(breakpoints, -1) - ceilingDec
     recode_labels[same] <- (tail(breakpoints, -1) - ceilingDec)[same]
+    
+    # warning: breaks that create bins of width 1 (warning only if breaks is 
+    # supplied a scalar)
+    if(length(breaks) == 1) {
+      if(sum(same) > 0) {
+        warning(paste("this break specification produces", sum(same), 
+                      "bin(s) of width 1. The corresponding label(s) are:", 
+                      paste(recode_labels[same], collapse = ", "))) 
+      }
+    }
+
     
   } else if(!is.null(labels)) {
     if(length(labels) == length(breakpoints) - 1) {
