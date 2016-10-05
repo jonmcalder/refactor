@@ -49,10 +49,14 @@ test_that("warnings", {
                          labels = c("a", "g", "laste")), 
                  "Some values now used .* still represents")
   
-  ## case 1 and 2
+  ## case 3: 1 and 2
   expect_warning(cfactor(x = c("a", "b", "c"), levels = c("a", "b", "c"), 
                          labels = c("a", "now", "b")), 
                  "Some values now used .* is now represented .* still represents")
+  
+  # duplicated factor inputs
+  expect_warning(cfactor(c("a", "b"), levels = c("a", "a", "b")),
+                 "the following duplicated levels were removed: \n a")
 })
 
 

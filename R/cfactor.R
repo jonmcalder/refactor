@@ -100,6 +100,17 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
   # nmax
   check_int(nmax, na.ok = TRUE)
   
+  ## duplicate levels
+  if(!missing(levels) && any(duplicated(levels))) {
+    
+    warning(paste("the following duplicated levels were removed: \n", 
+                  paste(levels[duplicated(levels)], collapse = " \n")))
+    
+    levels <- unique(levels)
+  }
+  
+  
+  
   ######################### assertive tests completed ##########################
   `%w/o%` <- function(x, y) x[!x %in% y] # opposite of %in%
   uniq_x <- unique(na.omit(x), nmax = nmax)
