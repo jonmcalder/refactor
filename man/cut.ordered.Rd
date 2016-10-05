@@ -4,7 +4,7 @@
 \alias{cut.ordered}
 \title{Create Bins for ordered Factors}
 \usage{
-\method{cut}{ordered}(x, breaks, labels = NULL, include.lowest = FALSE,
+\method{cut}{ordered}(x, breaks, labels = NULL, include.lowest = TRUE,
   right = TRUE, ordered_result = TRUE, label_sep = "-", ...)
 }
 \arguments{
