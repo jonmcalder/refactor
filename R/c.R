@@ -1,6 +1,9 @@
 #' Combine Values into a Factor
 #' 
 #' @inheritParams base::c
+#' @details Note that the order of the levels is internally determined by
+#' \code{\link{cfactor}} and thus its ordering scheme. Refer to the section 
+#' 'Details' in the \code{\link{cfactor}} documentation.
 #' @examples
 #' char1 <- as.factor(sample(letters, 5))
 #' char2 <- as.factor(sample(letters, 5))
@@ -15,6 +18,7 @@ c.factor <- function(..., recursive = FALSE){
 #' Combine Values into an Ordered Factor
 #' 
 #' @inheritParams base::c
+#' @inheritParams refactor::c.factor
 #' @examples
 #' group1 <- cfactor(c("US$51 - US$75", "US$101 - US$125", "US$1 - US$25"), 
 #'                  ordered = TRUE)

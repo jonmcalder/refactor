@@ -2,6 +2,10 @@
 #'
 #' A wrapper for \code{factor} with enhanced control.
 #' @inheritParams base::factor
+#' @param levels an optional vector of the values (as character strings) that 
+#'  \code{x} might have taken. If missing (the default), the levels are 
+#'  determined by sorting the numerical elements in \code{x}. This is not as in
+#'  \code{factor}. See 'Details'.
 #' @param sep A character vector giving all strings that are used to separate 
 #'  the lower numerical boundary of a range from the upper numerical boundary 
 #'  within \code{x}. See 'Details' for more information.
@@ -12,14 +16,9 @@
 #'    \item more warnings: \code{NA}s are never produced silently. Empty levels
 #'    also produce a warning. If \code{levels} and \code{labels} intersect, a
 #'    warning is produced too.
-#'    \item flexible order detection: By default, a regular expression approach 
-#'    is used to determine the order of the levels of data containing numerical 
-#'    values. Further more, it is possible to implicitly specify the order by 
-#'    first appearance in \code{x}.
+#'    \item flexible order detection: By default, the order of the levels is 
+#'    given by the order of the numerical elements in \code{x}. See below.
 #'  }
-#'  Apart from the newly introduced argument \code{sep}, \code{cfactor} has 
-#'  the same arguments and defaults as \code{factor}.
-#'  \cr
 #'  Levels of the factor or determined by the \code{levels} argument. If 
 #'  \code{levels} is missing, the order of the levels is determined as 
 #'  follows: 
@@ -36,10 +35,16 @@
 #'        \code{sep}.
 #'        \item If not every value in \code{x} contains numbers: Levels are 
 #'        determined by sorting the unique values in \code{x}, which is the same 
-#'        behaviour as in \code{factor}.2
+#'        behaviour as in \code{factor} and corresponds to setting \code{sep}
+#'        to \code{NULL}.
 #'      }
 #'    }
-
+#'  Apart from the newly introduced argument \code{sep}, \code{cfactor} has 
+#'  the same arguments and defaults as \code{factor}.
+#'  \cr
+#'  Where levels is not supplied, \code{\link{unique}} is called. Since factors typically 
+#'  have quite a small number of levels, for large vectors x it is helpful to 
+#'  supply \code{nmax} as an upper bound on the number of unique values.
 #' @examples \dontrun{
 #' ## create warnings with unused and removed levels
 #' string <- c("a", "b", "c")
