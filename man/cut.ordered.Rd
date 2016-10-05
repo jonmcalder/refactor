@@ -23,8 +23,14 @@ factor.}
 lowest (or highest, for \code{right = FALSE}) breaks value should be 
 included.}
 
-\item{right}{Logical, indicating if the intervals should be closed on the 
-right (and open on the left) or vice versa.}
+\item{right}{Logical, indicating how to create the bins. This is utilized in
+two different ways based on the type of breaks argument. In the
+conventional case, where a breaks vector is supplied, \code{right = TRUE}
+indicates that bins should be closed on the right (and open on the left) or
+vice versa. If a single integer breaks value is provided, then 
+\code{right = TRUE} indicates that bins will be determined such that those 
+on the right are larger (if it is not possible for all bins to be evenly 
+sized).}
 
 \item{ordered_result}{Logical: should the result be an ordered factor? Note 
 that since the input data is ordered this argument is \code{TRUE} by 
