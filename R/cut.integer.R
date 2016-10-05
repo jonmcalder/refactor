@@ -63,6 +63,14 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
     test_class(breaks, "numeric"),
     test_class(breaks, "integer")
   )
+  
+  if(!is.null(labels) && labels != FALSE){
+    if(length(labels) != breaks && length(labels) != length(breaks)-1){
+    
+      stop(paste("if labels not 'NULL' and not 'FALSE', it must be the same", 
+                 "length as the number of bins resulting from 'breaks'"))  
+    }  
+  }
 
   assert_class(include.lowest, "logical")
   assert_class(right, "logical")
@@ -173,22 +181,9 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
     recode_labels[same] <- (tail(breakpoints, -1) - adjust$ceilingDec)[same]
     
   } else if(!is.null(labels)) {
-    if(length(labels) == length(breakpoints) - 1) {
-      recode_labels <- labels
-    } else if(length(labels) != length(breakpoints) - 1) {
-      if(length(labels) == 1) {
-        if(labels == FALSE) {
-          recode_labels <- labels
-        } else if(labels != FALSE) {
-          stop(paste("if labels not 'NULL' and not 'FALSE', it must be the same", 
-                     "length as the number of bins resulting from 'breaks'"))
-        }
-      } else if(length(labels) != 1) {
-        stop(paste("if labels not 'NULL' and not 'FALSE', it must be the same", 
-                   "length as the number of bins resulting from 'breaks'"))
-      }
-      
-    }
+    
+    recode_labels <- labels
+    
   }
   
 ############################## labels completed ################################

@@ -69,6 +69,14 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = TRUE,
     test_character(labels)
   )
   
+  if(!is.null(labels) && labels != FALSE){
+    if(length(labels) != breaks && length(labels) != length(breaks)-1){
+      
+      stop(paste("if labels not 'NULL' and not 'FALSE', it must be the same", 
+                 "length as the number of bins resulting from 'breaks'"))  
+    }  
+  }
+  
   # include.lowest
   test_logical(include.lowest)
   
@@ -134,22 +142,9 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = TRUE,
     
     
   } else if(!is.null(labels)) {
-    if(length(labels) == length(breakpoints) - 1) {
-      recode_labels <- labels
-    } else if(length(labels) != length(breakpoints) - 1) {
-      if(length(labels) == 1) {
-        if(labels == FALSE) {
-          recode_labels <- labels
-        } else if(labels != FALSE) {
-          stop(paste("if labels not 'NULL' and not 'FALSE', it must be the same", 
-                     "length as the number of bins resulting from 'breaks'"))
-        }
-      } else if(length(labels) != 1) {
-        stop(paste("if labels not 'NULL' and not 'FALSE', it must be the same", 
-                   "length as the number of bins resulting from 'breaks'"))
-      }
       
-    }
+    recode_labels <- labels
+    
   }
   
 ############################## labels completed ################################
