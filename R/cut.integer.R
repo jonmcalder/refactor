@@ -43,10 +43,11 @@
 #'  exist for \code{cut.default}: \code{breaks_mode} and \code{label_sep}.
 #'  Note that unlike \code{\link[base]{cut.default}}, here 
 #'  \code{include.lowest} defaults to \code{TRUE}, since this is more intuitive 
-#'  for integer intervals.
+#'  for the class \code{integer}.
 #' @return A factor is returned, unless \code{labels = FALSE} which results in 
 #' an integer vector of level codes.
-#' @examples random <- sample(10)
+#' @examples 
+#'  random <- sample(10)
 #'  cut(random, breaks = seq(0, 100, by = 10))[1:10]
 #' @export
 

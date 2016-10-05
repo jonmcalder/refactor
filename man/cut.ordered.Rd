@@ -57,12 +57,13 @@ In deviation from \code{cut.default}, \code{cut.ordered} does not
  exist for \code{cut.default}: \code{label_sep}.
  Note that unlike \code{\link[base]{cut.default}}, here 
  \code{include.lowest} defaults to \code{TRUE}, since this is more intuitive 
- for integer intervals.
+ for the class \code{ordered}.
 }
 \examples{
- some_letters <- cfactor(sample(letters, 100, replace = TRUE), ordered = TRUE)
+ some_letters <- cfactor(letters, ordered = TRUE)
  head(cut(some_letters, breaks = c("a", "q", "z"), 
-          labels = c("beginning of the alphabet", "the rest of the alphabet"), 
+          labels = c("beginning of the alphabet", 
+                     "the rest of the alphabet"), 
           right = TRUE, include.lowest = TRUE))
 }
 

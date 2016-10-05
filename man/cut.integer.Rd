@@ -67,10 +67,10 @@ In deviation from \code{cut.default}, \code{cut.integer} does not
  exist for \code{cut.default}: \code{breaks_mode} and \code{label_sep}.
  Note that unlike \code{\link[base]{cut.default}}, here 
  \code{include.lowest} defaults to \code{TRUE}, since this is more intuitive 
- for integer intervals.
+ for the class \code{integer}.
 }
 \examples{
-random <- sample(10)
+ random <- sample(10)
  cut(random, breaks = seq(0, 100, by = 10))[1:10]
 }
 
