@@ -66,7 +66,7 @@ cut_breakpoints <- function(x, breaks, right, include.lowest){
       if (breakpoints[2] == min(x)){
         # start from 1 below the min value for x and override include.lowest 
         # so that label will be correct for (expected) bin width of 1
-        include.lowest = FALSE
+        include.lowest <- FALSE
       } else {
         breakpoints[1] <- min(x)
       }

@@ -140,9 +140,11 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
       
     } else if(breaks_mode == "default"){
       
-      breaks_output <- cut_breakpoints(x, breaks, right, include.lowest)
-      breakpoints <- breaks_output$breakpoints
-      include.lowest <- breaks_output$include.lowest
+      # update breakpoints and include.lowest
+      breakpoints <- cut_breakpoints(x, breaks, right, 
+                                     include.lowest)$breakpoints
+      include.lowest <- cut_breakpoints(x, breaks, right, 
+                                        include.lowest)$include.lowest
       
     }
     
