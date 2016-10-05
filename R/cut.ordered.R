@@ -125,22 +125,15 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = TRUE,
   
   # create integer-based interval labels using label_sep
   if(is.null(labels)) {
-    if(length(breaks) < length(unique_x)) { # the standard case
-      recode_labels <- paste(x_lev[head(breakpoints, -1) + adjust$floorInc], 
-                             x_lev[tail(breakpoints, -1) - adjust$ceilingDec], 
-                             sep = label_sep)
-      
-      # correct labels with binwidth 1, that is where to elements separated by 
-      # label_sep are the same, i.e. the label "10-10"
-      same <- head(breakpoints, -1) + adjust$floorInc == tail(breakpoints, -1) - adjust$ceilingDec
-      recode_labels[same] <- x_lev[tail(breakpoints, -1) - adjust$ceilingDec][same] 
-      
-      
-    } else if(length(breaks) == length(unique_x)){ # if we have the same number 
-      # of breaks as unique x, each level is a break value itself
-      return(cfactor(x, levels = breaks))
-      
-    }
+    recode_labels <- paste(x_lev[head(breakpoints, -1) + adjust$floorInc], 
+                           x_lev[tail(breakpoints, -1) - adjust$ceilingDec], 
+                           sep = label_sep)
+    
+    # correct labels with binwidth 1, that is where to elements separated by 
+    # label_sep are the same, i.e. the label "10-10"
+    same <- head(breakpoints, -1) + adjust$floorInc == tail(breakpoints, -1) - adjust$ceilingDec
+    recode_labels[same] <- x_lev[tail(breakpoints, -1) - adjust$ceilingDec][same] 
+    
     
     
   } else if(!is.null(labels)) {
