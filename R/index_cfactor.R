@@ -40,10 +40,22 @@ index_cfactor <- function(data, index, variable = "variable",
   
   
   further_args <- list(...)
+  # make sure variable, encoding and label are actual columns in the data frame
+  pos_var <- match(variable, names(index))
   pos_enc <- match(encoding, names(index))
   pos_lab <- match(label, names(index))
+  check <- list(variable = pos_var, 
+                encoding = pos_enc, 
+                label = pos_lab)
+  lapply(names(check), function(g) 
+    if(is.na(check[[g]])) {
+      stop(paste("argument '", g, "' specified incorrectly. ",
+                 "There is no such column in '", quote(index), "'", sep = ""))
+    }) 
+      
 
-  # only apply index to variables in index 
+  
+  # only apply index to variables in index
   var_in_index <- unique(as.character(index[[variable]]))
   # find variable from the data that exist in the index
   pos_fact <- which(names(data) %in% var_in_index) 
