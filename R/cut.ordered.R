@@ -102,11 +102,9 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = TRUE,
   if(length(breaks) == 1){
     
     numLabels <- breaks
-    # update breakpoints and include.lowest
-    breakpoints <- cut_breakpoints(x_num, breaks, right, 
-                                   include.lowest)$breakpoints
-    include.lowest <- cut_breakpoints(x_num, breaks, right, 
-                                   include.lowest)$include.lowest
+    breaks_output <- cut_breakpoints(x_num, breaks, right, include.lowest)
+    breakpoints <- breaks_output$breakpoints
+    include.lowest <- breaks_output$include.lowest
     
   # use breakpoints as is if provided  
   } else if(length(breaks > 1)){

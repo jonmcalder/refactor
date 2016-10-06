@@ -100,8 +100,9 @@ test_that("binwidth 1", {
   
   # get a warning with scalar breaks
   expect_warning(cut(cfactor(rep(letters, 2), 
-                             ordered = T), 20), 
+                             ordered = TRUE), 20), 
                  "are: a, b, c, d, e, f, g, h, i, j, k, l, m, n")
+  
   # don't get a waring with specified breakpoints
   expect_warning(cut(cfactor(rep(letters[1:20], 2), ordered = T), letters[1:20]), NA)
   
