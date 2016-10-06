@@ -97,7 +97,16 @@ index_cfactor <- function(data, index, variable = "variable",
   }
   
   # apply cfactor to the original data, each column with its specification
-  data[, pos_fact] <- as.data.frame(Map(cfactor, data[, pos_fact], 
-                                        sp_index_enc, sp_index_lab, ...)) 
+  # if there are multiple columns to decode
+  if(length(sp_index_lab) > 1){
+    data[, pos_fact] <- as.data.frame(Map(cfactor, data[, pos_fact], 
+                                          sp_index_enc, sp_index_lab, ...)) 
+  } else if(length(sp_index_lab) == 1){
+    data[, pos_fact] <- cfactor(data[, pos_fact], 
+                                levels = sp_index_enc[[1]], 
+                                labels = sp_index_lab[[1]], ...)
+
+  }
+  
   data
 }
