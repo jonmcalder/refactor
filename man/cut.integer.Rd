@@ -13,7 +13,9 @@
 
 \item{breaks}{Either an integer vector of two or more unique cut points or a
 single integer (greater than or equal to 2) giving the number of intervals
-into which \code{x} is to be cut.}
+into which \code{x} is to be cut. Please note, however, that the resulting 
+number of intervals is not guaranteed to be x in the case of 
+breaks_mode = "pretty".}
 
 \item{labels}{Labels for the levels of the resulting category. By default,
 labels are constructed using "a-b c-d" interval notation. If 
@@ -39,7 +41,8 @@ for details.}
 \item{ordered_result}{Logical: should the result be an ordered factor?}
 
 \item{breaks_mode}{A parameter indicating how to determine the intervals 
-when breaks is specified as a scalar. 
+when breaks is specified as a scalar (note that this argument has no effect 
+if breaks is specified as a vector).
 \itemize{ 
   \item 'default' will produce intervals which are the (integer) equivalent 
   to those produced by cut.default i.e. the bins/groupings will be the 
@@ -49,9 +52,10 @@ when breaks is specified as a scalar.
   over the exact range of \code{x}. If the intervals cannot all be equal, 
   then \code{right} determines whether the rightmost (TRUE) or leftmost 
   (FALSE) intervals are made slightly wider.
-  \item 'pretty' will generate rounded breakpoints for the intervals (often
-  extending slightly beyond the range of \code{x}) based on 
-  \link[base]{pretty}.}}
+  \item 'pretty' will generate rounded breakpoints for the intervals based 
+  on \link[base]{pretty}. Note that breaks here is treated as the 'desired' 
+  number of intervals and is not guaranteed. Note also that the range of 
+  \code{x}) can be exceeded slightly by the intervals in some cases.}}
 
 \item{label_sep}{A single or short character string used to generate labels
 for the intervals e.g. the default value of "-" will result in labels like

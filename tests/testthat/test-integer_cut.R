@@ -4,17 +4,25 @@ int3_norep <- sample(99, replace = FALSE)
 
 context("integer_cut (default)")
 
-default_cut1 <- cut(int_norep, breaks = c(1, 5, 10), right = TRUE, include.lowest = TRUE)
-cut.default1 <- cut.default(int_norep, breaks = c(1, 5, 10), right = TRUE, include.lowest = TRUE)
+default_cut1 <- cut(int_norep, breaks = c(1, 5, 10), 
+                    right = TRUE, include.lowest = TRUE)
+cut.default1 <- cut.default(int_norep, breaks = c(1, 5, 10), 
+                    right = TRUE, include.lowest = TRUE)
 
-default_cut2 <- cut(int_norep, breaks = c(1, 5, 10), right = TRUE, include.lowest = FALSE)
-cut.default2 <- cut.default(int_norep, breaks = c(1, 5, 10), right = TRUE, include.lowest = FALSE)
+default_cut2 <- cut(int_norep, breaks = c(1, 5, 10), 
+                    right = TRUE, include.lowest = FALSE)
+cut.default2 <- cut.default(int_norep, breaks = c(1, 5, 10), 
+                    right = TRUE, include.lowest = FALSE)
 
-default_cut3 <- cut(int_norep, breaks = c(1, 5, 10), right = FALSE, include.lowest = FALSE)
-cut.default3 <- cut.default(int_norep, breaks = c(1, 5, 10), right = FALSE, include.lowest = FALSE)
+default_cut3 <- cut(int_norep, breaks = c(1, 5, 10), 
+                    right = FALSE, include.lowest = FALSE)
+cut.default3 <- cut.default(int_norep, breaks = c(1, 5, 10), 
+                    right = FALSE, include.lowest = FALSE)
 
-default_cut4 <- cut(int_norep, breaks = c(1, 5, 10), right = FALSE, include.lowest = TRUE)
-cut.default4 <- cut.default(int_norep, breaks = c(1, 5, 10), right = FALSE, include.lowest = TRUE)
+default_cut4 <- cut(int_norep, breaks = c(1, 5, 10), 
+                    right = FALSE, include.lowest = TRUE)
+cut.default4 <- cut.default(int_norep, breaks = c(1, 5, 10), 
+                    right = FALSE, include.lowest = TRUE)
 
 test_that("default for cut.integer returns a factor", {
 
@@ -269,3 +277,20 @@ test_that("cut.integer if breaks outside range(x)", {
 
 context("integer_cut (pretty)")
 
+pretty_cut1 <- cut(int_norep, breaks = 3, breaks_mode = "pretty")
+pretty_cut2 <- cut(int2_norep, breaks = 5, breaks_mode = "pretty")
+pretty_cut3 <- cut(int3_norep, breaks = 10, breaks_mode = "pretty")
+pretty_cut4 <- cut(int_norep, breaks = 6, breaks_mode = "pretty")
+pretty_cut5 <- cut(int2_norep, breaks = 10, breaks_mode = "pretty")
+pretty_cut6 <- cut(int3_norep, breaks = 20, breaks_mode = "pretty")
+
+test_that("pretty for cut.integer returns a factor", {
+  
+  expect_factor(pretty_cut1)
+  expect_factor(pretty_cut2)
+  expect_factor(pretty_cut3)
+  expect_factor(pretty_cut4)
+  expect_factor(pretty_cut5)
+  expect_factor(pretty_cut6)
+  
+})
