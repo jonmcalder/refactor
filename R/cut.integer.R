@@ -76,7 +76,7 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
   assert_class(include.lowest, "logical")
   assert_class(right, "logical")
   assert_class(ordered_result, "logical")
-  assert_choice(breaks_mode, c("default", "pretty"))
+  assert_choice(breaks_mode, c("default", "spread", "pretty"))
   assert_class(label_sep, "character")
   
   # NAs in breaks
@@ -128,22 +128,30 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
 ############################## determine breakpoints ###########################
     
   # if breaks are not specified (i.e. only the number of breaks is provided)
+  # create breakpoints based on breaks_mode
   if(length(breaks) == 1){
     
     numLabels <- breaks
     
-    # create breakpoints based on breaks_mode
-    # should the breaks be "pretty"? (‘round’ values which cover the range of x)
-    # or evenly spaced over the range of the data? ("default")
-    if(breaks_mode == "pretty"){
+    # should breakpoints be the (integer) equivalent of cut.default?
+    if(breaks_mode == "default"){
       
-      breakpoints <- pretty(x, breaks)
+      # adapted from base::cut.default
+      nb <- as.integer(breaks + 1) # one more than #{intervals}
+      dx <- diff(rx <- range(x, na.rm = TRUE))
+      breakpoints <- floor(seq.int(rx[1L], rx[2L], length.out = nb))
       
-    } else if(breaks_mode == "default"){
+    # or "spread" over the range of the data?
+    } else if(breaks_mode == "spread"){
       
       breaks_output <- cut_breakpoints(x, breaks, right, include.lowest)
       breakpoints <- breaks_output$breakpoints
       include.lowest <- breaks_output$include.lowest
+    
+    # or "pretty"? (‘round’ values which cover the range of x)
+    } else if (breaks_mode == "pretty"){
+      
+      breakpoints <- pretty(x, breaks)
       
     }
     
@@ -190,7 +198,7 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
     }
 
     
-  } else if(!is.null(labels)) {
+  } else {
     
     recode_labels <- labels
     
