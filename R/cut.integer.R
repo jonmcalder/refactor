@@ -138,8 +138,6 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
   # create breakpoints based on breaks_mode
   if(length(breaks) == 1){
     
-    numLabels <- breaks
-    
     # should breakpoints be the (integer) equivalent of cut.default?
     if(breaks_mode == "default"){
       
@@ -172,11 +170,10 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
   } else if(length(breaks > 1)){
     
     breakpoints <- breaks
-
-    numLabels <- length(breakpoints) - 1
     
   }
 
+  numLabels <- length(breakpoints) - 1
   
 ############################## breakpoints completed ###########################
 
