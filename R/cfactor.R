@@ -119,7 +119,7 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
     has_numbers <- all(grepl("[[:digit:]]", uniq_x))
     if(!is.null(sep) && has_numbers){ # use regular expression algorithm
       sep.ready <- paste0(sep, collapse = "|")
-      sep <- regexec(sep.ready, uniq_x)
+      sep <- regexec(sep.ready, uniq_x, fixed = TRUE)
       start <- vapply(sep, "[", 1, FUN.VALUE = numeric(1)) # extract start of sep
       start <- ifelse(start == -1, nchar(uniq_x) + 1 , start)
       before <- substr(uniq_x, 1, start - 1)
