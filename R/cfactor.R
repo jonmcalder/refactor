@@ -64,6 +64,11 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
   ## simple checks
   
   # x
+  ## ensure same output as with factor for cfactor()
+  if(missing(x) || is.null(x)){ 
+    x <- character()
+  }
+  ## not do the actual assertion
   assert(
     # use check within assert
     check_character(x),
@@ -72,13 +77,14 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
   )
   
   # levels 
-  if(!missing(levels)) {
+  if(!missing(levels)){
     assert(
       check_character(levels),
       check_integer(levels),
       check_numeric(levels))
       
   }
+  
   # labels
   if(!missing(labels)){
     assert(
@@ -112,6 +118,10 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
   
   
   ######################### assertive tests completed ##########################
+  
+  ############################### coersion starts ##############################
+  x <- as.character(x)
+  ############################## coersion completed ############################
   `%w/o%` <- function(x, y) x[!x %in% y] # opposite of %in%
   uniq_x <- unique(na.omit(x), nmax = nmax)
   
