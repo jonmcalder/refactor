@@ -1,8 +1,56 @@
+int_norep <- sample(10, replace = FALSE)
+int2_norep <- sample(15, replace = FALSE)
+int3_norep <- sample(99, replace = FALSE)
+
 context("integer_cut (default)")
 
-context("integer_cut (spread)")
+default_cut1 <- cut(int_norep, breaks = c(1, 5, 10), right = TRUE, include.lowest = TRUE)
+cut.default1 <- cut.default(int_norep, breaks = c(1, 5, 10), right = TRUE, include.lowest = TRUE)
 
-int_norep <- sample(10, replace = FALSE)
+default_cut2 <- cut(int_norep, breaks = c(1, 5, 10), right = TRUE, include.lowest = FALSE)
+cut.default2 <- cut.default(int_norep, breaks = c(1, 5, 10), right = TRUE, include.lowest = FALSE)
+
+default_cut3 <- cut(int_norep, breaks = c(1, 5, 10), right = FALSE, include.lowest = FALSE)
+cut.default3 <- cut.default(int_norep, breaks = c(1, 5, 10), right = FALSE, include.lowest = FALSE)
+
+default_cut4 <- cut(int_norep, breaks = c(1, 5, 10), right = FALSE, include.lowest = TRUE)
+cut.default4 <- cut.default(int_norep, breaks = c(1, 5, 10), right = FALSE, include.lowest = TRUE)
+
+test_that("default for cut.integer returns a factor", {
+
+  expect_factor(default_cut1)
+  expect_factor(default_cut2)
+  expect_factor(default_cut3)
+  expect_factor(default_cut4)
+    
+})
+
+test_that("default for cut.integer results in same integer codes as cut.default", {
+  
+  expect_equal(
+    as.integer(default_cut1),
+    as.integer(cut.default1)
+  )
+  
+  expect_equal(
+    as.integer(default_cut2),
+    as.integer(cut.default2)
+  )
+  
+  expect_equal(
+    as.integer(default_cut3),
+    as.integer(cut.default3)
+  )
+  
+  expect_equal(
+    as.integer(default_cut4),
+    as.integer(cut.default4)
+  )
+  
+})
+    
+
+context("integer_cut (spread)")
 
 case1 <- cut(int_norep, breaks = c(1, 5, 10), right = TRUE, 
              include.lowest = FALSE, breaks_mode = "spread")
@@ -18,7 +66,7 @@ case6 <- cut(int_norep, breaks = 2, right = TRUE, breaks_mode = "spread")
 case7 <- cut(int_norep, breaks = 3, right = FALSE, breaks_mode = "spread")
 case8 <- cut(int_norep, breaks = 3, right = TRUE, breaks_mode = "spread")
 
-int2_norep <- sample(15, replace = FALSE)
+
 
 case9 <- cut(int2_norep, breaks = 3, right = FALSE, breaks_mode = "spread")
 case10 <- cut(int2_norep, breaks = 3, right = TRUE, breaks_mode = "spread")
@@ -27,7 +75,6 @@ case12 <- cut(int2_norep, breaks = 4, right = TRUE, breaks_mode = "spread")
 case13 <- cut(int2_norep, breaks = 5, right = FALSE, breaks_mode = "spread")
 case14 <- cut(int2_norep, breaks = 5, right = TRUE, breaks_mode = "spread")
 
-int3_norep <- sample(99, replace = FALSE)
 
 case15 <- cut(int3_norep, breaks = 3, right = FALSE, breaks_mode = "spread")
 case16 <- cut(int3_norep, breaks = 3, right = TRUE, breaks_mode = "spread")
@@ -221,3 +268,4 @@ test_that("cut.integer if breaks outside range(x)", {
 # cut(int_norep, breaks = c(1, 2, 3, 10), right = T, include.lowest = FALSE)
 
 context("integer_cut (pretty)")
+
