@@ -26,22 +26,29 @@ Note that unlike \code{\link[base]{cut.default}}, here
 \code{include.lowest} defaults to \code{TRUE}, since this is more 
 intuitive for integer intervals.}
 
-\item{right}{Logical, indicating how to create the bins. This is utilized in
-two different ways based on the type of breaks argument. In the
-conventional case, where a breaks vector is supplied, \code{right = TRUE}
+\item{right}{Logical, indicating how to create the bins. This is utilized in 
+different ways based on the type of breaks argument. In the conventional 
+case, where a breaks vector is supplied, \code{right = TRUE}
 indicates that bins should be closed on the right (and open on the left) or
-vice versa. If a single integer breaks value is provided, then 
-\code{right = TRUE} indicates that bins will be determined such that those 
-on the right are larger (if it is not possible for all bins to be evenly 
-sized).}
+vice versa (i.e. as in \code{\link[base]{cut.default}}). If a 
+single integer breaks value is provided, then the appropriate breakpoints 
+are determined based on the value of \code{breaks_mode}, and the value for 
+\code{right} is only utilized if \code{breaks_mode = 'spread'} - see below 
+for details.}
 
 \item{ordered_result}{Logical: should the result be an ordered factor?}
 
 \item{breaks_mode}{A parameter indicating how to determine the intervals 
 when breaks is specified as a scalar. 
 \itemize{ 
-  \item 'default' will result in intervals spread as evenly as possible 
-  over the exact range of \code{x}. 
+  \item 'default' will produce intervals which are the (integer) equivalent 
+  to those produced by cut.default i.e. the bins/groupings will be the 
+  same - but the labels will be of the form int-int/2-4 instead of 
+  (numeric, numeric]/(1.5,4.2].
+  \item 'spread' will result in intervals spread as evenly as possible 
+  over the exact range of \code{x}. If the intervals cannot all be equal, 
+  then \code{right} determines whether the rightmost (TRUE) or leftmost 
+  (FALSE) intervals are made slightly wider.
   \item 'pretty' will generate rounded breakpoints for the intervals (often
   extending slightly beyond the range of \code{x}) based on 
   \link[base]{pretty}.}}
