@@ -14,7 +14,7 @@
 \item{breaks}{Either an integer vector of two or more unique cut points or a
 single integer (greater than or equal to 2) giving the number of intervals
 into which \code{x} is to be cut. Please note, however, that the resulting 
-number of intervals is not guaranteed to be x in the case of 
+number of intervals is not guaranteed to be \code{breaks} in the case of 
 breaks_mode = "pretty".}
 
 \item{labels}{Labels for the levels of the resulting category. By default,
@@ -50,12 +50,13 @@ if breaks is specified as a vector).
   (numeric, numeric]/(1.5,4.2].
   \item 'spread' will result in intervals spread as evenly as possible 
   over the exact range of \code{x}. If the intervals cannot all be equal, 
-  then \code{right} determines whether the rightmost (TRUE) or leftmost 
-  (FALSE) intervals are made slightly wider.
+  then \code{right} determines whether the rightmost (\code{TRUE}) or 
+  leftmost (\code{FALSE}) intervals are made slightly wider.
   \item 'pretty' will generate rounded breakpoints for the intervals based 
-  on \link[base]{pretty}. Note that breaks here is treated as the 'desired' 
-  number of intervals and is not guaranteed. Note also that the range of 
-  \code{x}) can be exceeded slightly by the intervals in some cases.}}
+  on \code{\link[base]{pretty}}. Note that breaks here is treated as the 
+  'desired' number of intervals and is not guaranteed. Note also that the 
+  range of \code{x} can be exceeded slightly by the intervals in some 
+  cases.}}
 
 \item{label_sep}{A single or short character string used to generate labels
 for the intervals e.g. the default value of "-" will result in labels like
