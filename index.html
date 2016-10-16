@@ -28,20 +28,22 @@
         </ul>
       </header>
       <section>
-        
+        <p><a href="http://www.repostatus.org/#wip"><img src="http://www.repostatus.org/badges/latest/wip.svg" alt="Project Status: WIP ? Initial development is in progress, but there has not yet been a stable, usable release suitable for the public."></a> <a href="https://travis-ci.org/jonmcalder/refactor"><img src="https://travis-ci.org/jonmcalder/refactor.svg?branch=master" alt="Build Status"></a> <a href="https://codecov.io/gh/jonmcalder/refactor"><img src="https://codecov.io/gh/jonmcalder/refactor/branch/master/graph/badge.svg" alt="codecov"></a></p>
 
+<hr>
 
-<p><a href="https://travis-ci.org/jonmcalder/refactor"><img src="https://travis-ci.org/jonmcalder/refactor.svg?branch=master" alt="Build Status"></a> <a href="https://codecov.io/gh/jonmcalder/refactor"><img src="https://codecov.io/gh/jonmcalder/refactor/branch/master/graph/badge.svg" alt="codecov"></a></p>
+<p><a href="https://cran.r-project.org/"><img src="https://img.shields.io/badge/R%3E%3D-3.2.1-6666ff.svg" alt="minimal R version"></a> <a href="https://cran.r-project.org/package=refactor"><img src="http://www.r-pkg.org/badges/version/refactor" alt="CRAN\_Status\_Badge"></a> <a href="commits/master"><img src="https://img.shields.io/badge/Package%20version-0.1.0.9001-orange.svg?style=flat-square" alt="packageversion"></a></p>
 
-<blockquote>
-<p>refactor is an R package which hopes to provide better handling of factors by attempting to address some of the known problems and short-comings present in R
-(e.g. as outlined in this <a href="http://www.win-vector.com/blog/2014/09/factors-are-not-first-class-citizens-in-r/">Win-Vector blog post</a>)</p>
-</blockquote>
+<hr>
+
+<p><a href="/commits/master"><img src="https://img.shields.io/badge/last%20change-2016--10--07-yellowgreen.svg" alt="Last-changedate"></a></p>
+
+<p><strong>refactor</strong> is an R package which aims to provide better handling of factors. Though R does have a special data type for factors, it isn't always explicity catered for in commonly used R functions, which can lead to unexpected and undesirable outcomes (e.g. see this <a href="http://www.win-vector.com/blog/2014/09/factors-are-not-first-class-citizens-in-r/">Win-Vector blog post</a>). This observation formed the inspiration for 're'-factor: which is essentially to 're'-visit functions likely to be used with factor data and where possible to wrap, extend or override them in order to better cater for factor data, or at the very least to provide warnings when the integrity of the data could be compromised by an operation.</p>
 
 <h2>
 <a id="installation" class="anchor" href="#installation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Installation</h2>
 
-<p>refactor is not available on CRAN but you can easily install the latest version from github using <code>devtools</code>:</p>
+<p>refactor is not yet available on CRAN but you can easily install the latest development version from github using <code>devtools</code>:</p>
 
 <div class="highlight highlight-source-r"><pre><span class="pl-c"># install.packages("devtools")</span>
 <span class="pl-e">devtools</span><span class="pl-k">::</span>install_github(<span class="pl-s"><span class="pl-pds">"</span>jonmcalder/refactor<span class="pl-pds">"</span></span>)</pre></div>
@@ -49,23 +51,44 @@
 <h2>
 <a id="overview" class="anchor" href="#overview" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Overview</h2>
 
-<p>Below are some of the highlights.</p>
+<p>Below are a few examples to illustrate some scenarios in which refactor can improve on base R's handling of factors.</p>
+
+<p>Please see the vignette for more details: <code>vignette("refactor", package = "refactor")</code></p>
 
 <h4>
-<a id="better-factor-creation" class="anchor" href="#better-factor-creation" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Better factor creation:</h4>
+<a id="better-factor-creation-with-cfactor" class="anchor" href="#better-factor-creation-with-cfactor" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Better factor creation with <code>cfactor()</code>
+</h4>
 
 <ul>
-<li>  sequences in strings are detected and used to order the factor levels automatically
-
-<ul>
-<li>  e.g. EUR11-20, EUR51-EUR60, EUR101-EUR110</li>
-</ul>
-</li>
 <li>  get warnings whenever provided factor levels don't fully match those present in the data</li>
 </ul>
 
+<div class="highlight highlight-source-r"><pre><span class="pl-smi">string</span> <span class="pl-k">&lt;-</span> c(<span class="pl-s"><span class="pl-pds">"</span>a<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>b<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>c<span class="pl-pds">"</span></span>)
+<span class="pl-k">factor</span>(<span class="pl-smi">string</span>, <span class="pl-v">levels</span> <span class="pl-k">=</span> c(<span class="pl-s"><span class="pl-pds">"</span>b<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>c<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>d<span class="pl-pds">"</span></span>))
+<span class="pl-c">#&gt; [1] &lt;NA&gt; b    c   </span>
+<span class="pl-c">#&gt; Levels: b c d</span>
+cfactor(<span class="pl-smi">string</span>, <span class="pl-v">levels</span> <span class="pl-k">=</span> c(<span class="pl-s"><span class="pl-pds">"</span>b<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>c<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>d<span class="pl-pds">"</span></span>))
+<span class="pl-c">#&gt; Warning: the following levels were empty: </span>
+<span class="pl-c">#&gt;  d</span>
+<span class="pl-c">#&gt; Warning: the following levels were removed: </span>
+<span class="pl-c">#&gt;  a</span>
+<span class="pl-c">#&gt; [1] &lt;NA&gt; b    c   </span>
+<span class="pl-c">#&gt; Levels: b c d</span></pre></div>
+
+<ul>
+<li>  numerical sequences in strings are detected and utilized to obtain correct orderings for factor levels</li>
+</ul>
+
+<div class="highlight highlight-source-r"><pre><span class="pl-smi">hard_to_detect</span> <span class="pl-k">&lt;-</span> c(<span class="pl-s"><span class="pl-pds">"</span>EUR 21 - EUR 22<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>EUR 100 - 101<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>EUR 1 - EUR 10<span class="pl-pds">"</span></span>, <span class="pl-s"><span class="pl-pds">"</span>EUR 11 - EUR 20<span class="pl-pds">"</span></span>)
+<span class="pl-k">factor</span>(<span class="pl-smi">hard_to_detect</span>, <span class="pl-v">ordered</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>)
+<span class="pl-c">#&gt; [1] EUR 21 - EUR 22 EUR 100 - 101   EUR 1 - EUR 10  EUR 11 - EUR 20</span>
+<span class="pl-c">#&gt; 4 Levels: EUR 1 - EUR 10 &lt; EUR 100 - 101 &lt; ... &lt; EUR 21 - EUR 22</span>
+cfactor(<span class="pl-smi">hard_to_detect</span>, <span class="pl-v">ordered</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>)
+<span class="pl-c">#&gt; [1] EUR 21 - EUR 22 EUR 100 - 101   EUR 1 - EUR 10  EUR 11 - EUR 20</span>
+<span class="pl-c">#&gt; 4 Levels: EUR 1 - EUR 10 &lt; EUR 11 - EUR 20 &lt; ... &lt; EUR 100 - 101</span></pre></div>
+
 <h4>
-<a id="extension-of-the-generic-cut-method-to-handle-discrete-integer-data" class="anchor" href="#extension-of-the-generic-cut-method-to-handle-discrete-integer-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Extension of the generic <code>cut</code> method to handle (discrete) integer data:</h4>
+<a id="extension-of-the-generic-cut-method-to-handle-discrete-integer-data" class="anchor" href="#extension-of-the-generic-cut-method-to-handle-discrete-integer-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Extension of the generic <code>cut</code> method to handle (discrete) integer data</h4>
 
 <ul>
 <li>  generate 'natural' intervals for factors when using cut on integer vectors
@@ -78,17 +101,39 @@
 <li>  label factor levels more intuitively
 
 <ul>
-<li>  e.g. 1-3, 4-6, 7-9 as opposed to [1,3], [4,6], [7,9], or (0,3], (3,6], (7-9]</li>
+<li>  e.g. <code>1-3, 4-6, 7-9</code> as opposed to <code>[1,3], [4,6], [7,9], or (0,3], (3,6], (6-9]</code>
+</li>
 </ul>
 </li>
 </ul>
 
+<div class="highlight highlight-source-r"><pre><span class="pl-smi">x_int</span> <span class="pl-k">&lt;-</span> <span class="pl-c1">1</span><span class="pl-k">:</span><span class="pl-c1">9</span>
+cut.default(<span class="pl-smi">x_int</span>, <span class="pl-v">breaks</span> <span class="pl-k">=</span> <span class="pl-c1">3</span>)
+<span class="pl-c">#&gt; [1] (0.992,3.67] (0.992,3.67] (0.992,3.67] (3.67,6.33]  (3.67,6.33] </span>
+<span class="pl-c">#&gt; [6] (3.67,6.33]  (6.33,9.01]  (6.33,9.01]  (6.33,9.01] </span>
+<span class="pl-c">#&gt; Levels: (0.992,3.67] (3.67,6.33] (6.33,9.01]</span>
+cut(<span class="pl-smi">x_int</span>, <span class="pl-v">breaks</span> <span class="pl-k">=</span> <span class="pl-c1">3</span>)
+<span class="pl-c">#&gt; [1] 1-3 1-3 1-3 4-6 4-6 4-6 7-9 7-9 7-9</span>
+<span class="pl-c">#&gt; Levels: 1-3 4-6 7-9</span></pre></div>
+
+<h4>
+<a id="extension-of-the-generic-cut-method-to-handle-non-numeric-ordered-data" class="anchor" href="#extension-of-the-generic-cut-method-to-handle-non-numeric-ordered-data" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Extension of the generic <code>cut</code> method to handle (non-numeric) ordered data</h4>
+
+<ul>
+<li>  <code>cut</code> usually requires numeric data, but refactor extends <code>cut</code> to handle other ordered data</li>
+</ul>
+
+<div class="highlight highlight-source-r"><pre><span class="pl-smi">some_letters</span> <span class="pl-k">&lt;-</span> <span class="pl-k">factor</span>(c(<span class="pl-s"><span class="pl-pds">'</span>d<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>e<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>f<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>b<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>g<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>h<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>i<span class="pl-pds">'</span></span>), <span class="pl-v">ordered</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>)
+cut(<span class="pl-smi">some_letters</span>, <span class="pl-v">breaks</span> <span class="pl-k">=</span> c(<span class="pl-s"><span class="pl-pds">'</span>a<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>c<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>f<span class="pl-pds">'</span></span>,<span class="pl-s"><span class="pl-pds">'</span>i<span class="pl-pds">'</span></span>), <span class="pl-v">include.lowest</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>, <span class="pl-v">ordered_result</span> <span class="pl-k">=</span> <span class="pl-c1">TRUE</span>)
+<span class="pl-c">#&gt; [1] d-f d-f d-f a-c a-c a-c g-i g-i g-i</span>
+<span class="pl-c">#&gt; Levels: a-c &lt; d-f &lt; g-i</span></pre></div>
+
 <h2>
 <a id="contributions" class="anchor" href="#contributions" aria-hidden="true"><span aria-hidden="true" class="octicon octicon-link"></span></a>Contributions</h2>
 
-<p>Any suggestions and/or feedback is most welcome.</p>
+<p>Suggestions and feedback are most welcome.</p>
 
-<p>Feel free to <a href="https://github.com/jonmcalder/refactor/issues">open an issue</a> if you want to request a feature/report a bug, or make a pull request if you can contribute.</p>
+<p>Feel free to <a href="https://github.com/jonmcalder/refactor/issues">open an issue</a> if you want to request a feature or report a bug, and make a pull request if you can contribute.</p>
       </section>
       <footer>
         <p>This project is maintained by <a href="https://github.com/jonmcalder">jonmcalder</a></p>
