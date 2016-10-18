@@ -24,12 +24,36 @@ default_cut4 <- cut(int_norep, breaks = c(1, 5, 10),
 cut.default4 <- cut.default(int_norep, breaks = c(1, 5, 10), 
                     right = FALSE, include.lowest = TRUE)
 
+default_cut5 <- cut(int_norep, breaks = 3, 
+                    right = TRUE, include.lowest = TRUE)
+cut.default5 <- cut.default(int_norep, breaks = 3, 
+                            right = TRUE, include.lowest = TRUE)
+
+default_cut6 <- cut(int_norep, breaks = 3, 
+                    right = TRUE, include.lowest = FALSE)
+cut.default6 <- cut.default(int_norep, breaks = 3, 
+                            right = TRUE, include.lowest = FALSE)
+
+default_cut7 <- cut(int_norep, breaks = 3, 
+                    right = FALSE, include.lowest = FALSE)
+cut.default7 <- cut.default(int_norep, breaks = 3, 
+                            right = FALSE, include.lowest = FALSE)
+
+default_cut8 <- cut(int_norep, breaks = 3, 
+                    right = FALSE, include.lowest = TRUE)
+cut.default8 <- cut.default(int_norep, breaks = 3, 
+                            right = FALSE, include.lowest = TRUE)
+
 test_that("default for cut.integer returns a factor", {
 
   expect_factor(default_cut1)
   expect_factor(default_cut2)
   expect_factor(default_cut3)
   expect_factor(default_cut4)
+  expect_factor(default_cut5)
+  expect_factor(default_cut6)
+  expect_factor(default_cut7)
+  expect_factor(default_cut8)
     
 })
 
@@ -53,6 +77,26 @@ test_that("default for cut.integer results in same integer codes as cut.default"
   expect_equal(
     as.integer(default_cut4),
     as.integer(cut.default4)
+  )
+  
+  expect_equal(
+    as.integer(default_cut5),
+    as.integer(cut.default5)
+  )
+  
+  expect_equal(
+    as.integer(default_cut6),
+    as.integer(cut.default6)
+  )
+  
+  expect_equal(
+    as.integer(default_cut7),
+    as.integer(cut.default7)
+  )
+  
+  expect_equal(
+    as.integer(default_cut8),
+    as.integer(cut.default8)
   )
   
 })

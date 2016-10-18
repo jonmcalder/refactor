@@ -8,7 +8,7 @@
 #'   single integer (greater than or equal to 2) giving the number of intervals
 #'   into which \code{x} is to be cut. Please note, however, that the resulting 
 #'   number of intervals is not guaranteed to be \code{breaks} in the case of 
-#'   breaks_mode = "pretty".
+#'   \code{breaks_mode = 'pretty'}.
 #' @param labels Labels for the levels of the resulting category. By default,
 #'   labels are constructed using "a-b c-d" interval notation. If 
 #'   \code{labels = FALSE}, simple integer codes are returned instead of a 
@@ -25,15 +25,29 @@
 #'   vice versa (i.e. as in \code{\link[base]{cut.default}}). If a 
 #'   single integer breaks value is provided, then the appropriate breakpoints 
 #'   are determined based on the value of \code{breaks_mode}, and the value for 
-#'   \code{right} is only utilized if \code{breaks_mode = 'spread'} - see below 
+#'   \code{right} is not utilized if \code{breaks_mode = 'pretty'} - see below 
 #'   for details.
 #' @param ordered_result Logical: should the result be an ordered factor?
 #' @param breaks_mode A parameter indicating how to determine the intervals 
 #'  when breaks is specified as a scalar (note that this argument has no effect 
-#'  if breaks is specified as a vector).
+#'  if breaks is specified as a vector). Can be 'default', 'spread' or 
+#'  'pretty'. See 'Details' below.
+#' @param label_sep A single or short character string used to generate labels
+#'   for the intervals e.g. the default value of "-" will result in labels like
+#'   1-10 11-20 21-30 etc.
+#' @param ... Further arguments to be passed to or from other methods, 
+#'  in particular to \code{\link{cut.default}}.
+#' @details In deviation from \code{cut.default}, \code{cut.integer} does not 
+#'  have an argument \code{dig.lab}, but instead has two arguments that do not 
+#'  exist for \code{cut.default}: \code{breaks_mode} and \code{label_sep}. \cr
+#'  Note that unlike \code{\link[base]{cut.default}}, here 
+#'  \code{include.lowest} defaults to \code{TRUE}, since this is more intuitive 
+#'  for the class \code{integer}. \cr
+#'  If \code{breaks} is supplied as a scalar, the value of \code{breaks_mode} determines 
+#'  how the breaks are constructed:
 #'  \itemize{ 
 #'    \item 'default' will produce intervals which are the (integer) equivalent 
-#'    to those produced by cut.default i.e. the bins/groupings will be the 
+#'    to those produced by \code{cut.default} i.e. the bins/groupings will be the 
 #'    same - but the labels will be of the form int-int/2-4 instead of 
 #'    (numeric, numeric]/(1.5,4.2].
 #'    \item 'spread' will result in intervals spread as evenly as possible 
@@ -45,17 +59,7 @@
 #'    'desired' number of intervals and is not guaranteed. Note also that the 
 #'    range of \code{x} can be exceeded slightly by the intervals in some 
 #'    cases.}
-#' @param label_sep A single or short character string used to generate labels
-#'   for the intervals e.g. the default value of "-" will result in labels like
-#'   1-10 11-20 21-30 etc.
-#' @param ... Further arguments to be passed to or from other methods, 
-#'  in particular to \code{\link{cut.default}}.
-#' @details In deviation from \code{cut.default}, \code{cut.integer} does not 
-#'  have an argument \code{dig.lab}, but instead has two arguments that do not 
-#'  exist for \code{cut.default}: \code{breaks_mode} and \code{label_sep}.
-#'  Note that unlike \code{\link[base]{cut.default}}, here 
-#'  \code{include.lowest} defaults to \code{TRUE}, since this is more intuitive 
-#'  for the class \code{integer}.
+
 #' @return A factor is returned, unless \code{labels = FALSE} which results in 
 #' an integer vector of level codes.
 #' @examples 
@@ -150,6 +154,7 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
       nb <- as.integer(breaks + 1) # one more than #{intervals}
       dx <- diff(rx <- range(x, na.rm = TRUE))
       breakpoints <- floor(seq.int(rx[1L], rx[2L], length.out = nb))
+      include.lowest = TRUE
       
     # or "spread" over the range of the data?
     } else if(breaks_mode == "spread"){
@@ -168,8 +173,13 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
     # Now that the breakpoints have been determined, set right = TRUE since this 
     # is (by convention) the required interpretation of these breakpoints for 
     # the purpose of the labeling which follows
-    right <- TRUE
+    # However the default method needs to honor the right argument in order to 
+    # keep consistency with cut.default
+    if(breaks_mode != "default"){
     
+        right <- TRUE
+        
+    }
     
   # use breakpoints as is if provided  
   } else if(length(breaks > 1)){
