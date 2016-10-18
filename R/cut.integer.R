@@ -160,7 +160,7 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
         breakpoints <- ceiling(seq.int(rx[1L], rx[2L], length.out = nb))
       }
         
-      include.lowest = TRUE
+      include.lowest <- TRUE
       
     # or "spread" over the range of the data?
     } else if(breaks_mode == "spread"){
