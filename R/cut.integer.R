@@ -150,6 +150,7 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
       nb <- as.integer(breaks + 1) # one more than #{intervals}
       dx <- diff(rx <- range(x, na.rm = TRUE))
       breakpoints <- floor(seq.int(rx[1L], rx[2L], length.out = nb))
+      include.lowest = TRUE
       
     # or "spread" over the range of the data?
     } else if(breaks_mode == "spread"){
@@ -168,8 +169,13 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
     # Now that the breakpoints have been determined, set right = TRUE since this 
     # is (by convention) the required interpretation of these breakpoints for 
     # the purpose of the labeling which follows
-    right <- TRUE
+    # However the default method needs to honor the right argument in order to 
+    # keep consistency with cut.default
+    if(breaks_mode != "default"){
     
+        right <- TRUE
+        
+    }
     
   # use breakpoints as is if provided  
   } else if(length(breaks > 1)){
