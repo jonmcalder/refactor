@@ -153,7 +153,13 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
       # adapted from base::cut.default
       nb <- as.integer(breaks + 1) # one more than #{intervals}
       dx <- diff(rx <- range(x, na.rm = TRUE))
-      breakpoints <- floor(seq.int(rx[1L], rx[2L], length.out = nb))
+      
+      if(right == TRUE) {
+        breakpoints <- floor(seq.int(rx[1L], rx[2L], length.out = nb))  
+      } else {
+        breakpoints <- ceiling(seq.int(rx[1L], rx[2L], length.out = nb))
+      }
+        
       include.lowest = TRUE
       
     # or "spread" over the range of the data?
