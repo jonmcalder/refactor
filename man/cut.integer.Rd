@@ -15,7 +15,7 @@
 single integer (greater than or equal to 2) giving the number of intervals
 into which \code{x} is to be cut. Please note, however, that the resulting 
 number of intervals is not guaranteed to be \code{breaks} in the case of 
-breaks_mode = "pretty".}
+\code{breaks_mode = 'pretty'}.}
 
 \item{labels}{Labels for the levels of the resulting category. By default,
 labels are constructed using "a-b c-d" interval notation. If 
@@ -35,28 +35,15 @@ indicates that bins should be closed on the right (and open on the left) or
 vice versa (i.e. as in \code{\link[base]{cut.default}}). If a 
 single integer breaks value is provided, then the appropriate breakpoints 
 are determined based on the value of \code{breaks_mode}, and the value for 
-\code{right} is only utilized if \code{breaks_mode = 'spread'} - see below 
+\code{right} is not utilized if \code{breaks_mode = 'pretty'} - see below 
 for details.}
 
 \item{ordered_result}{Logical: should the result be an ordered factor?}
 
 \item{breaks_mode}{A parameter indicating how to determine the intervals 
 when breaks is specified as a scalar (note that this argument has no effect 
-if breaks is specified as a vector).
-\itemize{ 
-  \item 'default' will produce intervals which are the (integer) equivalent 
-  to those produced by cut.default i.e. the bins/groupings will be the 
-  same - but the labels will be of the form int-int/2-4 instead of 
-  (numeric, numeric]/(1.5,4.2].
-  \item 'spread' will result in intervals spread as evenly as possible 
-  over the exact range of \code{x}. If the intervals cannot all be equal, 
-  then \code{right} determines whether the rightmost (\code{TRUE}) or 
-  leftmost (\code{FALSE}) intervals are made slightly wider.
-  \item 'pretty' will generate rounded breakpoints for the intervals based 
-  on \code{\link[base]{pretty}}. Note that breaks here is treated as the 
-  'desired' number of intervals and is not guaranteed. Note also that the 
-  range of \code{x} can be exceeded slightly by the intervals in some 
-  cases.}}
+if breaks is specified as a vector). Can be 'default', 'spread' or 
+'pretty'. See 'Details' below.}
 
 \item{label_sep}{A single or short character string used to generate labels
 for the intervals e.g. the default value of "-" will result in labels like
@@ -76,10 +63,26 @@ to the interval they fall into.
 \details{
 In deviation from \code{cut.default}, \code{cut.integer} does not 
  have an argument \code{dig.lab}, but instead has two arguments that do not 
- exist for \code{cut.default}: \code{breaks_mode} and \code{label_sep}.
+ exist for \code{cut.default}: \code{breaks_mode} and \code{label_sep}. \cr
  Note that unlike \code{\link[base]{cut.default}}, here 
  \code{include.lowest} defaults to \code{TRUE}, since this is more intuitive 
- for the class \code{integer}.
+ for the class \code{integer}. \cr
+ If \code{breaks} is supplied as a scalar, the value of \code{breaks_mode} determines 
+ how the breaks are constructed:
+ \itemize{ 
+   \item 'default' will produce intervals which are the (integer) equivalent 
+   to those produced by \code{cut.default} i.e. the bins/groupings will be the 
+   same - but the labels will be of the form int-int/2-4 instead of 
+   (numeric, numeric]/(1.5,4.2].
+   \item 'spread' will result in intervals spread as evenly as possible 
+   over the exact range of \code{x}. If the intervals cannot all be equal, 
+   then \code{right} determines whether the rightmost (\code{TRUE}) or 
+   leftmost (\code{FALSE}) intervals are made slightly wider.
+   \item 'pretty' will generate rounded breakpoints for the intervals based 
+   on \code{\link[base]{pretty}}. Note that breaks here is treated as the 
+   'desired' number of intervals and is not guaranteed. Note also that the 
+   range of \code{x} can be exceeded slightly by the intervals in some 
+   cases.}
 }
 \examples{
  random <- sample(10)
