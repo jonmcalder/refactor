@@ -25,7 +25,7 @@
 #'   vice versa (i.e. as in \code{\link[base]{cut.default}}). If a 
 #'   single integer breaks value is provided, then the appropriate breakpoints 
 #'   are determined based on the value of \code{breaks_mode}, and the value for 
-#'   \code{right} is only utilized if \code{breaks_mode = 'spread'} - see below 
+#'   \code{right} is not utilized if \code{breaks_mode = 'pretty'} - see below 
 #'   for details.
 #' @param ordered_result Logical: should the result be an ordered factor?
 #' @param breaks_mode A parameter indicating how to determine the intervals 
