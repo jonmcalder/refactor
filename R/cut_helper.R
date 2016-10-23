@@ -4,20 +4,8 @@
 
 cut_breakpoints <- function(x, breaks, right, include.lowest){
 
-############################## assertive checks ################################
-
-  assert(
-    test_class(x, "numeric"),
-    test_class(x, "integer")
-  )
-  assert(
-    test_class(breaks, "numeric"),
-    test_class(breaks, "integer")
-  )
-  assert_class(right, "logical")
-  assert_class(include.lowest, "logical")
-  
-############################## assertive checks completed ######################
+# assertive checks not necessary since this function should only ever be called 
+# internally after inputs have already been checked
   
   range <- max(x)-min(x)+1
   avg_bin_width <- floor(range/breaks)

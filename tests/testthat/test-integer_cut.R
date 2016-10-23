@@ -1,67 +1,220 @@
-context("integer_cut")
-
 int_norep <- sample(10, replace = FALSE)
-
-case1 <- cut(int_norep, breaks = c(1, 5, 10), right = TRUE, include.lowest = FALSE)
-case2 <- cut(int_norep, breaks = c(1, 5, 10), right = TRUE, include.lowest = TRUE)
-case3 <- cut(int_norep, breaks = c(1, 5, 10), right = FALSE, include.lowest = FALSE)
-case4 <- cut(int_norep, breaks = c(1, 5, 10), right = FALSE, include.lowest = TRUE)
-
-case5 <- cut(int_norep, breaks = 2, right = FALSE)
-case6 <- cut(int_norep, breaks = 2, right = TRUE)
-case7 <- cut(int_norep, breaks = 3, right = FALSE)
-case8 <- cut(int_norep, breaks = 3, right = TRUE)
-
 int2_norep <- sample(15, replace = FALSE)
-
-case9 <- cut(int2_norep, breaks = 3, right = FALSE)
-case10 <- cut(int2_norep, breaks = 3, right = TRUE)
-case11 <- cut(int2_norep, breaks = 4, right = FALSE)
-case12 <- cut(int2_norep, breaks = 4, right = TRUE)
-case13 <- cut(int2_norep, breaks = 5, right = FALSE)
-case14 <- cut(int2_norep, breaks = 5, right = TRUE)
-
 int3_norep <- sample(99, replace = FALSE)
 
-case15 <- cut(int3_norep, breaks = 3, right = FALSE)
-case16 <- cut(int3_norep, breaks = 3, right = TRUE)
-case17 <- cut(int3_norep, breaks = 4, right = FALSE)
-case18 <- cut(int3_norep, breaks = 4, right = TRUE)
-case19 <- cut(int3_norep, breaks = 5, right = FALSE)
-case20 <- cut(int3_norep, breaks = 5, right = TRUE)
+context("integer_cut (default)")
+
+default_cut1 <- cut(int_norep, breaks = c(1, 5, 10), 
+                    right = TRUE, include.lowest = TRUE)
+cut.default1 <- cut.default(int_norep, breaks = c(1, 5, 10), 
+                    right = TRUE, include.lowest = TRUE)
+
+default_cut2 <- cut(int_norep, breaks = c(1, 5, 10), 
+                    right = TRUE, include.lowest = FALSE)
+cut.default2 <- cut.default(int_norep, breaks = c(1, 5, 10), 
+                    right = TRUE, include.lowest = FALSE)
+
+default_cut3 <- cut(int_norep, breaks = c(1, 5, 10), 
+                    right = FALSE, include.lowest = FALSE)
+cut.default3 <- cut.default(int_norep, breaks = c(1, 5, 10), 
+                    right = FALSE, include.lowest = FALSE)
+
+default_cut4 <- cut(int_norep, breaks = c(1, 5, 10), 
+                    right = FALSE, include.lowest = TRUE)
+cut.default4 <- cut.default(int_norep, breaks = c(1, 5, 10), 
+                    right = FALSE, include.lowest = TRUE)
+
+default_cut5 <- cut(int_norep, breaks = 3, 
+                    right = TRUE, include.lowest = TRUE)
+cut.default5 <- cut.default(int_norep, breaks = 3, 
+                            right = TRUE, include.lowest = TRUE)
+
+default_cut6 <- cut(int_norep, breaks = 3, 
+                    right = TRUE, include.lowest = FALSE)
+cut.default6 <- cut.default(int_norep, breaks = 3, 
+                            right = TRUE, include.lowest = FALSE)
+
+default_cut7 <- cut(int_norep, breaks = 3, 
+                    right = FALSE, include.lowest = FALSE)
+cut.default7 <- cut.default(int_norep, breaks = 3, 
+                            right = FALSE, include.lowest = FALSE)
+
+default_cut8 <- cut(int_norep, breaks = 3, 
+                    right = FALSE, include.lowest = TRUE)
+cut.default8 <- cut.default(int_norep, breaks = 3, 
+                            right = FALSE, include.lowest = TRUE)
+
+default_cut9 <- cut(int_norep, breaks = 4, 
+                    right = TRUE, include.lowest = TRUE)
+cut.default9 <- cut.default(int_norep, breaks = 4, 
+                            right = TRUE, include.lowest = TRUE)
+
+default_cut10 <- cut(int_norep, breaks = 4, 
+                     right = TRUE, include.lowest = FALSE)
+cut.default10 <- cut.default(int_norep, breaks = 4, 
+                             right = TRUE, include.lowest = FALSE)
+
+default_cut11 <- cut(int_norep, breaks = 4, 
+                     right = FALSE, include.lowest = FALSE)
+cut.default11 <- cut.default(int_norep, breaks = 4, 
+                             right = FALSE, include.lowest = FALSE)
+
+default_cut12 <- cut(int_norep, breaks = 4, 
+                     right = FALSE, include.lowest = TRUE)
+cut.default12 <- cut.default(int_norep, breaks = 4, 
+                             right = FALSE, include.lowest = TRUE)
+
+test_that("default for cut.integer returns a factor", {
+
+  expect_factor(default_cut1)
+  expect_factor(default_cut2)
+  expect_factor(default_cut3)
+  expect_factor(default_cut4)
+  expect_factor(default_cut5)
+  expect_factor(default_cut6)
+  expect_factor(default_cut7)
+  expect_factor(default_cut8)
+  expect_factor(default_cut9)
+  expect_factor(default_cut10)
+  expect_factor(default_cut11)
+  expect_factor(default_cut12)
+    
+})
+
+test_that("default for cut.integer results in same integer codes as cut.default", {
+  
+  expect_equal(
+    as.integer(default_cut1),
+    as.integer(cut.default1)
+  )
+  
+  expect_equal(
+    as.integer(default_cut2),
+    as.integer(cut.default2)
+  )
+  
+  expect_equal(
+    as.integer(default_cut3),
+    as.integer(cut.default3)
+  )
+  
+  expect_equal(
+    as.integer(default_cut4),
+    as.integer(cut.default4)
+  )
+  
+  expect_equal(
+    as.integer(default_cut5),
+    as.integer(cut.default5)
+  )
+  
+  expect_equal(
+    as.integer(default_cut6),
+    as.integer(cut.default6)
+  )
+  
+  expect_equal(
+    as.integer(default_cut7),
+    as.integer(cut.default7)
+  )
+  
+  expect_equal(
+    as.integer(default_cut8),
+    as.integer(cut.default8)
+  )
+  
+  expect_equal(
+    as.integer(default_cut9),
+    as.integer(cut.default9)
+  )
+  
+  expect_equal(
+    as.integer(default_cut10),
+    as.integer(cut.default10)
+  )
+  
+  expect_equal(
+    as.integer(default_cut11),
+    as.integer(cut.default11)
+  )
+  
+  expect_equal(
+    as.integer(default_cut12),
+    as.integer(cut.default12)
+  )
+  
+})
+    
+
+context("integer_cut (spread)")
+
+case1 <- cut(int_norep, breaks = c(1, 5, 10), right = TRUE, 
+             include.lowest = FALSE, breaks_mode = "spread")
+case2 <- cut(int_norep, breaks = c(1, 5, 10), right = TRUE, 
+             include.lowest = TRUE, breaks_mode = "spread")
+case3 <- cut(int_norep, breaks = c(1, 5, 10), right = FALSE, 
+             include.lowest = FALSE, breaks_mode = "spread")
+case4 <- cut(int_norep, breaks = c(1, 5, 10), right = FALSE, 
+             include.lowest = TRUE, breaks_mode = "spread")
+
+case5 <- cut(int_norep, breaks = 2, right = FALSE, breaks_mode = "spread")
+case6 <- cut(int_norep, breaks = 2, right = TRUE, breaks_mode = "spread")
+case7 <- cut(int_norep, breaks = 3, right = FALSE, breaks_mode = "spread")
+case8 <- cut(int_norep, breaks = 3, right = TRUE, breaks_mode = "spread")
+
+
+
+case9 <- cut(int2_norep, breaks = 3, right = FALSE, breaks_mode = "spread")
+case10 <- cut(int2_norep, breaks = 3, right = TRUE, breaks_mode = "spread")
+case11 <- cut(int2_norep, breaks = 4, right = FALSE, breaks_mode = "spread")
+case12 <- cut(int2_norep, breaks = 4, right = TRUE, breaks_mode = "spread")
+case13 <- cut(int2_norep, breaks = 5, right = FALSE, breaks_mode = "spread")
+case14 <- cut(int2_norep, breaks = 5, right = TRUE, breaks_mode = "spread")
+
+
+case15 <- cut(int3_norep, breaks = 3, right = FALSE, breaks_mode = "spread")
+case16 <- cut(int3_norep, breaks = 3, right = TRUE, breaks_mode = "spread")
+case17 <- cut(int3_norep, breaks = 4, right = FALSE, breaks_mode = "spread")
+case18 <- cut(int3_norep, breaks = 4, right = TRUE, breaks_mode = "spread")
+case19 <- cut(int3_norep, breaks = 5, right = FALSE, breaks_mode = "spread")
+case20 <- cut(int3_norep, breaks = 5, right = TRUE, breaks_mode = "spread")
 
 # for extremely few values in x 
-case21 <- cut(1L, breaks = c(0, 1, 9), include.lowest = TRUE)
+case21 <- cut(1L, breaks = c(0, 1, 9), include.lowest = TRUE, 
+              breaks_mode = "spread")
 
 # non-default labels
-case22 <- cut(sample(10), breaks = 3, labels = letters[1:3])
-case23 <- cut(sample(10), breaks = 3, labels = FALSE)
+case22 <- cut(sample(10), breaks = 3, labels = letters[1:3], breaks_mode = "spread")
+case23 <- cut(sample(10), breaks = 3, labels = FALSE, breaks_mode = "spread")
 
 # for extremely few values in breaks
 ## breaks as scalar
 
-case24 <- cut(sample(10), breaks = 1, labels = FALSE) # desired outcome although 
-# not in line with cut.defalt
-case25 <- cut(sample(10), breaks = 1, labels = NULL)
-case26 <- cut(sample(10), breaks = 1, labels = "lion") 
+# desired outcome although not in line with cut.defalt
+case24 <- cut(sample(10), breaks = 1, labels = FALSE, breaks_mode = "spread") 
+case25 <- cut(sample(10), breaks = 1, labels = NULL, breaks_mode = "spread")
+case26 <- cut(sample(10), breaks = 1, labels = "lion", breaks_mode = "spread") 
 
 # breaks as vector
-case27 <- cut(sample(10), breaks = c(1, 10), labels = FALSE) 
-case28 <- cut(sample(10), breaks = c(1, 10), labels = NULL)
-case29 <- cut(sample(10), breaks = c(1, 10), labels = "lion")
+case27 <- cut(sample(10), breaks = c(1, 10), labels = FALSE, 
+              breaks_mode = "spread") 
+case28 <- cut(sample(10), breaks = c(1, 10), labels = NULL, 
+              breaks_mode = "spread")
+case29 <- cut(sample(10), breaks = c(1, 10), labels = "lion", 
+              breaks_mode = "spread")
 
 # not desired outcome although it should be without 
 # cut.default(sample(10), breaks = 1, labels = FALSE)
 
 # when breaks are of class integer
-case30 <- cut(sample(10), breaks = c(1L, 3L, 10L))
+case30 <- cut(sample(10), breaks = c(1L, 3L, 10L), breaks_mode = "spread")
 
 # when breaks need to be rounded
-case31 <- cut(sample(10), breaks = c(1, 2.6, 5.1, 10))
+case31 <- cut(sample(10), breaks = c(1, 2.6, 5.1, 10), breaks_mode = "spread")
 
 
 ## where binwidth is 1
-case32a <- cut(1:10, breaks = 9, right = FALSE)
+case32a <- cut(1:10, breaks = 9, right = FALSE, breaks_mode = "spread")
 
 
 test_that(paste("cut.integer returns same as cut.default but with better", 
@@ -187,16 +340,16 @@ test_that("binwidth 1", {
   expect_equal(levels(case32a),
                c("1-2", "3", "4", "5", "6", "7", "8", "9", "10"))
   
-  # the waring that goes with it for right = FALSE
+  # the warning that goes with it for right = FALSE
   ## x is even
-  expect_warning(cut(1:10, breaks = 9, right = FALSE), 
+  expect_warning(cut(1:10, breaks = 9, right = FALSE, breaks_mode = "spread"), 
                 "are: 3, 4, 5, 6, 7, 8, 9, 10")
   ## x is odd
-  expect_warning(cut(1:11, breaks = 9, right = FALSE), 
+  expect_warning(cut(1:11, breaks = 9, right = FALSE, breaks_mode = "spread"), 
                  "are: 5, 6, 7, 8, 9, 10, 11")
   # the waring that goes with it for right = TRUE
   ## breaks are even
-  expect_warning(cut(1:10, breaks = 8, right = TRUE), 
+  expect_warning(cut(1:10, breaks = 8, right = TRUE, breaks_mode = "spread"), 
                  "are: 1, 2, 3, 4, 5, 6")
 })
 
@@ -209,3 +362,23 @@ test_that("cut.integer if breaks outside range(x)", {
 # what happens in binwidth 1 if none is this width (line 99)
 # not optimal:
 # cut(int_norep, breaks = c(1, 2, 3, 10), right = T, include.lowest = FALSE)
+
+context("integer_cut (pretty)")
+
+pretty_cut1 <- cut(int_norep, breaks = 3, breaks_mode = "pretty")
+pretty_cut2 <- cut(int2_norep, breaks = 5, breaks_mode = "pretty")
+pretty_cut3 <- cut(int3_norep, breaks = 10, breaks_mode = "pretty")
+pretty_cut4 <- cut(int_norep, breaks = 6, breaks_mode = "pretty")
+pretty_cut5 <- cut(int2_norep, breaks = 10, breaks_mode = "pretty")
+pretty_cut6 <- cut(int3_norep, breaks = 20, breaks_mode = "pretty")
+
+test_that("pretty for cut.integer returns a factor", {
+  
+  expect_factor(pretty_cut1)
+  expect_factor(pretty_cut2)
+  expect_factor(pretty_cut3)
+  expect_factor(pretty_cut4)
+  expect_factor(pretty_cut5)
+  expect_factor(pretty_cut6)
+  
+})

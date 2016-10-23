@@ -6,7 +6,9 @@
 #' @param x A numeric vector which is to be converted to a factor by cutting.
 #' @param breaks Either an integer vector of two or more unique cut points or a
 #'   single integer (greater than or equal to 2) giving the number of intervals
-#'   into which \code{x} is to be cut.
+#'   into which \code{x} is to be cut. Please note, however, that the resulting 
+#'   number of intervals is not guaranteed to be \code{breaks} in the case of 
+#'   \code{breaks_mode = 'pretty'}.
 #' @param labels Labels for the levels of the resulting category. By default,
 #'   labels are constructed using "a-b c-d" interval notation. If 
 #'   \code{labels = FALSE}, simple integer codes are returned instead of a 
@@ -16,23 +18,20 @@
 #'   Note that unlike \code{\link[base]{cut.default}}, here 
 #'   \code{include.lowest} defaults to \code{TRUE}, since this is more 
 #'   intuitive for integer intervals.
-#' @param right	Logical, indicating how to create the bins. This is utilized in
-#'   two different ways based on the type of breaks argument. In the
-#'   conventional case, where a breaks vector is supplied, \code{right = TRUE}
+#' @param right	Logical, indicating how to create the bins. This is utilized in 
+#'   different ways based on the type of breaks argument. In the conventional 
+#'   case, where a breaks vector is supplied, \code{right = TRUE}
 #'   indicates that bins should be closed on the right (and open on the left) or
-#'   vice versa. If a single integer breaks value is provided, then 
-#'   \code{right = TRUE} indicates that bins will be determined such that those 
-#'   on the right are larger (if it is not possible for all bins to be evenly 
-#'   sized).
+#'   vice versa (i.e. as in \code{\link[base]{cut.default}}). If a 
+#'   single integer breaks value is provided, then the appropriate breakpoints 
+#'   are determined based on the value of \code{breaks_mode}, and the value for 
+#'   \code{right} is not utilized if \code{breaks_mode = 'pretty'} - see below 
+#'   for details.
 #' @param ordered_result Logical: should the result be an ordered factor?
 #' @param breaks_mode A parameter indicating how to determine the intervals 
-#'  when breaks is specified as a scalar. 
-#'  \itemize{ 
-#'    \item 'default' will result in intervals spread as evenly as possible 
-#'    over the exact range of \code{x}. 
-#'    \item 'pretty' will generate rounded breakpoints for the intervals (often
-#'    extending slightly beyond the range of \code{x}) based on 
-#'    \link[base]{pretty}.}
+#'  when breaks is specified as a scalar (note that this argument has no effect 
+#'  if breaks is specified as a vector). Can be 'default', 'spread' or 
+#'  'pretty'. See 'Details' below.
 #' @param label_sep A single or short character string used to generate labels
 #'   for the intervals e.g. the default value of "-" will result in labels like
 #'   1-10 11-20 21-30 etc.
@@ -40,10 +39,27 @@
 #'  in particular to \code{\link{cut.default}}.
 #' @details In deviation from \code{cut.default}, \code{cut.integer} does not 
 #'  have an argument \code{dig.lab}, but instead has two arguments that do not 
-#'  exist for \code{cut.default}: \code{breaks_mode} and \code{label_sep}.
+#'  exist for \code{cut.default}: \code{breaks_mode} and \code{label_sep}. \cr
 #'  Note that unlike \code{\link[base]{cut.default}}, here 
 #'  \code{include.lowest} defaults to \code{TRUE}, since this is more intuitive 
-#'  for the class \code{integer}.
+#'  for the class \code{integer}. \cr
+#'  If \code{breaks} is supplied as a scalar, the value of \code{breaks_mode} determines 
+#'  how the breaks are constructed:
+#'  \itemize{ 
+#'    \item 'default' will produce intervals which are the (integer) equivalent 
+#'    to those produced by \code{cut.default} i.e. the bins/groupings will be the 
+#'    same - but the labels will be of the form int-int/2-4 instead of 
+#'    (numeric, numeric]/(1.5,4.2].
+#'    \item 'spread' will result in intervals spread as evenly as possible 
+#'    over the exact range of \code{x}. If the intervals cannot all be equal, 
+#'    then \code{right} determines whether the rightmost (\code{TRUE}) or 
+#'    leftmost (\code{FALSE}) intervals are made slightly wider.
+#'    \item 'pretty' will generate rounded breakpoints for the intervals based 
+#'    on \code{\link[base]{pretty}}. Note that breaks here is treated as the 
+#'    'desired' number of intervals and is not guaranteed. Note also that the 
+#'    range of \code{x} can be exceeded slightly by the intervals in some 
+#'    cases.}
+
 #' @return A factor is returned, unless \code{labels = FALSE} which results in 
 #' an integer vector of level codes.
 #' @examples 
@@ -76,7 +92,7 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
   assert_class(include.lowest, "logical")
   assert_class(right, "logical")
   assert_class(ordered_result, "logical")
-  assert_choice(breaks_mode, c("default", "pretty"))
+  assert_choice(breaks_mode, c("default", "spread", "pretty"))
   assert_class(label_sep, "character")
   
   # NAs in breaks
@@ -128,40 +144,57 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
 ############################## determine breakpoints ###########################
     
   # if breaks are not specified (i.e. only the number of breaks is provided)
+  # create breakpoints based on breaks_mode
   if(length(breaks) == 1){
     
-    numLabels <- breaks
-    
-    # create breakpoints based on breaks_mode
-    # should the breaks be "pretty"? (‘round’ values which cover the range of x)
-    # or evenly spaced over the range of the data? ("default")
-    if(breaks_mode == "pretty"){
+    # should breakpoints be the (integer) equivalent of cut.default?
+    if(breaks_mode == "default"){
       
-      breakpoints <- pretty(x, breaks)
+      # adapted from base::cut.default
+      nb <- as.integer(breaks + 1) # one more than #{intervals}
+      dx <- diff(rx <- range(x, na.rm = TRUE))
       
-    } else if(breaks_mode == "default"){
+      if(right == TRUE) {
+        breakpoints <- floor(seq.int(rx[1L], rx[2L], length.out = nb))  
+      } else {
+        breakpoints <- ceiling(seq.int(rx[1L], rx[2L], length.out = nb))
+      }
+        
+      include.lowest <- TRUE
+      
+    # or "spread" over the range of the data?
+    } else if(breaks_mode == "spread"){
       
       breaks_output <- cut_breakpoints(x, breaks, right, include.lowest)
       breakpoints <- breaks_output$breakpoints
       include.lowest <- breaks_output$include.lowest
+    
+    # or "pretty"? (‘round’ values which cover the range of x)
+    } else if (breaks_mode == "pretty"){
+      
+      breakpoints <- pretty(x, breaks)
       
     }
     
     # Now that the breakpoints have been determined, set right = TRUE since this 
     # is (by convention) the required interpretation of these breakpoints for 
     # the purpose of the labeling which follows
-    right <- TRUE
+    # However the default method needs to honor the right argument in order to 
+    # keep consistency with cut.default
+    if(breaks_mode != "default"){
     
+        right <- TRUE
+        
+    }
     
   # use breakpoints as is if provided  
   } else if(length(breaks > 1)){
     
     breakpoints <- breaks
-
-    numLabels <- length(breakpoints) - 1
     
   }
 
+  numLabels <- length(breakpoints) - 1
   
 ############################## breakpoints completed ###########################
 
@@ -190,7 +223,7 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
     }
 
     
-  } else if(!is.null(labels)) {
+  } else {
     
     recode_labels <- labels
     
