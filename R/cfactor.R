@@ -121,7 +121,7 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
       sep.ready <- paste0(sep, collapse = "|")
       sep <- regexec(sep.ready, uniq_x)
       start <- vapply(sep, "[", 1, FUN.VALUE = numeric(1)) # extract start of sep
-      start <- base::ifelse(start == -1, nchar(uniq_x) + 1 , start)
+      start <- ifelse(start == -1, nchar(uniq_x) + 1 , start)
       before <- substr(uniq_x, 1, start - 1)
       # remove all non-digit characters and return the order of the numbers
       before <- gsub("[[:space:]]", "", before)
@@ -143,7 +143,7 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
   output <- factor(x, levels = levels, labels = labels, exclude = exclude, 
                    ordered = ordered, nmax = nmax) 
   prior <- as.character(unique(x))
-  posterior <- base::ifelse(levels == labels, levels(output), levels)
+  posterior <- ifelse(levels == labels, levels(output), levels)
   
   
   # check whether any value in x occurs now in labels that and it not the same
