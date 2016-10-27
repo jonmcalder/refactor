@@ -10,8 +10,6 @@ Description: refactor aims to provide better handling of factors in R by address
 License: MIT + file LICENSE
 LazyData: TRUE
 RoxygenNote: 5.0.1
-Depends: 
-    R (>= 3.2.1)
 Imports: checkmate
 Suggests: testthat,
     knitr,
