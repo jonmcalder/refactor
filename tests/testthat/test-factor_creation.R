@@ -70,11 +70,38 @@ test_that("errors because of wrong input types", {
   # ordered
   expect_error(cfactor(1:26, ordered = 3), 
                "Must have class 'logical'")
+  
+  # exceed nmax
   expect_error(cfactor(sample(letters), nmax = 4), 
                "hash table is full")
 })
-# connector esape hatch
+
+test_that("coersion of input type of x", {
+  # input type numeric
+  expect_error(cfactor(1:14, ordered = TRUE), NA)
+  expect_equal(cfactor(1:14, ordered = TRUE), factor(1:14, ordered = TRUE))
+  
+  # input type factor
+  expect_equal(cfactor(cfactor(letters), ordered = TRUE), 
+                factor( factor(letters), ordered = TRUE))
+  
+  # input type ordered
+  expect_equal(cfactor(cfactor(letters, ordered = TRUE), ordered = TRUE), 
+                factor( factor(letters, ordered = TRUE), ordered = TRUE))
+})
+
+test_that("x is missing or NULL", {
+  
+  ## no other arguments
+  expect_equal(cfactor(), factor())
+  expect_equal(cfactor(NULL), factor(NULL))
+  
+  # other arguemnts
+  expect_equal(cfactor(labels = 3), factor(labels = 3))
+  
+  # non-missing x but NULL
+  expect_equal(cfactor(NULL, ordered = TRUE), factor(NULL, ordered = TRUE))
+})
 
 # width-1-categories with no separator
 # labels as character of length 1
-# cfactor(1:26, ordered = NA) should not yield error
