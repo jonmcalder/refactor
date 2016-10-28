@@ -18,17 +18,24 @@
 
 ifelse <- function (test, yes, no, ...) {
   was_factor <- FALSE
-  if (is.factor(yes)) {
-    yes <- as.character(yes)
-    was_factor <- TRUE
-  } 
-  if (is.factor(no)) {
-    no <- as.character(no)
-    was_factor <- TRUE
+  levels <- ""
+  # a funciton that test whether x (interpreted as a name) is a factor and 
+  # if yes, it is converted to character in the parent environment
+  test_factor <- function(x) {
+    if (is.factor(eval(as.name(x)))) {
+      assign(x, as.character(eval(as.name(x))), 
+             envir = parent.env(environment()))
+      assign("was_factor", TRUE, 
+             envir = parent.env(environment()))
+    }
+    assign("levels", unique(c(eval(as.name(x)), levels)), 
+           envir = parent.env(environment()))
   }
+  lapply(list("yes", "no"), test_factor)
+  
   out <- base::ifelse(test, yes, no)
   if(was_factor) {
-    cfactor(out)
+    cfactor(out, levels = levels)
   } else {
     out
   }
