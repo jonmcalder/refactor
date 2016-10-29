@@ -82,7 +82,8 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
       check_character(levels),
       check_integer(levels),
       check_numeric(levels))
-      
+    levels <- na.omit(levels)
+    
   }
   
   # labels
@@ -124,7 +125,6 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
   ############################## coersion completed ############################
   `%w/o%` <- function(x, y) x[!x %in% y] # opposite of %in%
   uniq_x <- unique(na.omit(x), nmax = nmax)
-  levels <- na.omit(levels)
   
   if(missing(levels)){ # detect factor levels if not given
     has_numbers <- all(grepl("[[:digit:]]", uniq_x))
