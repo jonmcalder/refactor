@@ -11,25 +11,26 @@
 #' @export
 cc <- function(..., recursive = FALSE){
   dots = list(...)
-  
+
   dots_chars <- lapply(dots, FUN = as.character)
   
-  # test that all objects inherit from ordered
+##  ............................................................................
+##  test that all objects inherit from ordered
   dots_ordered <- vapply(dots, function(x) inherits(x, "ordered"), logical(1))
   if (all(dots_ordered)) {
     # ok, its all ordered
     return(cfactor(unlist(dots_chars), ordered = TRUE))
   }
   
-  # test that all objects inherit from factor
+##  ............................................................................
+##  test that all objects inherit from factor
   dots_factor <- vapply(dots, function(x) inherits(x, "factor"), logical(1))
   if (all(dots_factor)) {
     # ok, its all factorial
     return(cfactor(unlist(dots_chars), ordered = FALSE))
   }
   
-  # it's not factorial nor ordered, so we simply call base::c
+##  ............................................................................
+##  it's not factorial nor ordered, so we simply call base::c
   return(c(unlist(dots_chars)))
-  
-  
 }
