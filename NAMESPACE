@@ -2,8 +2,10 @@
 
 S3method(cut,integer)
 S3method(cut,ordered)
+export(append)
 export(cc)
 export(cfactor)
+export(ifelse)
 export(index_cfactor)
 import(checkmate)
 importFrom(stats,na.omit)

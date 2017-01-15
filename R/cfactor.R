@@ -59,10 +59,12 @@
 #' @export
 cfactor <- function(x, levels, labels = levels, exclude = NA,
                     ordered = is.ordered(x), nmax = NA, sep = c("-", "to")) {
-##  ............................................................................
-##  assertive tests
-
+#   ____________________________________________________________________________
+#   preprocessing
   
+##  ............................................................................
+##  assertive tests / checks
+
   ## simple checks
   
   # x
@@ -84,7 +86,8 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
       check_character(levels),
       check_integer(levels),
       check_numeric(levels))
-      
+    levels <- na.omit(levels)
+    
   }
   
   # labels
@@ -121,20 +124,23 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
   
 
 ##  ............................................................................
-##  coersion
+##  coersion / function and variable definitions
   x <- as.character(x)
-#   ____________________________________________________________________________
 
   `%w/o%` <- function(x, y) x[!x %in% y] # opposite of %in%
   uniq_x <- unique(na.omit(x), nmax = nmax)
-  
-  if(missing(levels)){ # detect factor levels if not given
+##  ............................................................................
+#   ____________________________________________________________________________
+#   create factor
+##  ............................................................................
+##  detect levels if not given
+  if(missing(levels)){
     has_numbers <- all(grepl("[[:digit:]]", uniq_x))
     if(!is.null(sep) && has_numbers){ # use regular expression algorithm
       sep.ready <- paste0(sep, collapse = "|")
       sep <- regexec(sep.ready, uniq_x, fixed = TRUE)
       start <- vapply(sep, "[", 1, FUN.VALUE = numeric(1)) # extract start of sep
-      start <- ifelse(start == -1, nchar(uniq_x) + 1 , start)
+      start <- base::ifelse(start == -1, nchar(uniq_x) + 1 , start)
       before <- substr(uniq_x, 1, start - 1)
       # remove all non-digit characters and return the order of the numbers
       before <- gsub("[[:space:]]", "", before)
@@ -151,19 +157,20 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
     
   }
   
-  
 ##  ............................................................................
 ##  create the factor
-  ## only x should never be looked up in .GlobalEnv
+## only x should never be looked up in .GlobalEnv
   output <- factor(x, levels = levels, labels = labels, exclude = exclude, 
                    ordered = ordered, nmax = nmax) 
   prior <- as.character(unique(x))
-  posterior <- ifelse(levels == labels, levels(output), levels)
+  posterior <- base::ifelse(levels == labels, levels(output), levels)
   
   
-  # check whether any value in x occurs now in labels that and it not the same
-  # value
-  
+#   ____________________________________________________________________________
+#   warnings
+##  ............................................................................
+##  check whether any value in x occurs now in labels that and it not the same
+##  value
   if(any(levels %in% labels) && !all(levels %in% labels)){
     # find duplicates
     same_represent <- levels == labels
@@ -190,7 +197,8 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
     
   }
   
-  # check if new levels differ from old unique character strings
+##  ............................................................................
+##  check if new levels differ from old unique character strings
   if(!setequal(prior, posterior)) {
     # levels that are not current names
     if(!all(posterior %in% prior)) {
@@ -199,12 +207,16 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
               call. = FALSE)
     }
 
-    # current names that don't become levels
+
+##  ............................................................................
+##  check that current names that don't become levels
     if(!all(prior %in% posterior)) {
       warning(paste("the following levels were removed: \n", 
                     paste(prior[!(prior %in% posterior)], collapse = "\n")), 
               call. = FALSE)
     }
   }
+#   ____________________________________________________________________________
+#   output 
   output
 }
