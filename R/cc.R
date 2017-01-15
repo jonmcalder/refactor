@@ -15,7 +15,7 @@ cc <- function(..., recursive = FALSE){
   dots_chars <- lapply(dots, FUN = as.character)
   
 ##  ............................................................................
-##  test that all objects inherit from ordered
+##  test whether objects inherit from ordered
   dots_ordered <- vapply(dots, function(x) inherits(x, "ordered"), logical(1))
   if (all(dots_ordered)) {
     # ok, its all ordered
@@ -23,7 +23,7 @@ cc <- function(..., recursive = FALSE){
   }
   
 ##  ............................................................................
-##  test that all objects inherit from factor
+##  test whether objects inherit from factor
   dots_factor <- vapply(dots, function(x) inherits(x, "factor"), logical(1))
   if (all(dots_factor)) {
     # ok, its all factorial
