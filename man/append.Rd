@@ -4,7 +4,7 @@
 \alias{append}
 \title{Vector Merging}
 \usage{
-append(x, values, after = length(x), ...)
+append(x, values, after = length(x))
 }
 \arguments{
 \item{x}{the vector to be modified.}
@@ -12,13 +12,14 @@ append(x, values, after = length(x), ...)
 \item{values}{to be included in the modified vector.}
 
 \item{after}{a subscript, after which the values are to be appended.}
-
-\item{...}{further arguments to be passed to \code{\link{cfactor}}.}
 }
 \value{
-If either \code{x} or \code{values} are of class \code{factor}, 
+If \code{x} and \code{values} are of class \code{factor}, 
   the function returns an object of class \code{factor} whereas levels are 
-  determined using \code{\link{cfactor}} internally. Otherwise, the base 
+  determined using \code{\link{cfactor}} internally. Levels are only
+  preserved if both elements have the same levels. In addition, ordering
+  is only preserved if the order is also identical.
+  Otherwise, the base 
   method is called directly.
 }
 \description{
