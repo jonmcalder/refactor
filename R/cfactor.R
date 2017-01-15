@@ -59,8 +59,10 @@
 #' @export
 cfactor <- function(x, levels, labels = levels, exclude = NA,
                     ordered = is.ordered(x), nmax = NA, sep = c("-", "to")) {
+##  ............................................................................
+##  assertive tests
 
-  ############################ assertive tests #################################
+  
   ## simple checks
   
   # x
@@ -117,11 +119,12 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
   
   
   
-  ######################### assertive tests completed ##########################
-  
-  ############################### coersion starts ##############################
+
+##  ............................................................................
+##  coersion
   x <- as.character(x)
-  ############################## coersion completed ############################
+#   ____________________________________________________________________________
+
   `%w/o%` <- function(x, y) x[!x %in% y] # opposite of %in%
   uniq_x <- unique(na.omit(x), nmax = nmax)
   
@@ -148,7 +151,9 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
     
   }
   
-  # create the factor
+  
+##  ............................................................................
+##  create the factor
   ## only x should never be looked up in .GlobalEnv
   output <- factor(x, levels = levels, labels = labels, exclude = exclude, 
                    ordered = ordered, nmax = nmax) 
