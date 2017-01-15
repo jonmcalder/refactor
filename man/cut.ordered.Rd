@@ -59,7 +59,7 @@ In deviation from \code{cut.default}, \code{cut.ordered} does not
  \code{include.lowest} defaults to \code{TRUE}, since this is more intuitive 
  for the class \code{ordered}. Since the input for \code{cut.ordered} is of 
  class \code{ordered}, the default output as well. This contrast with 
- \code{cut.default}, which produces an unorderd output by default.
+ \code{cut.default}, which produces an unordered output by default.
 }
 \examples{
  some_letters <- cfactor(letters, ordered = TRUE)
