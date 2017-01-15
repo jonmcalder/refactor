@@ -37,7 +37,7 @@
 #'  \code{include.lowest} defaults to \code{TRUE}, since this is more intuitive 
 #'  for the class \code{ordered}. Since the input for \code{cut.ordered} is of 
 #'  class \code{ordered}, the default output as well. This contrast with 
-#'  \code{cut.default}, which produces an unorderd output by default.
+#'  \code{cut.default}, which produces an unordered output by default.
 #' @return A factor is returned, unless \code{labels = FALSE} which results in 
 #'  an integer vector of level codes.
 #' @examples 
