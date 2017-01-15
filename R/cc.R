@@ -18,8 +18,17 @@ cc <- function(..., recursive = FALSE){
 ##  test whether objects inherit from ordered
   dots_ordered <- vapply(dots, function(x) inherits(x, "ordered"), logical(1))
   if (all(dots_ordered)) {
-    # ok, its all ordered
-    return(cfactor(unlist(dots_chars), ordered = TRUE))
+    # ok, its all ordered. Keep as ordered if all levels and their ordering is 
+    # the same
+    levels <- lapply(dots, function(x) levels(x))
+    levels_identical <- Reduce(identical, levels)
+    if (levels_identical) {
+      return(cfactor(unlist(dots_chars), levels[[1]], ordered = TRUE))
+    } else {
+      warning("ordering not preserved since not all levels identical", 
+              call. = FALSE)
+      return(cfactor(unlist(dots_chars), ordered = FALSE))
+    }
   }
   
 ##  ............................................................................
