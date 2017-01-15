@@ -91,3 +91,10 @@ head(cut(some_letters, breaks = c("a", "q", "z"),
          labels = c("beginning of the alphabet", "the rest of the alphabeth"), 
          right = TRUE, include.lowest = TRUE))
 
+## ------------------------------------------------------------------------
+c(cfactor("a"), cfactor("b"))
+cc(cfactor("a"), cfactor("b"))
+
+## ------------------------------------------------------------------------
+cc(cfactor(c("a", "b"), ordered = T), cfactor(c("b", "c", "d"), ordered = T))
+

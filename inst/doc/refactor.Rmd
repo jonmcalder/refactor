@@ -259,6 +259,3 @@ if the levels and their ordering are not identical.
 ```{r}
 cc(cfactor(c("a", "b"), ordered = T), cfactor(c("b", "c", "d"), ordered = T))
 ```
-
-## append
-
