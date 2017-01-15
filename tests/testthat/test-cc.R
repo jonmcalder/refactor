@@ -19,11 +19,12 @@ test_that("cc returns a factor", {
 
 context("cc-ordered")
 
-orderedfactor1 <- factor(sample(letters, 100, replace = TRUE), ordered = TRUE)
-orderedfactor2 <- factor(sample(letters, 100, replace = TRUE), ordered = TRUE)
+orderedfactor1 <- factor(sample(letters, replace = FALSE), ordered = TRUE)
+orderedfactor2 <- factor(sample(letters, replace = FALSE), ordered = TRUE)
 
 orderednumfactor1 <- factor(sample(1:100, replace = TRUE), ordered = TRUE)
-orderednumfactor2 <- factor(sample(1:100, replace = TRUE), ordered = TRUE)
+orderednumfactor2 <- factor(sample(1:100, replace = TRUE), ordered = FALSE)
+orderednumfactor3 <- factor(sample(1:100, replace = TRUE), ordered = TRUE)
 
 test_that("cc returns an ordered factor", {
   # char factor
@@ -33,11 +34,8 @@ test_that("cc returns an ordered factor", {
   expect_identical(orderedfactor2 %in% cc(orderedfactor1, orderedfactor2), 
                    rep(TRUE, length(orderedfactor2)))
   # numeric factor
-  expect_factor(cc(orderednumfactor1, orderednumfactor2), ordered = TRUE)
-  expect_identical(orderednumfactor1 %in% cc(orderednumfactor1, orderednumfactor2), 
-                   rep(TRUE, length(orderednumfactor1)))
-  expect_identical(orderednumfactor2 %in% cc(orderednumfactor1, orderednumfactor2), 
-                   rep(TRUE, length(orderednumfactor2)))
+  expect_warning(cc(orderednumfactor1, orderednumfactor3))
+  expect_factor(cc(orderednumfactor2, orderednumfactor2))
 })
 
 context("cc mixed input")
