@@ -12,7 +12,7 @@
 
 <meta name="author" content="Lorenz Walthert and Jon Calder" />
 
-<meta name="date" content="2017-01-15" />
+<meta name="date" content="2017-01-16" />
 
 <title>refactor</title>
 
@@ -70,7 +70,7 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">refactor</h1>
 <h4 class="author"><em>Lorenz Walthert and Jon Calder</em></h4>
-<h4 class="date"><em>2017-01-15</em></h4>
+<h4 class="date"><em>2017-01-16</em></h4>
 
 
 
@@ -162,9 +162,10 @@ index &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span cla
 
 <span class="kw">cfactor</span>(data, <span class="dt">levels =</span> index$encoding, <span class="dt">labels =</span> index$label)</code></pre></div>
 <pre><code>## Warning: the following levels were empty: 
-##  4
-## 8</code></pre>
-<pre><code>##  [1] i b e e c g a j i a e j j i g c j f c e
+##  1
+## 2
+## 4</code></pre>
+<pre><code>##  [1] e f g f f g i i e j c g i e g g h f h e
 ## Levels: a b c d e f g h i j</code></pre>
 <p><br />
 In a real-world situation, it is likely that a lot of variables have to be decoded. <code>index_cfactor</code> was created to assist with this task. First, we need some sample data.</p>
@@ -175,13 +176,13 @@ In a real-world situation, it is likely that a lot of variables have to be decod
                   <span class="dt">var5 =</span> <span class="kw">sample</span>(<span class="kw">row.names</span>(USArrests), <span class="dt">size =</span> <span class="dv">20</span>),
                   <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 <span class="kw">head</span>(data)</code></pre></div>
-<pre><code>##   var1 var2 var3 var4          var5
-## 1    5    1   11    2         Texas
-## 2    9    2   14    2    New Mexico
-## 3    7    1    7    2      Colorado
-## 4    6    2   12    2  North Dakota
-## 5    9    1    8    2        Nevada
-## 6    4    2    6    2 New Hampshire</code></pre>
+<pre><code>##   var1 var2 var3 var4       var5
+## 1    5    1   12    2   Virginia
+## 2    9    2   19    2   Delaware
+## 3    6    1   20    2   Oklahoma
+## 4    4    2    8    2    Alabama
+## 5    5    1   13    2 New Mexico
+## 6    5    2   17    2      Idaho</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">index &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">var =</span> <span class="kw">rep</span>(<span class="kw">paste0</span>(<span class="st">&quot;var&quot;</span>, <span class="dv">1</span>:<span class="dv">3</span>), <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">2</span>, <span class="dv">20</span>)),
                     <span class="dt">encoding =</span> <span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">10</span>, <span class="dv">1</span>:<span class="dv">2</span>, <span class="dv">1</span>:<span class="dv">20</span>),
                     <span class="dt">label =</span> <span class="kw">c</span>(letters[<span class="dv">1</span>:<span class="dv">10</span>], <span class="kw">c</span>(<span class="st">&quot;male&quot;</span>, <span class="st">&quot;female&quot;</span>), LETTERS[<span class="dv">1</span>:<span class="dv">20</span>]))
@@ -197,15 +198,15 @@ In a real-world situation, it is likely that a lot of variables have to be decod
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">final &lt;-<span class="st"> </span><span class="kw">head</span>(<span class="kw">index_cfactor</span>(<span class="dt">data =</span> data, <span class="dt">index =</span> index, <span class="dt">variable =</span> <span class="st">&quot;var&quot;</span>, 
                             <span class="dt">ordered =</span> <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)))</code></pre></div>
 <pre><code>## Warning: the following levels were empty: 
-##  1</code></pre>
+##  2</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(final)</code></pre></div>
-<pre><code>##   var1   var2 var3 var4          var5
-## 1    e   male    K    2         Texas
-## 2    i female    N    2    New Mexico
-## 3    g   male    G    2      Colorado
-## 4    f female    L    2  North Dakota
-## 5    i   male    H    2        Nevada
-## 6    d female    F    2 New Hampshire</code></pre>
+<pre><code>##   var1   var2 var3 var4       var5
+## 1    e   male    L    2   Virginia
+## 2    i female    S    2   Delaware
+## 3    f   male    T    2   Oklahoma
+## 4    d female    H    2    Alabama
+## 5    e   male    M    2 New Mexico
+## 6    e female    Q    2      Idaho</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sapply</span>(final, class)</code></pre></div>
 <pre><code>## $var1
 ## [1] &quot;ordered&quot; &quot;factor&quot; 
@@ -240,29 +241,29 @@ In a real-world situation, it is likely that a lot of variables have to be decod
 <p><code>cut.default</code> provides rather inappropriate labels for integer values.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">random &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">100</span>)
 <span class="kw">cut.default</span>(random, <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">10</span>))[<span class="dv">1</span>:<span class="dv">10</span>]</code></pre></div>
-<pre><code>##  [1] (90,100] (80,90]  (30,40]  (0,10]   (80,90]  (30,40]  (40,50] 
-##  [8] (10,20]  (0,10]   (0,10]  
+<pre><code>##  [1] (60,70] (70,80] (50,60] (10,20] (40,50] (20,30] (10,20] (70,80]
+##  [9] (70,80] (0,10] 
 ## 10 Levels: (0,10] (10,20] (20,30] (30,40] (40,50] (50,60] ... (90,100]</code></pre>
 <p><code>refactor</code> extends the S3 method <code>cut</code> with <code>cut.integer</code> to provide more natural labels for this data type.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(random, <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">10</span>))[<span class="dv">1</span>:<span class="dv">10</span>]</code></pre></div>
-<pre><code>##  [1] 91-100 81-90  31-40  0-10   81-90  31-40  41-50  11-20  0-10   0-10  
+<pre><code>##  [1] 61-70 71-80 51-60 11-20 41-50 21-30 11-20 71-80 71-80 0-10 
 ## Levels: 0-10 11-20 21-30 31-40 41-50 51-60 61-70 71-80 81-90 91-100</code></pre>
 <p>The remainder of the section will outline and describe how <code>cut.integer</code> deviates from the default <code>cut</code> method.<br />
 <br><br> Creating missing values will yield a warning.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">5</span>))</code></pre></div>
 <pre><code>## Warning in cut.integer(sample(10), breaks = c(0, 3, 5)): 5 missing values
 ## generated</code></pre>
-<pre><code>##  [1] 0-3  0-3  4-5  4-5  &lt;NA&gt; 0-3  &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;
+<pre><code>##  [1] 4-5  0-3  0-3  &lt;NA&gt; &lt;NA&gt; 4-5  0-3  &lt;NA&gt; &lt;NA&gt; &lt;NA&gt;
 ## Levels: 0-3 4-5</code></pre>
 <p>It is possible to define bins with width 1. This will generate a label with just the value of the integer containted (e.g. 2 instead of 2-2) and issue a warning.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>))</code></pre></div>
-<pre><code>##  [1] 5-6 1-4 5-6 7-8 9   7-8 1-4 1-4 1-4 10 
+<pre><code>##  [1] 1-4 5-6 10  5-6 9   1-4 7-8 1-4 7-8 1-4
 ## Levels: 1-4 5-6 7-8 9 10</code></pre>
 <p>Unordered breaks will be ordered before proceeding and a warning will be issued.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">3</span>))</code></pre></div>
 <pre><code>## Warning in cut.integer(sample(10), breaks = c(10, 0, 3)): breaks were
 ## unsorted and are now sorted in the following order: 0 3 10</code></pre>
-<pre><code>##  [1] 4-10 4-10 0-3  4-10 4-10 4-10 4-10 0-3  0-3  4-10
+<pre><code>##  [1] 4-10 0-3  4-10 4-10 4-10 0-3  0-3  4-10 4-10 4-10
 ## Levels: 0-3 4-10</code></pre>
 <p>Decimal values for <code>breaks</code> will be rounded to integers and a warning will be issued.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="fl">2.6</span>, <span class="fl">5.1</span>, <span class="dv">10</span>))</code></pre></div>
@@ -270,7 +271,7 @@ In a real-world situation, it is likely that a lot of variables have to be decod
 ##   2.6 to 2  
 ##   5.1 to 5  
 ## </code></pre>
-<pre><code>##  [1] 1-2  3-5  3-5  6-10 3-5  6-10 6-10 6-10 1-2  6-10
+<pre><code>##  [1] 6-10 3-5  6-10 1-2  6-10 6-10 3-5  1-2  6-10 3-5 
 ## Levels: 1-2 3-5 6-10</code></pre>
 </div>
 <div id="a-cut-method-for-ordered-factors" class="section level4">
@@ -293,39 +294,16 @@ In a real-world situation, it is likely that a lot of variables have to be decod
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="kw">cfactor</span>(<span class="st">&quot;a&quot;</span>), <span class="kw">cfactor</span>(<span class="st">&quot;b&quot;</span>))</code></pre></div>
 <pre><code>## [1] 1 1</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cc</span>(<span class="kw">cfactor</span>(<span class="st">&quot;a&quot;</span>), <span class="kw">cfactor</span>(<span class="st">&quot;b&quot;</span>))</code></pre></div>
-<pre><code>## Called from: eval(expr, envir, enclos)
-## debug at /Users/lorenz/datasciencecoursera/refactor/R/cc.R#20: if (all(dots_ordered)) {
-##     levels &lt;- lapply(dots, function(x) levels(x))
-##     levels_identical &lt;- Reduce(identical, levels)
-##     if (levels_identical) {
-##         return(cfactor(unlist(dots_chars), levels[[1]], ordered = TRUE))
-##     }
-##     else {
-##         warning(&quot;ordering not preserved since not all levels identical&quot;, 
-##             call. = FALSE)
-##         return(cfactor(unlist(dots_chars), ordered = FALSE))
-##     }
-## }</code></pre>
 <pre><code>## [1] a b
 ## Levels: a b</code></pre>
 <p><code>cc</code> can also deal with ordered factors, but it will return an unordered factor if the levels and their ordering are not identical.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cc</span>(<span class="kw">cfactor</span>(<span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>), <span class="dt">ordered =</span> T), <span class="kw">cfactor</span>(<span class="kw">c</span>(<span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>, <span class="st">&quot;d&quot;</span>), <span class="dt">ordered =</span> T))</code></pre></div>
-<pre><code>## Called from: eval(expr, envir, enclos)
-## debug at /Users/lorenz/datasciencecoursera/refactor/R/cc.R#20: if (all(dots_ordered)) {
-##     levels &lt;- lapply(dots, function(x) levels(x))
-##     levels_identical &lt;- Reduce(identical, levels)
-##     if (levels_identical) {
-##         return(cfactor(unlist(dots_chars), levels[[1]], ordered = TRUE))
-##     }
-##     else {
-##         warning(&quot;ordering not preserved since not all levels identical&quot;, 
-##             call. = FALSE)
-##         return(cfactor(unlist(dots_chars), ordered = FALSE))
-##     }
-## }</code></pre>
 <pre><code>## Warning: ordering not preserved since not all levels identical</code></pre>
 <pre><code>## [1] a b b c d
 ## Levels: a b c d</code></pre>
+</div>
+<div id="append" class="section level2">
+<h2>append</h2>
 </div>
 
 
