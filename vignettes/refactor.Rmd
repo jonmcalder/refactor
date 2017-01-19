@@ -254,10 +254,13 @@ does not return what might be expected.
 c(cfactor("a"), cfactor("b"))
 cc(cfactor("a"), cfactor("b"))
 ```
-`cc` can also deal with ordered factors, but it will return an unordered factor 
-if the levels and their ordering are not identical.
+`cc` can also deal with ordered factors. It is quite verbose in the sense 
+that if the levels and/or the order of the levels do not match exactly, it will
+issue warnings.
 ```{r}
-cc(cfactor(c("a", "b"), ordered = T), cfactor(c("b", "c", "d"), ordered = T))
+a_b <- cfactor(c("a", "b"), ordered = T)
+b_d <- cfactor(c("b", "c", "d"), ordered = T)
+cc(a_b, b_d)
 ```
 
 ## append
