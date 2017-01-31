@@ -8,7 +8,7 @@
   right = TRUE, ordered_result = TRUE, label_sep = "-", ...)
 }
 \arguments{
-\item{x}{A numeric vector which is to be converted to a factor by cutting.}
+\item{x}{An ordered factor which is to be cut into ordered bins.}
 
 \item{breaks}{Either a numeric vector of two or more unique cut points or a 
  single number (greater than or equal to 2) giving the
@@ -52,13 +52,12 @@ cut divides the range of \code{x} into intervals and codes the values in
  \code{x} according to the interval they fall into.
 }
 \details{
-In deviation from \code{cut.default}, \code{cut.ordered} does not 
- have an argument \code{dig.lab}, but instead has an argument that does not 
- exist for \code{cut.default}: \code{label_sep}.
- Note that unlike \code{\link[base]{cut.default}}, here 
- \code{include.lowest} defaults to \code{TRUE}, since this is more intuitive 
- for the class \code{ordered}. Since the input for \code{cut.ordered} is of 
- class \code{ordered}, the default output as well. This contrast with 
+Note that the \code{dig.lab} argument from \code{cut.default}, is 
+ replaced for \code{cut.ordered} by a new argument: \code{label_sep}. Also 
+ note that unlike \code{\link[base]{cut.default}}, here \code{include.lowest} 
+ defaults to \code{TRUE}, since this is more intuitive for the class 
+ \code{ordered}. Finally, since the input for \code{cut.ordered} is of class 
+ \code{ordered}, this is the default output as well. This contrasts with 
  \code{cut.default}, which produces an unordered output by default.
 }
 \examples{
