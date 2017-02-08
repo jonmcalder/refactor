@@ -41,10 +41,20 @@
 #'  an integer vector of level codes.
 #' @examples 
 #'  some_letters <- cfactor(letters, ordered = TRUE)
-#'  head(cut(some_letters, breaks = c("a", "q", "z"), 
-#'           labels = c("beginning of the alphabet", 
-#'                      "the rest of the alphabet"), 
-#'           right = TRUE, include.lowest = TRUE))
+#'  # bin letters into two groups
+#'  cut(some_letters, breaks = c("a", "q", "z"), 
+#'      labels = c("beginning of the alphabet", "the rest of the alphabet"), 
+#'      right = TRUE, include.lowest = TRUE)
+#'  # alter separator
+#'  cut(some_letters, breaks = 20, label_sep = " to ")
+#'  \dontrun{
+#'  # warnings
+#'  ## missing values created
+#'  cut(some_letters, breaks = c("a", "g"), label_sep = " to ")
+#'  ## bins of width 1
+#'  cut(some_letters, breaks = 20)
+#'      }
+
 #' @importFrom utils head tail
 #' @importFrom stats quantile
 #' @export
@@ -52,8 +62,10 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = TRUE,
                         right = TRUE, ordered_result = TRUE, label_sep = "-", 
                         ...) {
 
-############################## assertive checks ################################
-  
+
+#   ____________________________________________________________________________
+#   assertive tests                                                         ####
+
   # simple input checking 
   assert_factor(x, ordered = T)
   
@@ -88,15 +100,16 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = TRUE,
   # ordered_result
   test_logical(ordered_result)
   
-########################### assertive checks completed  ########################
 
-############################## determine breakpoints ###########################
-    
+
+#   ____________________________________________________________________________
+#   determine breakpoints                                                   ####
+
   x_num <- as.numeric(x)
   x_lev <- levels(x)
   unique_x <- unique(x)
   
-  ######## 
+  ### 
   # if breaks are not specified (i.e. only the number of breaks is provided)
   if(length(breaks) == 1){
     
@@ -117,10 +130,11 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = TRUE,
     
   }
   
-############################## breakpoints completed ###########################
-  
-############################## determine labels ################################
-  
+
+
+#   ____________________________________________________________________________
+#   determine labels                                                        ####
+
   adjust <- bin_adjust(right, include.lowest, numLabels)
   
   # create integer-based interval labels using label_sep
@@ -150,8 +164,9 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = TRUE,
     
   }
   
-############################## labels completed ################################
-  
+
+#   ____________________________________________________________________________
+
   output <- cut.default(x_num, breaks = breakpoints, labels = recode_labels, 
                         include.lowest = include.lowest, right = right, 
                         ordered_result = ordered_result, ...)

@@ -62,9 +62,18 @@ Note that the \code{dig.lab} argument from \code{cut.default}, is
 }
 \examples{
  some_letters <- cfactor(letters, ordered = TRUE)
- head(cut(some_letters, breaks = c("a", "q", "z"), 
-          labels = c("beginning of the alphabet", 
-                     "the rest of the alphabet"), 
-          right = TRUE, include.lowest = TRUE))
+ # bin letters into two groups
+ cut(some_letters, breaks = c("a", "q", "z"), 
+     labels = c("beginning of the alphabet", "the rest of the alphabet"), 
+     right = TRUE, include.lowest = TRUE)
+ # alter separator
+ cut(some_letters, breaks = 20, label_sep = " to ")
+ \dontrun{
+ # warnings
+ ## missing values created
+ cut(some_letters, breaks = c("a", "g"), label_sep = " to ")
+ ## bins of width 1
+ cut(some_letters, breaks = 20)
+     }
 }
 
