@@ -1,4 +1,4 @@
-# refactor 0.?
+# refactor 0.1.1
 
 * Update breaks_mode with new 'default' method to emulate cut.default
 * Rename existing breaks_mode method to 'spread'
