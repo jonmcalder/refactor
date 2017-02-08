@@ -96,5 +96,7 @@ c(cfactor("a"), cfactor("b"))
 cc(cfactor("a"), cfactor("b"))
 
 ## ------------------------------------------------------------------------
-cc(cfactor(c("a", "b"), ordered = T), cfactor(c("b", "c", "d"), ordered = T))
+a_b <- cfactor(c("a", "b"), ordered = T)
+b_d <- cfactor(c("b", "c", "d"), ordered = T)
+cc(a_b, b_d)
 
