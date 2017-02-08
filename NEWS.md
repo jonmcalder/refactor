@@ -5,6 +5,7 @@
 * Updates to documentation to reflect these functional changes and further 
   clarify behavior
 * Updates to testing of cut.integer based on the new modes
+* Updates to package vignette
 
 ### Bug Fixes
 

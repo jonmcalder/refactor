@@ -1,7 +1,7 @@
 Package: refactor
 Type: Package
 Title: Better factor handling for R
-Version: 0.1.0.9001
+Version: 0.1.1
 Authors@R: c(
   person("Lorenz", "Walthert", email = "lorenz.walthert@icloud.com", role = "cre"),
   person("Jon", "Calder", email = "jonmcalder@gmail.com", role = "aut"))
@@ -9,7 +9,7 @@ Description: refactor aims to provide better handling of factors in R by address
   problems that make factors feel like 2nd class citizens in R.
 License: MIT + file LICENSE
 LazyData: TRUE
-RoxygenNote: 5.0.1
+RoxygenNote: 6.0.1
 Depends: 
     R (>= 3.2.1)
 Imports: checkmate
