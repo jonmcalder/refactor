@@ -80,18 +80,18 @@
 <p><a href="https://cran.r-project.org/"><img src="https://img.shields.io/badge/R%3E%3D-3.2.1-6666ff.svg" alt="minimal R version"></a> <a href="https://cran.r-project.org/package=refactor"><img src="http://www.r-pkg.org/badges/version/refactor" alt="CRAN_Status_Badge"></a> <a href="commits/master"><img src="https://img.shields.io/badge/Package%20version-0.1.0.9001-orange.svg?style=flat-square" alt="packageversion"></a></p>
 <hr>
 <p><a href="/commits/master"><img src="https://img.shields.io/badge/last%20change-2016--10--07-yellowgreen.svg" alt="Last-changedate"></a></p>
-<p><strong>refactor</strong> is an R package which aims to provide better handling of factors. Though R does have a special data type for factors, it isn&rsquo;t always explicity catered for in commonly used R functions, which can lead to unexpected and undesirable outcomes (e.g.&nbsp;see this <a href="http://www.win-vector.com/blog/2014/09/factors-are-not-first-class-citizens-in-r/">Win-Vector blog post</a>). This observation formed the inspiration for &lsquo;re&rsquo;-factor: which is essentially to &lsquo;re&rsquo;-visit functions likely to be used with factor data and where possible to wrap, extend or override them in order to better cater for factor data, or at the very least to provide warnings when the integrity of the data could be compromised by an operation.</p>
+<p><strong>refactor</strong> is an R package which aims to provide better handling of factors. Though R does have a special data type for factors, it isn’t always explicity catered for in commonly used R functions, which can lead to unexpected and undesirable outcomes (e.g. see this <a href="http://www.win-vector.com/blog/2014/09/factors-are-not-first-class-citizens-in-r/">Win-Vector blog post</a>). This observation formed the inspiration for ‘re’-factor: which is essentially to ‘re’-visit functions likely to be used with factor data and where possible to wrap, extend or override them in order to better cater for factor data, or at the very least to provide warnings when the integrity of the data could be compromised by an operation.</p>
 <h2 id="installation">Installation</h2>
 <p>refactor is not yet available on CRAN but you can easily install the latest development version from github using <code>devtools</code>:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="co"># install.packages("devtools")</span>
 devtools::<span class="kw">install_github</span>(<span class="st">"jonmcalder/refactor"</span>)</code></pre></div>
 <h2 id="overview">Overview</h2>
-<p>Below are a few examples to illustrate some scenarios in which refactor can improve on base R&rsquo;s handling of factors.</p>
+<p>Below are a few examples to illustrate some scenarios in which refactor can improve on base R’s handling of factors.</p>
 <p>Please see the vignette for more details: <code><a href="articles/refactor.html">vignette("refactor", package = "refactor")</a></code></p>
 <h4 id="better-factor-creation-with-cfactor">Better factor creation with <code><a href="reference/cfactor.html">cfactor()</a></code>
 </h4>
 <ul>
-<li>get warnings whenever provided factor levels don&rsquo;t fully match those present in the data</li>
+<li>get warnings whenever provided factor levels don’t fully match those present in the data</li>
 </ul>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">string &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>)
 <span class="kw">factor</span>(string, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"d"</span>))
@@ -116,7 +116,7 @@ devtools::<span class="kw">install_github</span>(<span class="st">"jonmcalder/re
 <span class="co">#&gt; 4 Levels: EUR 1 - EUR 10 &lt; EUR 11 - EUR 20 &lt; ... &lt; EUR 100 - 101</span></code></pre></div>
 <h4 id="extension-of-the-generic-cut-method-to-handle-discrete-integer-data">Extension of the generic <code>cut</code> method to handle (discrete) integer data</h4>
 <ul>
-<li>generate &lsquo;natural&rsquo; intervals for factors when using cut on integer vectors
+<li>generate ‘natural’ intervals for factors when using cut on integer vectors
 <ul>
 <li>e.g. <code>[1,3], [4,6], [7,9]</code> as opposed to <code>(0.5, 3.5], (3.5, 6.5], (6.5, 9.5]</code>
 </li>

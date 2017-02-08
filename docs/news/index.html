@@ -75,25 +75,33 @@
   <div class="col-md-9">
     <div id="refactor-0.1.1" class="section level1">
 <h1>refactor 0.1.1</h1>
-<ul><li>Update breaks_mode with new ‘default’ method to emulate cut.default</li>
+<ul>
+<li>Update breaks_mode with new ‘default’ method to emulate cut.default</li>
 <li>Rename existing breaks_mode method to ‘spread’</li>
 <li>Updates to documentation to reflect these functional changes and further clarify behavior</li>
 <li>Updates to testing of cut.integer based on the new modes</li>
-</ul><div id="bug-fixes" class="section level3">
+<li>Updates to package vignette</li>
+</ul>
+<div id="bug-fixes" class="section level3">
 <h3>Bug Fixes</h3>
 </div>
 </div>
     <div id="refactor-0.1.0.9001" class="section level1">
 <h1>refactor 0.1.0.9001</h1>
-<ul><li>Style: All lines of code are now (roughly) 80 characters long, T and F changed into explicit notation TRUE and FALSE</li>
-</ul><div id="cut.integer" class="section level4">
+<ul>
+<li>Style: All lines of code are now (roughly) 80 characters long, T and F changed into explicit notation TRUE and FALSE</li>
+</ul>
+<div id="cut.integer" class="section level4">
 <h4>cut.integer</h4>
-<ul><li>floor() is used rather than round() when breaks are supplied as decimal numbers</li>
+<ul>
+<li>floor() is used rather than round() when breaks are supplied as decimal numbers</li>
 <li>The quantile method has been dropped</li>
-</ul></div>
+</ul>
+</div>
 <div id="index_cfactor" class="section level4">
 <h4>index_cfactor</h4>
-<ul><li>Arguments are only recycled if length = 1 (previously full recycling was possible)</li>
+<ul>
+<li>Arguments are only recycled if length = 1 (previously full recycling was possible)</li>
 <li>Improve formatting of documentation and corrected spelling</li>
 <li>Add more details on how this packages methods deviate from base methods</li>
 <li>Eliminate undocumented function arguments</li>
@@ -101,23 +109,28 @@
 <li>Wrap relevant expressions in documentation so they appear as code</li>
 <li>Remove remaining quantile method and descriptions snippets</li>
 <li>Update examples so they are in line with the vignette</li>
-</ul></div>
+</ul>
+</div>
 </div>
     <div id="refactor-0.1.0.9000" class="section level1">
 <h1>refactor 0.1.0.9000</h1>
-<ul><li>Substantial updates to cfactor, cut.integer and cut.ordered</li>
+<ul>
+<li>Substantial updates to cfactor, cut.integer and cut.ordered</li>
 <li>More assertive tests and warnings</li>
 <li>Add new function index_cfactor()</li>
 <li>Updates to function documentation</li>
 <li>Updates to README</li>
 <li>Include package vignette with examples of the problems addressed</li>
-</ul></div>
+</ul>
+</div>
     <div id="refactor-0.1.0" class="section level1">
 <h1>refactor 0.1.0</h1>
-<ul><li>Updates to cut.integer and improved documentation</li>
+<ul>
+<li>Updates to cut.integer and improved documentation</li>
 <li>Additional testing</li>
 <li>Include checkmate package to facilitate runtime checking of function arguments</li>
-</ul></div>
+</ul>
+</div>
   </div>
 
   <div class="col-md-3 hidden-xs">
