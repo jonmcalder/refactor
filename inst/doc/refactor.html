@@ -12,7 +12,7 @@
 
 <meta name="author" content="Lorenz Walthert and Jon Calder" />
 
-<meta name="date" content="2016-09-23" />
+<meta name="date" content="2017-02-09" />
 
 <title>refactor</title>
 
@@ -70,18 +70,17 @@ code > span.in { color: #60a0b0; font-weight: bold; font-style: italic; } /* Inf
 
 <h1 class="title toc-ignore">refactor</h1>
 <h4 class="author"><em>Lorenz Walthert and Jon Calder</em></h4>
-<h4 class="date"><em>2016-09-23</em></h4>
+<h4 class="date"><em>2017-02-09</em></h4>
 
 
 
 <div id="introduction" class="section level2">
 <h2>Introduction</h2>
-<p>Working with factors in R can be frustrating. As described well by <a href="http://www.win-vector.com/blog/2014/09/factors-are-not-first-class-citizens-in-r/">John Mount</a>, factors are not first-class citizens in R. Even the most basic code often behaves in an unexpected manner and without any warning. Let’s start off with a simple example - creating two factor vectors and combining them together - that illustrates some of the issues:</p>
+<p>Working with factors in R can be frustrating. <a href="http://www.win-vector.com/blog/2014/09/factors-are-not-first-class-citizens-in-r/">John Mount</a>, puts it well by saying that factors are not first-class citizens in R. Even the most basic code often behaves in an unexpected manner and without any warning. Let’s start off with a simple example - creating two factor vectors and combining them together - that illustrates some of the issues:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lower &lt;-<span class="st"> </span><span class="kw">factor</span>(letters[<span class="dv">1</span>:<span class="dv">3</span>], <span class="dt">levels =</span> letters[<span class="dv">2</span>:<span class="dv">4</span>])
 upper &lt;-<span class="st"> </span><span class="kw">factor</span>(LETTERS[<span class="dv">1</span>:<span class="dv">5</span>], <span class="dt">levels =</span> LETTERS[<span class="dv">1</span>:<span class="dv">4</span>])
 (combined &lt;-<span class="st"> </span><span class="kw">c</span>(lower, upper))</code></pre></div>
-<pre><code>## [1] &lt;NA&gt; b    c    A    B    C    D    &lt;NA&gt;
-## Levels: A b B c C D</code></pre>
+<pre><code>## [1] NA  1  2  1  2  3  4 NA</code></pre>
 <p>One can note the following issues:</p>
 <ul>
 <li><code>factor()</code> does not yield an error when <code>NA</code>s are created silently, neither when levels do not match x nor when too few levels are specified.</li>
@@ -141,6 +140,18 @@ string &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">
 )</code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 </div>
+<div id="intersection-of-underlying-values-and-labels" class="section level3">
+<h3>Intersection of underlying values and labels</h3>
+<p>When creating a <code>factor</code> you sometimes want to label that data, that is, assign a label to each value supplied in <code>x</code>. A situation to avoid is using labels that are identical to its underlaying value for some but not all levels.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cfactor</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>), <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;letter b&quot;</span>, <span class="st">&quot;b&quot;</span>))</code></pre></div>
+<pre><code>## Warning in cfactor(x = c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;), levels = c(&quot;a&quot;, &quot;b&quot;, &quot;c&quot;), labels = c(&quot;a&quot;, : Some values now used for the labels existed in the data vector 'x' already: 
+##   'b' is now represented with 'letter b', 'b' now represents 'c' 
+##   'a' still represents 'a'</code></pre>
+<pre><code>## [1] a        letter b b       
+## Levels: a letter b b</code></pre>
+<p>The outcome of this is kind of messy. Whereas <code>factor</code> lets you do that without returing any warning, <code>cfactor</code> will issue a such to inform about the intersection.<br />
+In adition, a second warning that indicates that <code>a</code> is choosen as a representation of <code>a</code> itself is issued. In a context where data are given labels distinct from their values, which is the whole point of labeling, this in many cases proabably not what the programmer wanted to see happening.</p>
+</div>
 </div>
 <div id="index_cfactor" class="section level2">
 <h2><code>index_cfactor</code></h2>
@@ -150,7 +161,9 @@ index &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span cla
                     <span class="dt">label =</span> letters[<span class="dv">1</span>:<span class="dv">10</span>])
 
 <span class="kw">cfactor</span>(data, <span class="dt">levels =</span> index$encoding, <span class="dt">labels =</span> index$label)</code></pre></div>
-<pre><code>##  [1] f i a f a d e c j b a g h a g h c i d e
+<pre><code>## Warning: the following levels were empty: 
+##  8</code></pre>
+<pre><code>##  [1] a g b i g b f c i a j a e g a d d a e c
 ## Levels: a b c d e f g h i j</code></pre>
 <p><br />
 In a real-world situation, it is likely that a lot of variables have to be decoded. <code>index_cfactor</code> was created to assist with this task. First, we need some sample data.</p>
@@ -162,12 +175,12 @@ In a real-world situation, it is likely that a lot of variables have to be decod
                   <span class="dt">stringsAsFactors =</span> <span class="ot">FALSE</span>)
 <span class="kw">head</span>(data)</code></pre></div>
 <pre><code>##   var1 var2 var3 var4          var5
-## 1    2    1    3    2       Vermont
-## 2    7    2   13    2         Texas
-## 3    1    1   19    2       Wyoming
-## 4    6    2    8    2       Georgia
-## 5    9    1    1    2 West Virginia
-## 6    7    2   12    2 Massachusetts</code></pre>
+## 1    7    1   13    2        Nevada
+## 2    7    2   19    2    Washington
+## 3    5    1   20    2      Delaware
+## 4    1    2    3    2    California
+## 5    6    1   17    2 West Virginia
+## 6    6    2   15    2     Louisiana</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">index &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">var =</span> <span class="kw">rep</span>(<span class="kw">paste0</span>(<span class="st">&quot;var&quot;</span>, <span class="dv">1</span>:<span class="dv">3</span>), <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">2</span>, <span class="dv">20</span>)),
                     <span class="dt">encoding =</span> <span class="kw">c</span>(<span class="dv">1</span>:<span class="dv">10</span>, <span class="dv">1</span>:<span class="dv">2</span>, <span class="dv">1</span>:<span class="dv">20</span>),
                     <span class="dt">label =</span> <span class="kw">c</span>(letters[<span class="dv">1</span>:<span class="dv">10</span>], <span class="kw">c</span>(<span class="st">&quot;male&quot;</span>, <span class="st">&quot;female&quot;</span>), LETTERS[<span class="dv">1</span>:<span class="dv">20</span>]))
@@ -183,16 +196,16 @@ In a real-world situation, it is likely that a lot of variables have to be decod
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">final &lt;-<span class="st"> </span><span class="kw">head</span>(<span class="kw">index_cfactor</span>(<span class="dt">data =</span> data, <span class="dt">index =</span> index, <span class="dt">variable =</span> <span class="st">&quot;var&quot;</span>, 
                             <span class="dt">ordered =</span> <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)))</code></pre></div>
 <pre><code>## Warning: the following levels were empty: 
-##  4
-## 8</code></pre>
+##  3
+## 9</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">print</span>(final)</code></pre></div>
 <pre><code>##   var1   var2 var3 var4          var5
-## 1    b   male    C    2       Vermont
-## 2    g female    M    2         Texas
-## 3    a   male    S    2       Wyoming
-## 4    f female    H    2       Georgia
-## 5    i   male    A    2 West Virginia
-## 6    g female    L    2 Massachusetts</code></pre>
+## 1    g   male    M    2        Nevada
+## 2    g female    S    2    Washington
+## 3    e   male    T    2      Delaware
+## 4    a female    C    2    California
+## 5    f   male    Q    2 West Virginia
+## 6    f female    O    2     Louisiana</code></pre>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">sapply</span>(final, class)</code></pre></div>
 <pre><code>## $var1
 ## [1] &quot;ordered&quot; &quot;factor&quot; 
@@ -227,32 +240,29 @@ In a real-world situation, it is likely that a lot of variables have to be decod
 <p><code>cut.default</code> provides rather inappropriate labels for integer values.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">random &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">100</span>)
 <span class="kw">cut.default</span>(random, <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">10</span>))[<span class="dv">1</span>:<span class="dv">10</span>]</code></pre></div>
-<pre><code>##  [1] (60,70] (50,60] (30,40] (10,20] (70,80] (80,90] (0,10]  (30,40]
-##  [9] (60,70] (60,70]
+<pre><code>##  [1] (10,20]  (40,50]  (80,90]  (50,60]  (20,30]  (0,10]   (60,70] 
+##  [8] (70,80]  (90,100] (0,10]  
 ## 10 Levels: (0,10] (10,20] (20,30] (30,40] (40,50] (50,60] ... (90,100]</code></pre>
 <p><code>refactor</code> extends the S3 method <code>cut</code> with <code>cut.integer</code> to provide more natural labels for this data type.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(random, <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">10</span>))[<span class="dv">1</span>:<span class="dv">10</span>]</code></pre></div>
-<pre><code>##  [1] 61-70 51-60 31-40 11-20 71-80 81-90 0-10  31-40 61-70 61-70
+<pre><code>##  [1] 11-20  41-50  81-90  51-60  21-30  0-10   61-70  71-80  91-100 0-10  
 ## Levels: 0-10 11-20 21-30 31-40 41-50 51-60 61-70 71-80 81-90 91-100</code></pre>
 <p>The remainder of the section will outline and describe how <code>cut.integer</code> deviates from the default <code>cut</code> method.<br />
 <br><br> Creating missing values will yield a warning.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">0</span>, <span class="dv">3</span>, <span class="dv">5</span>))</code></pre></div>
 <pre><code>## Warning in cut.integer(sample(10), breaks = c(0, 3, 5)): 5 missing values
 ## generated</code></pre>
-<pre><code>##  [1] &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; 4-5  0-3  &lt;NA&gt; 0-3  &lt;NA&gt; 4-5  0-3 
+<pre><code>##  [1] &lt;NA&gt; 0-3  &lt;NA&gt; 0-3  4-5  0-3  &lt;NA&gt; &lt;NA&gt; &lt;NA&gt; 4-5 
 ## Levels: 0-3 4-5</code></pre>
 <p>It is possible to define bins with width 1. This will generate a label with just the value of the integer containted (e.g. 2 instead of 2-2) and issue a warning.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="dv">4</span>, <span class="dv">6</span>, <span class="dv">8</span>, <span class="dv">9</span>, <span class="dv">10</span>))</code></pre></div>
-<pre><code>## Warning in cut.integer(sample(10), breaks = c(1, 4, 6, 8, 9, 10)): this
-## break specification produces 2 bin(s) of width 1. The corresponding
-## label(s) are: 9, 10</code></pre>
-<pre><code>##  [1] 10  1-4 7-8 1-4 5-6 1-4 5-6 1-4 7-8 9  
+<pre><code>##  [1] 1-4 10  1-4 7-8 5-6 1-4 5-6 9   7-8 1-4
 ## Levels: 1-4 5-6 7-8 9 10</code></pre>
 <p>Unordered breaks will be ordered before proceeding and a warning will be issued.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">10</span>, <span class="dv">0</span>, <span class="dv">3</span>))</code></pre></div>
 <pre><code>## Warning in cut.integer(sample(10), breaks = c(10, 0, 3)): breaks were
 ## unsorted and are now sorted in the following order: 0 3 10</code></pre>
-<pre><code>##  [1] 4-10 0-3  4-10 4-10 4-10 4-10 0-3  4-10 4-10 0-3 
+<pre><code>##  [1] 4-10 4-10 4-10 0-3  4-10 4-10 4-10 4-10 0-3  0-3 
 ## Levels: 0-3 4-10</code></pre>
 <p>Decimal values for <code>breaks</code> will be rounded to integers and a warning will be issued.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cut</span>(<span class="kw">sample</span>(<span class="dv">10</span>), <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="dv">1</span>, <span class="fl">2.6</span>, <span class="fl">5.1</span>, <span class="dv">10</span>))</code></pre></div>
@@ -260,22 +270,56 @@ In a real-world situation, it is likely that a lot of variables have to be decod
 ##   2.6 to 2  
 ##   5.1 to 5  
 ## </code></pre>
-<pre><code>##  [1] 3-5  6-10 3-5  6-10 6-10 3-5  6-10 6-10 1-2  1-2 
+<pre><code>##  [1] 1-2  3-5  6-10 6-10 6-10 6-10 1-2  3-5  3-5  6-10
 ## Levels: 1-2 3-5 6-10</code></pre>
 </div>
 <div id="a-cut-method-for-ordered-factors" class="section level4">
 <h4>a <code>cut</code> method for ordered factors</h4>
 <p>This method allows one to combine the levels of a factor into fewer categories given some break points:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">some_letters &lt;-<span class="st"> </span><span class="kw">cfactor</span>(<span class="kw">sample</span>(letters, <span class="dv">100</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>), <span class="dt">ordered =</span> <span class="ot">TRUE</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">some_letters &lt;-<span class="st"> </span><span class="kw">cfactor</span>(letters, <span class="dt">ordered =</span> <span class="ot">TRUE</span>)
 <span class="kw">head</span>(<span class="kw">cut</span>(some_letters, <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;q&quot;</span>, <span class="st">&quot;z&quot;</span>), 
          <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">&quot;beginning of the alphabet&quot;</span>, <span class="st">&quot;the rest of the alphabeth&quot;</span>), 
          <span class="dt">right =</span> <span class="ot">TRUE</span>, <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>))</code></pre></div>
-<pre><code>## [1] beginning of the alphabet the rest of the alphabeth
-## [3] the rest of the alphabeth beginning of the alphabet
-## [5] the rest of the alphabeth the rest of the alphabeth
-## Levels: beginning of the alphabet the rest of the alphabeth</code></pre>
+<pre><code>## [1] beginning of the alphabet beginning of the alphabet
+## [3] beginning of the alphabet beginning of the alphabet
+## [5] beginning of the alphabet beginning of the alphabet
+## Levels: beginning of the alphabet &lt; the rest of the alphabeth</code></pre>
 </div>
 </div>
+</div>
+<div id="cc" class="section level2">
+<h2>cc</h2>
+<p>The purpose of <code>cc</code> is to combine elements into a vector, just as base <code>c</code> does. They only differ with regard to factor treatment, for which <code>c</code> most likely does not return what might be expected.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="kw">cfactor</span>(<span class="st">&quot;a&quot;</span>), <span class="kw">cfactor</span>(<span class="st">&quot;b&quot;</span>))</code></pre></div>
+<pre><code>## [1] 1 1</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cc</span>(<span class="kw">cfactor</span>(<span class="st">&quot;a&quot;</span>), <span class="kw">cfactor</span>(<span class="st">&quot;b&quot;</span>))</code></pre></div>
+<pre><code>## Warning: ordering and levels not preserved since levels not identical</code></pre>
+<pre><code>## [1] a b
+## Levels: a b</code></pre>
+<p><code>cc</code> can also deal with ordered factors. It is quite verbose in the sense that if the levels and/or the order of the levels do not match exactly, it will issue warnings.</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a_b &lt;-<span class="st"> </span><span class="kw">cfactor</span>(<span class="kw">c</span>(<span class="st">&quot;a&quot;</span>, <span class="st">&quot;b&quot;</span>), <span class="dt">ordered =</span> T)
+b_d &lt;-<span class="st"> </span><span class="kw">cfactor</span>(<span class="kw">c</span>(<span class="st">&quot;b&quot;</span>, <span class="st">&quot;c&quot;</span>, <span class="st">&quot;d&quot;</span>), <span class="dt">ordered =</span> T)
+<span class="kw">cc</span>(a_b, b_d)</code></pre></div>
+<pre><code>## Warning: ordering and levels not preserved since levels not identical</code></pre>
+<pre><code>## [1] a b b c d
+## Levels: a b c d</code></pre>
+</div>
+<div id="append" class="section level2">
+<h2>append</h2>
+<p>The append function is a simple extension of the <code>base::append()</code> function, which is slightly refined in order to better handle appending of factors.</p>
+<p>As shown in the example below, the base version of <code>append()</code> converts factors back into their underlying integer representations in the process of combining them:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">'c'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="ot">NA</span>,<span class="st">'b'</span>,<span class="st">'a'</span>), <span class="dt">levels=</span> <span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>))
+g &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">sample</span>(letters[<span class="dv">4</span>:<span class="dv">10</span>]), <span class="dt">levels =</span> <span class="kw">sample</span>(letters[<span class="dv">4</span>:<span class="dv">10</span>]))
+base::<span class="kw">append</span>(f, g)</code></pre></div>
+<pre><code>##  [1]  3  1  1 NA  2  1  3  6  5  4  7  1  2</code></pre>
+<p>This is probably not what you’d expect to get. What <code>refactor::append</code> will give you instead, is this:</p>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">refactor::<span class="kw">append</span>(f, g)</code></pre></div>
+<pre><code>## Warning: the following levels were removed: 
+##  NA</code></pre>
+<pre><code>##  [1] c    a    a    &lt;NA&gt; b    a    i    e    d    f    h    j    g   
+## Levels: a b c d e f g h i j</code></pre>
+<p>It returns a factor, preserves the levels, and also warns you about the <code>NA</code> value. Hopefully that is more in line with what you wanted.</p>
+<p><code>refactor::append()</code> will also handle ordered factors, provided that the ordering is consistent. If levels and/or ordering are not consistent, then it will simply fall back to the base method.</p>
 </div>
 
 

@@ -18,12 +18,10 @@
 #'  if of length 1. Otherwise, an error is thrown. 
 #'  All arguments passed via \code{...} are applied in the order of the data 
 #'  columns but columns not to convert are skipped (see example).
-#'  
 #' @return The original data frame is returned whereas the variables for which 
 #'  an encoding was provided are turned into (ordered) factors. All other 
 #'  columns are returned unmodified.
-#' @examples 
-#'  data <- data.frame(var1 = sample(x = 1:10, size = 20, replace = TRUE),
+#' @examples data <- data.frame(var1 = sample(x = 1:10, size = 20, replace = TRUE),
 #'                    var2 = rep(1:2, 20),
 #'                    var3 = sample(20),
 #'                    var4 = 2, 
@@ -42,10 +40,22 @@ index_cfactor <- function(data, index, variable = "variable",
   
   
   further_args <- list(...)
+  # make sure variable, encoding and label are actual columns in the data frame
+  pos_var <- match(variable, names(index))
   pos_enc <- match(encoding, names(index))
   pos_lab <- match(label, names(index))
+  check <- list(variable = pos_var, 
+                encoding = pos_enc, 
+                label = pos_lab)
+  lapply(names(check), function(g) 
+    if(is.na(check[[g]])) {
+      stop(paste("argument '", g, "' specified incorrectly. ",
+                 "There is no such column in '", quote(index), "'", sep = ""))
+    }) 
+      
 
-  # only apply index to variables in index 
+  
+  # only apply index to variables in index
   var_in_index <- unique(as.character(index[[variable]]))
   # find variable from the data that exist in the index
   pos_fact <- which(names(data) %in% var_in_index) 
@@ -87,7 +97,16 @@ index_cfactor <- function(data, index, variable = "variable",
   }
   
   # apply cfactor to the original data, each column with its specification
-  data[, pos_fact] <- as.data.frame(Map(cfactor, data[, pos_fact], 
-                                        sp_index_enc, sp_index_lab, ...)) 
+  # if there are multiple columns to decode
+  if(length(sp_index_lab) > 1){
+    data[, pos_fact] <- as.data.frame(Map(cfactor, data[, pos_fact], 
+                                          sp_index_enc, sp_index_lab, ...)) 
+  } else if(length(sp_index_lab) == 1){
+    data[, pos_fact] <- cfactor(data[, pos_fact], 
+                                levels = sp_index_enc[[1]], 
+                                labels = sp_index_lab[[1]], ...)
+
+  }
+  
   data
 }

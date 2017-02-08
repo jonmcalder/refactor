@@ -41,7 +41,7 @@ Arguments passed via \code{...} to \code{cfactor} are only recycled
  columns but columns not to convert are skipped (see example).
 }
 \examples{
- data <- data.frame(var1 = sample(x = 1:10, size = 20, replace = TRUE),
+data <- data.frame(var1 = sample(x = 1:10, size = 20, replace = TRUE),
                    var2 = rep(1:2, 20),
                    var3 = sample(20),
                    var4 = 2, 

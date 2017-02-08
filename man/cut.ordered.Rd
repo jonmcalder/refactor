@@ -4,12 +4,11 @@
 \alias{cut.ordered}
 \title{Create Bins for ordered Factors}
 \usage{
-\method{cut}{ordered}(x, breaks, labels = NULL, include.lowest = FALSE,
-  right = TRUE, ordered_result = FALSE, breaks_mode = "default",
-  label_sep = "-", ...)
+\method{cut}{ordered}(x, breaks, labels = NULL, include.lowest = TRUE,
+  right = TRUE, ordered_result = TRUE, label_sep = "-", ...)
 }
 \arguments{
-\item{x}{A numeric vector which is to be converted to a factor by cutting.}
+\item{x}{An ordered factor which is to be cut into ordered bins.}
 
 \item{breaks}{Either a numeric vector of two or more unique cut points or a 
  single number (greater than or equal to 2) giving the
@@ -24,20 +23,18 @@ factor.}
 lowest (or highest, for \code{right = FALSE}) breaks value should be 
 included.}
 
-\item{right}{Logical, indicating if the intervals should be closed on the 
-right (and open on the left) or vice versa.}
+\item{right}{Logical, indicating how to create the bins. This is utilized in
+two different ways based on the type of breaks argument. In the
+conventional case, where a breaks vector is supplied, \code{right = TRUE}
+indicates that bins should be closed on the right (and open on the left) or
+vice versa. If a single integer breaks value is provided, then 
+\code{right = TRUE} indicates that bins will be determined such that those 
+on the right are larger (if it is not possible for all bins to be evenly 
+sized).}
 
-\item{ordered_result}{Logical: should the result be an ordered factor?}
-
-\item{breaks_mode}{A parameter indicating how to determine the intervals when
-breaks is specified as a scalar. 
-\itemize{ 
- \item 'default' will result in
- intervals spread as evenly as possible over the exact range of \code{x}. 
- \item
-'pretty' will generate rounded breakpoints for the intervals (often
-extending slightly beyond the range of \code{x}) based on 
-\link[base]{pretty}.}}
+\item{ordered_result}{Logical: should the result be an ordered factor? Note 
+that since the input data is ordered this argument is \code{TRUE} by 
+default.}
 
 \item{label_sep}{A single or short character string used to generate labels 
 for the intervals e.g. the default value of "-" will result in labels like 
@@ -55,18 +52,28 @@ cut divides the range of \code{x} into intervals and codes the values in
  \code{x} according to the interval they fall into.
 }
 \details{
-In deviation from \code{cut.default}, \code{cut.ordered} does not 
- have an argument \code{dig.lab}, but instead has two arguments that do not 
- exist for \code{cut.default}: \code{breaks_mode} and \code{label_sep}.
- Note that unlike \code{\link[base]{cut.default}}, here 
- \code{include.lowest} defaults to \code{TRUE}, since this is more intuitive 
- for integer intervals.
+Note that the \code{dig.lab} argument from \code{cut.default}, is 
+ replaced for \code{cut.ordered} by a new argument: \code{label_sep}. Also 
+ note that unlike \code{\link[base]{cut.default}}, here \code{include.lowest} 
+ defaults to \code{TRUE}, since this is more intuitive for the class 
+ \code{ordered}. Finally, since the input for \code{cut.ordered} is of class 
+ \code{ordered}, this is the default output as well. This contrasts with 
+ \code{cut.default}, which produces an unordered output by default.
 }
 \examples{
- some_letters <- cfactor(sample(letters, 100, replace = TRUE), ordered = TRUE)
- head(cut(some_letters, breaks = c("a", "q", "z"), 
-          labels = c("beginning of the alphabet", "the rest of the alphabeth"), 
-          right = TRUE, include.lowest = TRUE))
- 
+ some_letters <- cfactor(letters, ordered = TRUE)
+ # bin letters into two groups
+ cut(some_letters, breaks = c("a", "q", "z"), 
+     labels = c("beginning of the alphabet", "the rest of the alphabet"), 
+     right = TRUE, include.lowest = TRUE)
+ # alter separator
+ cut(some_letters, breaks = 20, label_sep = " to ")
+ \dontrun{
+ # warnings
+ ## missing values created
+ cut(some_letters, breaks = c("a", "g"), label_sep = " to ")
+ ## bins of width 1
+ cut(some_letters, breaks = 20)
+     }
 }
 

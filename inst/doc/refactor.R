@@ -29,6 +29,9 @@ identical(
 )
 
 ## ------------------------------------------------------------------------
+cfactor(x = c("a", "b", "c"), levels = c("a", "b", "c"), labels = c("a", "letter b", "b"))
+
+## ------------------------------------------------------------------------
 data <- sample(x = 1:10, size = 20, replace = TRUE)
 index <- data.frame(encoding = 1:10,
                     label = letters[1:10])
@@ -83,8 +86,25 @@ cut(sample(10), breaks = c(10, 0, 3))
 cut(sample(10), breaks = c(1, 2.6, 5.1, 10))
 
 ## ------------------------------------------------------------------------
-some_letters <- cfactor(sample(letters, 100, replace = TRUE), ordered = TRUE)
+some_letters <- cfactor(letters, ordered = TRUE)
 head(cut(some_letters, breaks = c("a", "q", "z"), 
          labels = c("beginning of the alphabet", "the rest of the alphabeth"), 
          right = TRUE, include.lowest = TRUE))
+
+## ------------------------------------------------------------------------
+c(cfactor("a"), cfactor("b"))
+cc(cfactor("a"), cfactor("b"))
+
+## ------------------------------------------------------------------------
+a_b <- cfactor(c("a", "b"), ordered = T)
+b_d <- cfactor(c("b", "c", "d"), ordered = T)
+cc(a_b, b_d)
+
+## ------------------------------------------------------------------------
+f <- factor(c('c','a','a',NA,'b','a'), levels= c('a','b','c'))
+g <- factor(sample(letters[4:10]), levels = sample(letters[4:10]))
+base::append(f, g)
+
+## ------------------------------------------------------------------------
+refactor::append(f, g)
 

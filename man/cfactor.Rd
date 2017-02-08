@@ -11,11 +11,10 @@ cfactor(x, levels, labels = levels, exclude = NA, ordered = is.ordered(x),
 \item{x}{a vector of data, usually taking a small number of distinct
     values.}
 
-\item{levels}{an optional vector of the values (as character strings)
-    that \code{x} might have taken.  The default is the unique set of
-    values taken by \code{\link{as.character}(x)}, sorted into
-    increasing order \emph{of \code{x}}.  Note that this set can be
-    specified as smaller than \code{sort(unique(x))}.}
+\item{levels}{an optional vector of the values (as character strings) that 
+\code{x} might have taken. If missing (the default), the levels are 
+determined by sorting the numerical elements in \code{x}. This is not as in
+\code{factor}. See 'Details'.}
 
 \item{labels}{\emph{either} an optional character vector of labels for the
     levels (in the same order as \code{levels} after removing those in
@@ -31,27 +30,62 @@ cfactor(x, levels, labels = levels, exclude = NA, ordered = is.ordered(x),
 \item{nmax}{an upper bound on the number of levels; see \sQuote{Details}.}
 
 \item{sep}{A character vector giving all strings that are used to separate 
-the lower numerical boundary of a range from the upper 
-numerical boundary within \code{x}.}
+the lower numerical boundary of a range from the upper numerical boundary 
+within \code{x}. See 'Details' for more information.}
 }
 \value{
-An object of class "factor" which has a set of integer codes the 
- length of \code{x} with a "levels" attribute of mode character
- and unique (!anyDuplicated(.)) entries. If argument ordered is true (or 
- ordered() is used) the result has class c("ordered", "factor").
+See \code{\link{factor}}.
 }
 \description{
 A wrapper for \code{factor} with enhanced control.
 }
 \details{
 \code{cfactor} wraps \code{\link{factor}} but provides enhanced 
- control. \cr
- The order of the levels is determined by sorting the numerical values 
- preceeding the separators indicated in \code{sep}. If 
- \code{sep} is set to \code{NULL} or if not every value of \code{x} contains 
- numbers, the same ordering as in \code{factor} is applied.
+ control. The enhanced control has the following elements:
+ \itemize{
+   \item more warnings: \code{NA}s are never produced silently. Empty levels
+   also produce a warning. If \code{levels} and \code{labels} intersect, a
+   warning is produced too.
+   \item flexible order detection: By default, the order of the levels is 
+   given by the order of the numerical elements in \code{x}. See below.
+ }
+ Levels of the factor or determined by the \code{levels} argument. If 
+ \code{levels} is missing, the order of the levels is determined as 
+ follows: 
+ \itemize{
+   \item If \code{sep} is set to \code{NULL}: Levels are determined by 
+   sorting the unique values in \code{x}, which is the same behaviour as in 
+   \code{factor}.
+   \item If \code{sep} is set to \code{NA}, the order is given by first
+   appearance in \code{x}. 
+   \item Otherwise, 
+     \itemize{
+       \item If every value in \code{x} contains numbers: Levels are determined
+       by sorting the numerical values preceeding the separators indicated in 
+       \code{sep}.
+       \item If not every value in \code{x} contains numbers: Levels are 
+       determined by sorting the unique values in \code{x}, which is the same 
+       behaviour as in \code{factor} and corresponds to setting \code{sep}
+       to \code{NULL}.
+     }
+   }
+ Apart from the newly introduced argument \code{sep}, \code{cfactor} has 
+ the same arguments and defaults as \code{factor}.
+ \cr
+ Where levels is not supplied, \code{\link{unique}} is called. Since factors typically 
+ have quite a small number of levels, for large vectors x it is helpful to 
+ supply \code{nmax} as an upper bound on the number of unique values.
 }
 \examples{
-cfactor(c("a", "c", "b", "c", "d"))
+\dontrun{
+## create warnings with unused and removed levels
+string <- c("a", "b", "c")
+cfactor(string, levels = c("b", "c", "d"))}
+
+## detecting levels: compare factor and cfactor
+hard_to_detect <- c("EUR 21 - EUR 22", "EUR 100 - 101", 
+"EUR 1 - EUR 10", "EUR 11 - EUR 20")
+factor(hard_to_detect, ordered = TRUE)
+cfactor(hard_to_detect, ordered = TRUE)
 }
 

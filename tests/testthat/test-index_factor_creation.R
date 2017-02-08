@@ -26,13 +26,20 @@ index4 <- data.frame(var = "var99",
 index5 <- data.frame(var = rep(c("var99", "var3", "var2"), c(10, 20, 2)),
                      encoding = c(1:10, sample(20), 1:2),
                      label = c(letters[1:10], letters[1:20], c("male", "female")))
-
+index6 <- data.frame(var = "var2",
+                     encoding = 1:2, 
+                     label = c("male", "female"))
 
 test_that("basics", {
   # expect no error
   expect_error(index_cfactor(data = data, index = index, variable = "var"), NA)
   expect_error(index_cfactor(data = data, index = index, variable = "var", ordered = TRUE), NA)
   expect_error(index_cfactor(data = data, index = index, variable = "var", ordered = c(TRUE, FALSE, FALSE)), NA)
+})
+test_that("edge cases", {
+  # when only one column should be changed and essentially just cfactor should 
+  # be applied without any higher order function
+  expect_error(index_cfactor(data, index6, "var"), NA)
 })
 
 
