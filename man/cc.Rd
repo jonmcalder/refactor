@@ -31,16 +31,18 @@ char2 <- as.factor(sample(letters, 5))
 cc(char1, char2) # probably more reasonable than
 c(char1, char2) 
 \dontrun{
-## no warning since levels identical
+## warnings
+# no warning since levels identical
 a_to_d <- cfactor(letters[1:2], levels = letters[1:5])
 b_to_d <- cfactor(letters[1:5])
 cc(a_to_d, b_to_d)
-## warning for differing order of levels
+
+# warning for differing order of levels
 a_to_d <- cfactor(letters[1:2], levels = letters[1:5])
 d_to_a <- cfactor(letters[1:2], levels = rev(letters[1:5]))
 cc(a_to_d, d_to_a)
 
-## warning for different levels
+# warning for different levels
 some_levels <- cfactor(letters[1:2], levels = letters[1:5])
 all_levels <- cfactor(letters[1:2], levels = letters)
 cc(all_levels, some_levels, some_levels)

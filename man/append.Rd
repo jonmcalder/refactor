@@ -34,5 +34,11 @@ f <- factor(c('c','a','a',NA,'b','a'), levels= c('a','b','c'))
 g <- factor(sample(letters[4:10]), levels = sample(letters[4:10]))
 base::append(f, g) # not nice
 refactor::append(f, g) # probably what you want
+
+# ordered factors
+f_ord <- factor(f, ordered = TRUE)
+g_ord <- factor(g, ordered = TRUE)
+append(f_ord, g_ord) 
+append(f_ord, f_ord) 
 }
 

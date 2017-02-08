@@ -16,6 +16,15 @@
 #' g <- factor(sample(letters[4:10]), levels = sample(letters[4:10]))
 #' base::append(f, g) # not nice
 #' refactor::append(f, g) # probably what you want
+#' 
+#' # ordered factors
+#' f_ord <- factor(f, ordered = TRUE)
+#' g_ord <- factor(g, ordered = TRUE)
+#  # ordering not preserved if levels and ordering not identical
+#' append(f_ord, g_ord) 
+#  # ordering preserved if levels and ordering identical
+#' append(f_ord, f_ord) 
+
 #' @export
 
 append <- function (x, values, after = length(x)) {

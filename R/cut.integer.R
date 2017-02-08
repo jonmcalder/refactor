@@ -69,10 +69,17 @@
 #'  cut.default(random, breaks = seq(0, 100, by = 10))[1:10]
 #'  
 #'  cut(random, breaks = 2) # create two bins
+#'  cut(sample(10), breaks = c(1, 6, 8, 9, 10)) # nice labels if binwidth is one
 #'  cut(random, breaks = 2, label_sep = " to ") # other label separator
 #'  cut(random, breaks = c(1, 8, 11), right = FALSE) # bins closed on right
 #'  # if uneven, make right bin slightly larger
 #'  cut(random, breaks = 2, breaks_mode = "spread", right = TRUE) 
+#'  \dontrun{
+#'  # warnings
+#'  cut(sample(10), breaks = c(0, 3, 5)) # missing values
+#'  cut(sample(10), breaks = c(10, 0, 3)) # unordered breaks
+#'  cut(sample(10), breaks = c(1, 2.6, 5.1, 10)) # non-integer breakpoints
+#'  }
 #' @export
 
 cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE, 
