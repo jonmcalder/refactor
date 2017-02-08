@@ -12,19 +12,17 @@ vignette: >
 
 ## Introduction
 
-Working with factors in R can be frustrating. As described well by [John Mount](http://www.win-vector.com/blog/2014/09/factors-are-not-first-class-citizens-in-r/), 
-factors are not first-class citizens in R. Even the most basic code often 
-behaves in an unexpected manner and without any warning. Let's start off with a
-simple example - creating two factor vectors and combining them together - that
-illustrates some of the issues:
+Working with factors in R can be frustrating. [John Mount](http://www.win-vector.com/blog/2014/09/factors-are-not-first-class-citizens-in-r/), 
+puts it well by saying that factors are not first-class citizens in R. Even the 
+most basic code often behaves in an unexpected manner and without any warning. 
+Let's start off with a simple example - creating two factor vectors and 
+combining them together - that illustrates some of the issues:
 
 ```{r}
 lower <- factor(letters[1:3], levels = letters[2:4])
 upper <- factor(LETTERS[1:5], levels = LETTERS[1:4])
 (combined <- c(lower, upper))
 ```
-
-
 
 One can note the following issues:
 
@@ -265,3 +263,29 @@ cc(a_b, b_d)
 
 ## append
 
+The append function is a simple extension of the `base::append()` function, 
+which is slightly refined in order to better handle appending of factors.
+
+As shown in the example below, the base version of `append()` converts factors 
+back into their underlying integer representations in the process of combining 
+them:
+
+```{r}
+f <- factor(c('c','a','a',NA,'b','a'), levels= c('a','b','c'))
+g <- factor(sample(letters[4:10]), levels = sample(letters[4:10]))
+base::append(f, g)
+```
+
+This is probably not what you'd expect to get. What `refactor::append` will give 
+you instead, is this:
+
+```{r}
+refactor::append(f, g)
+```
+
+It returns a factor, preserves the levels, and also warns you about the `NA` 
+value. Hopefully that is more in line with what you wanted.
+
+`refactor::append()` will also handle ordered factors, provided that the 
+ordering is consistent. If levels and/or ordering are not consistent, then it 
+will simply fall back to the base method.

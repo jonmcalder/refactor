@@ -100,3 +100,11 @@ a_b <- cfactor(c("a", "b"), ordered = T)
 b_d <- cfactor(c("b", "c", "d"), ordered = T)
 cc(a_b, b_d)
 
+## ------------------------------------------------------------------------
+f <- factor(c('c','a','a',NA,'b','a'), levels= c('a','b','c'))
+g <- factor(sample(letters[4:10]), levels = sample(letters[4:10]))
+base::append(f, g)
+
+## ------------------------------------------------------------------------
+refactor::append(f, g)
+
