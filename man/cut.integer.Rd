@@ -85,7 +85,15 @@ In deviation from \code{cut.default}, \code{cut.integer} does not
    cases.}
 }
 \examples{
- random <- sample(10)
+ random <- sample(11)
+  # nice labels compared to default
  cut(random, breaks = seq(0, 100, by = 10))[1:10]
+ cut.default(random, breaks = seq(0, 100, by = 10))[1:10]
+ 
+ cut(random, breaks = 2) # create two bins
+ cut(random, breaks = 2, label_sep = " to ") # other label separator
+ cut(random, breaks = c(1, 8, 11), right = FALSE) # bins closed on right
+ # if uneven, make right bin slightly larger
+ cut(random, breaks = 2, breaks_mode = "spread", right = TRUE) 
 }
 
