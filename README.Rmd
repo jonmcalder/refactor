@@ -10,7 +10,7 @@ knitr::opts_chunk$set(
   comment = "#>",
   fig.path = "README-"
 )
-library(refactor)
+library(refactor, warn.conflicts = FALSE)
 ```
 
 # refactor
@@ -23,7 +23,7 @@ library(refactor)
  
 [![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.1-6666ff.svg)](https://cran.r-project.org/)
 [![CRAN_Status_Badge](http://www.r-pkg.org/badges/version/refactor)](https://cran.r-project.org/package=refactor)
-[![packageversion](https://img.shields.io/badge/Package%20version-0.1.0.9001-orange.svg?style=flat-square)](commits/master)
+[![packageversion](https://img.shields.io/badge/Package%20version-1.1.0-orange.svg?style=flat-square)](commits/master)
  
 ---
  
