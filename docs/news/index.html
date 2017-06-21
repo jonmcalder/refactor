@@ -6,11 +6,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>All news. refactor</title>
+<title>All news • refactor</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
-
 <!-- Bootstrap -->
 
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -22,6 +21,7 @@
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
@@ -34,10 +34,9 @@
   </head>
 
   <body>
-    <div class="container">
+    <div class="container template-news">
       <header>
-      
-<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+      <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
@@ -50,9 +49,6 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">Home</a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -62,19 +58,28 @@
   <a href="../news/index.html">News</a>
 </li>
       </ul>
+      
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
+
       
       </header>
 
       <div class="row">
+
   <div class="col-md-9">
-    <div id="refactor-0.1.1" class="section level1">
-<h1>refactor 0.1.1</h1>
+    <div class="page-header">
+      <h1>Change log <small>All releases</small></h1>
+    </div>
+
+    <div class="contents">
+    <div id="refactor-0-1-1" class="section level1">
+<h1 class="hasAnchor">
+<a href="#refactor-0-1-1" class="anchor"> </a>refactor 0.1.1</h1>
 <ul>
 <li>Update breaks_mode with new ‘default’ method to emulate cut.default</li>
 <li>Rename existing breaks_mode method to ‘spread’</li>
@@ -83,23 +88,27 @@
 <li>Updates to package vignette</li>
 </ul>
 <div id="bug-fixes" class="section level3">
-<h3>Bug Fixes</h3>
+<h3 class="hasAnchor">
+<a href="#bug-fixes" class="anchor"> </a>Bug Fixes</h3>
 </div>
 </div>
-    <div id="refactor-0.1.0.9001" class="section level1">
-<h1>refactor 0.1.0.9001</h1>
+    <div id="refactor-0-1-0-9001" class="section level1">
+<h1 class="hasAnchor">
+<a href="#refactor-0-1-0-9001" class="anchor"> </a>refactor 0.1.0.9001</h1>
 <ul>
 <li>Style: All lines of code are now (roughly) 80 characters long, T and F changed into explicit notation TRUE and FALSE</li>
 </ul>
-<div id="cut.integer" class="section level4">
-<h4>cut.integer</h4>
+<div id="cut-integer" class="section level4">
+<h4 class="hasAnchor">
+<a href="#cut-integer" class="anchor"> </a>cut.integer</h4>
 <ul>
 <li>floor() is used rather than round() when breaks are supplied as decimal numbers</li>
 <li>The quantile method has been dropped</li>
 </ul>
 </div>
 <div id="index_cfactor" class="section level4">
-<h4>index_cfactor</h4>
+<h4 class="hasAnchor">
+<a href="#index_cfactor" class="anchor"> </a>index_cfactor</h4>
 <ul>
 <li>Arguments are only recycled if length = 1 (previously full recycling was possible)</li>
 <li>Improve formatting of documentation and corrected spelling</li>
@@ -112,8 +121,9 @@
 </ul>
 </div>
 </div>
-    <div id="refactor-0.1.0.9000" class="section level1">
-<h1>refactor 0.1.0.9000</h1>
+    <div id="refactor-0-1-0-9000" class="section level1">
+<h1 class="hasAnchor">
+<a href="#refactor-0-1-0-9000" class="anchor"> </a>refactor 0.1.0.9000</h1>
 <ul>
 <li>Substantial updates to cfactor, cut.integer and cut.ordered</li>
 <li>More assertive tests and warnings</li>
@@ -123,24 +133,26 @@
 <li>Include package vignette with examples of the problems addressed</li>
 </ul>
 </div>
-    <div id="refactor-0.1.0" class="section level1">
-<h1>refactor 0.1.0</h1>
+    <div id="refactor-0-1-0" class="section level1">
+<h1 class="hasAnchor">
+<a href="#refactor-0-1-0" class="anchor"> </a>refactor 0.1.0</h1>
 <ul>
 <li>Updates to cut.integer and improved documentation</li>
 <li>Additional testing</li>
 <li>Include checkmate package to facilitate runtime checking of function arguments</li>
 </ul>
 </div>
+    </div>
   </div>
 
-  <div class="col-md-3 hidden-xs">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
     <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
-        <li><a href="#refactor-0.1.1">0.1.1</a></li>
-        <li><a href="#refactor-0.1.0.9001">0.1.0.9001</a></li>
-        <li><a href="#refactor-0.1.0.9000">0.1.0.9000</a></li>
-        <li><a href="#refactor-0.1.0">0.1.0</a></li>
+        <li><a href="#refactor-0-1-1">0.1.1</a></li>
+        <li><a href="#refactor-0-1-0-9001">0.1.0.9001</a></li>
+        <li><a href="#refactor-0-1-0-9000">0.1.0.9000</a></li>
+        <li><a href="#refactor-0-1-0">0.1.0</a></li>
       </ul>
     </div>
   </div>
@@ -148,7 +160,14 @@
 </div>
 
       <footer>
-      <p>Built by <a href="http://hadley.github.io/pkgdown/">pkgdown</a>. Styled with <a href="http://getbootstrap.com">Bootstrap 3</a>.</p>
+      <div class="copyright">
+  <p>Developed by Lorenz Walthert, Jon Calder.</p>
+</div>
+
+<div class="pkgdown">
+  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+</div>
+
       </footer>
    </div>
 

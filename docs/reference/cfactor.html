@@ -6,11 +6,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>cfactor. refactor</title>
+<title>Factor — cfactor â€¢ refactor</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
-
 <!-- Bootstrap -->
 
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -22,6 +21,7 @@
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
@@ -34,10 +34,9 @@
   </head>
 
   <body>
-    <div class="container">
+    <div class="container template-reference-topic">
       <header>
-      
-<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+      <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
@@ -50,9 +49,6 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">Home</a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -62,21 +58,23 @@
   <a href="../news/index.html">News</a>
 </li>
       </ul>
+      
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
+
       
       </header>
 
-      <div class="page-header">
-  <h1>Factor</h1>
-</div>
+      <div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header">
+    <h1>Factor</h1>
+    </div>
 
-<div class="row">
-  <div class="col-md-9">
     
     <p>A wrapper for <code>factor</code> with enhanced control.</p>
     
@@ -84,7 +82,7 @@
     <pre><span class='fu'>cfactor</span>(<span class='no'>x</span>, <span class='no'>levels</span>, <span class='kw'>labels</span> <span class='kw'>=</span> <span class='no'>levels</span>, <span class='kw'>exclude</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>ordered</span> <span class='kw'>=</span> <span class='fu'>is.ordered</span>(<span class='no'>x</span>),
   <span class='kw'>nmax</span> <span class='kw'>=</span> <span class='fl'>NA</span>, <span class='kw'>sep</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='st'>"-"</span>, <span class='st'>"to"</span>))</pre>
     
-    <h2>Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>x</dt>
       <dd>a vector of data, usually taking a small number of distinct
@@ -113,16 +111,13 @@ the lower numerical boundary of a range from the upper numerical boundary
 within <code>x</code>. See &#39;Details&#39; for more information.</dd>
     </dl>
     
-    <div class="Value">
-      <h2>Value</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-      <p>See <code>factor</code>.</p>
-    </div>
+    <p>See <code>factor</code>.</p>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <div class="Details">
-      <h2>Details</h2>
-
-      <p><code>cfactor</code> wraps <code>factor</code> but provides enhanced 
+    <p><code>cfactor</code> wraps <code>factor</code> but provides enhanced 
  control. The enhanced control has the following elements:
  <ul>
 <li> more warnings: <code>NA</code>s are never produced silently. Empty levels
@@ -133,7 +128,7 @@ within <code>x</code>. See &#39;Details&#39; for more information.</dd>
    given by the order of the numerical elements in <code>x</code>. See below.
  </li>
 </ul></p>
-      <p>Levels of the factor or determined by the <code>levels</code> argument. If 
+    <p>Levels of the factor or determined by the <code>levels</code> argument. If 
  <code>levels</code> is missing, the order of the levels is determined as 
  follows: 
  <ul>
@@ -156,16 +151,16 @@ within <code>x</code>. See &#39;Details&#39; for more information.</dd>
        to <code>NULL</code>.
      </li>
 </ul></p>
-      <p></li>
+    <p></li>
 </ul></p>
-      <p>Apart from the newly introduced argument <code>sep</code>, <code>cfactor</code> has 
+    <p>Apart from the newly introduced argument <code>sep</code>, <code>cfactor</code> has 
  the same arguments and defaults as <code>factor</code>.</p>
-      <p>Where levels is not supplied, <code>unique</code> is called. Since factors typically 
+    <p>Where levels is not supplied, <code>unique</code> is called. Since factors typically 
  have quite a small number of levels, for large vectors x it is helpful to 
  supply <code>nmax</code> as an upper bound on the number of unique values.</p>
-    </div>
     
-    <h2 id="examples">Examples</h2>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='co'>## Not run: ------------------------------------</span>
 <span class='co'># ## create warnings with unused and removed levels</span>
 <span class='co'># string &lt;- c("a", "b", "c")</span>
@@ -176,17 +171,33 @@ within <code>x</code>. See &#39;Details&#39; for more information.</dd>
 <span class='no'>hard_to_detect</span> <span class='kw'>&lt;-</span> <span class='fu'>c</span>(<span class='st'>"EUR 21 - EUR 22"</span>, <span class='st'>"EUR 100 - 101"</span>,
 <span class='st'>"EUR 1 - EUR 10"</span>, <span class='st'>"EUR 11 - EUR 20"</span>)
 <span class='fu'>factor</span>(<span class='no'>hard_to_detect</span>, <span class='kw'>ordered</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] EUR 21 - EUR 22 EUR 100 - 101   EUR 1 - EUR 10  EUR 11 - EUR 20
-#&gt; 4 Levels: EUR 1 - EUR 10 &lt; EUR 100 - 101 &lt; ... &lt; EUR 21 - EUR 22
-#&gt; </div><div class='input'><span class='fu'>cfactor</span>(<span class='no'>hard_to_detect</span>, <span class='kw'>ordered</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] EUR 21 - EUR 22 EUR 100 - 101   EUR 1 - EUR 10  EUR 11 - EUR 20
-#&gt; 4 Levels: EUR 1 - EUR 10 &lt; EUR 11 - EUR 20 &lt; ... &lt; EUR 100 - 101
-#&gt; </div></pre>
+#&gt; 4 Levels: EUR 1 - EUR 10 &lt; EUR 100 - 101 &lt; ... &lt; EUR 21 - EUR 22</div><div class='input'><span class='fu'>cfactor</span>(<span class='no'>hard_to_detect</span>, <span class='kw'>ordered</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt; [1] EUR 21 - EUR 22 EUR 100 - 101   EUR 1 - EUR 10  EUR 11 - EUR 20
+#&gt; 4 Levels: EUR 1 - EUR 10 &lt; EUR 11 - EUR 20 &lt; ... &lt; EUR 100 - 101</div></pre>
   </div>
-  <div class="col-md-3">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
   </div>
 </div>
 
       <footer>
-      <p>Built by <a href="http://hadley.github.io/pkgdown/">pkgdown</a>. Styled with <a href="http://getbootstrap.com">Bootstrap 3</a>.</p>
+      <div class="copyright">
+  <p>Developed by Lorenz Walthert, Jon Calder.</p>
+</div>
+
+<div class="pkgdown">
+  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+</div>
+
       </footer>
    </div>
 

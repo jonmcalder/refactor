@@ -6,11 +6,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>cut.integer. refactor</title>
+<title>Create Bins for Numeric vectors — cut.integer â€¢ refactor</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
-
 <!-- Bootstrap -->
 
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -22,6 +21,7 @@
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
@@ -34,10 +34,9 @@
   </head>
 
   <body>
-    <div class="container">
+    <div class="container template-reference-topic">
       <header>
-      
-<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+      <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
@@ -50,9 +49,6 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">Home</a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -62,21 +58,23 @@
   <a href="../news/index.html">News</a>
 </li>
       </ul>
+      
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
+
       
       </header>
 
-      <div class="page-header">
-  <h1>Create Bins for Numeric vectors</h1>
-</div>
+      <div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header">
+    <h1>Create Bins for Numeric vectors</h1>
+    </div>
 
-<div class="row">
-  <div class="col-md-9">
     
     <p>cut divides the range of <code>x</code> into intervals and codes the values in <code>x</code> according
 to the interval they fall into.</p>
@@ -87,7 +85,7 @@ to the interval they fall into.</p>
   <span class='kw'>right</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>, <span class='kw'>ordered_result</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>, <span class='kw'>breaks_mode</span> <span class='kw'>=</span> <span class='st'>"default"</span>,
   <span class='kw'>label_sep</span> <span class='kw'>=</span> <span class='st'>"-"</span>, <span class='no'>...</span>)</pre>
     
-    <h2>Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>x</dt>
       <dd>A numeric vector which is to be converted to a factor by cutting.</dd>
@@ -105,7 +103,7 @@ factor.</dd>
       <dt>include.lowest</dt>
       <dd>Logical, indicating if an &quot;x[i]&quot; equal to the lowest
 (or highest, for <code>right = FALSE)</code> &quot;breaks&quot; value should be included. 
-Note that unlike <code><a href='http://www.rdocumentation.org/packages/cut/topics/base'>cut.default</a></code>, here 
+Note that unlike <code><a href='http://www.rdocumentation.org/packages/base/topics/cut'>cut.default</a></code>, here 
 <code>include.lowest</code> defaults to <code>TRUE</code>, since this is more 
 intuitive for integer intervals.</dd>
       <dt>right</dt>
@@ -113,7 +111,7 @@ intuitive for integer intervals.</dd>
 different ways based on the type of breaks argument. In the conventional 
 case, where a breaks vector is supplied, <code>right = TRUE</code>
 indicates that bins should be closed on the right (and open on the left) or
-vice versa (i.e. as in <code><a href='http://www.rdocumentation.org/packages/cut/topics/base'>cut.default</a></code>). If a 
+vice versa (i.e. as in <code><a href='http://www.rdocumentation.org/packages/base/topics/cut'>cut.default</a></code>). If a 
 single integer breaks value is provided, then the appropriate breakpoints 
 are determined based on the value of <code>breaks_mode</code>, and the value for 
 <code>right</code> is not utilized if <code>breaks_mode = &#39;pretty&#39;</code> - see below 
@@ -134,20 +132,17 @@ for the intervals e.g. the default value of &quot;-&quot; will result in labels 
 in particular to <code>cut.default</code>.</dd>
     </dl>
     
-    <div class="Value">
-      <h2>Value</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-      <p>A factor is returned, unless <code>labels = FALSE</code> which results in 
+    <p>A factor is returned, unless <code>labels = FALSE</code> which results in 
 an integer vector of level codes.</p>
-    </div>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <div class="Details">
-      <h2>Details</h2>
-
-      <p>In deviation from <code>cut.default</code>, <code>cut.integer</code> does not 
+    <p>In deviation from <code>cut.default</code>, <code>cut.integer</code> does not 
  have an argument <code>dig.lab</code>, but instead has two arguments that do not 
  exist for <code>cut.default</code>: <code>breaks_mode</code> and <code>label_sep</code>. 
- Note that unlike <code><a href='http://www.rdocumentation.org/packages/cut/topics/base'>cut.default</a></code>, here 
+ Note that unlike <code><a href='http://www.rdocumentation.org/packages/base/topics/cut'>cut.default</a></code>, here 
  <code>include.lowest</code> defaults to <code>TRUE</code>, since this is more intuitive 
  for the class <code>integer</code>. 
  If <code>breaks</code> is supplied as a scalar, the value of <code>breaks_mode</code> determines 
@@ -164,35 +159,28 @@ an integer vector of level codes.</p>
    leftmost (<code>FALSE</code>) intervals are made slightly wider.
    </li>
 <li> &#39;pretty&#39; will generate rounded breakpoints for the intervals based 
-   on <code><a href='http://www.rdocumentation.org/packages/pretty/topics/base'>pretty</a></code>. Note that breaks here is treated as the 
+   on <code><a href='http://www.rdocumentation.org/packages/base/topics/pretty'>pretty</a></code>. Note that breaks here is treated as the 
    &#39;desired&#39; number of intervals and is not guaranteed. Note also that the 
    range of <code>x</code> can be exceeded slightly by the intervals in some 
    cases.</li>
 </ul></p>
-    </div>
     
-    <h2 id="examples">Examples</h2>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'> <span class='no'>random</span> <span class='kw'>&lt;-</span> <span class='fu'>sample</span>(<span class='fl'>11</span>)
   <span class='co'># nice labels compared to default</span>
  <span class='fu'>cut</span>(<span class='no'>random</span>, <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fu'>seq</span>(<span class='fl'>0</span>, <span class='fl'>100</span>, <span class='kw'>by</span> <span class='kw'>=</span> <span class='fl'>10</span>))[<span class='fl'>1</span>:<span class='fl'>10</span>]</div><div class='output co'>#&gt;  [1] 11-20 0-10  0-10  0-10  0-10  0-10  0-10  0-10  0-10  0-10 
-#&gt; Levels: 0-10 11-20 21-30 31-40 41-50 51-60 61-70 71-80 81-90 91-100
-#&gt; </div><div class='input'> <span class='fu'>cut.default</span>(<span class='no'>random</span>, <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fu'>seq</span>(<span class='fl'>0</span>, <span class='fl'>100</span>, <span class='kw'>by</span> <span class='kw'>=</span> <span class='fl'>10</span>))[<span class='fl'>1</span>:<span class='fl'>10</span>]</div><div class='output co'>#&gt;  [1] (10,20] (0,10]  (0,10]  (0,10]  (0,10]  (0,10]  (0,10]  (0,10]  (0,10] 
+#&gt; Levels: 0-10 11-20 21-30 31-40 41-50 51-60 61-70 71-80 81-90 91-100</div><div class='input'> <span class='fu'>cut.default</span>(<span class='no'>random</span>, <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fu'>seq</span>(<span class='fl'>0</span>, <span class='fl'>100</span>, <span class='kw'>by</span> <span class='kw'>=</span> <span class='fl'>10</span>))[<span class='fl'>1</span>:<span class='fl'>10</span>]</div><div class='output co'>#&gt;  [1] (10,20] (0,10]  (0,10]  (0,10]  (0,10]  (0,10]  (0,10]  (0,10]  (0,10] 
 #&gt; [10] (0,10] 
-#&gt; 10 Levels: (0,10] (10,20] (20,30] (30,40] (40,50] (50,60] (60,70] ... (90,100]
-#&gt; </div><div class='input'>
+#&gt; 10 Levels: (0,10] (10,20] (20,30] (30,40] (40,50] (50,60] (60,70] ... (90,100]</div><div class='input'>
  <span class='fu'>cut</span>(<span class='no'>random</span>, <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fl'>2</span>) <span class='co'># create two bins</span></div><div class='output co'>#&gt;  [1] 7-11 7-11 1-6  1-6  7-11 7-11 7-11 1-6  1-6  1-6  1-6 
-#&gt; Levels: 1-6 7-11
-#&gt; </div><div class='input'> <span class='fu'>cut</span>(<span class='fu'>sample</span>(<span class='fl'>10</span>), <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>6</span>, <span class='fl'>8</span>, <span class='fl'>9</span>, <span class='fl'>10</span>)) <span class='co'># nice labels if binwidth is one</span></div><div class='output co'>#&gt;  [1] 1-6 7-8 7-8 1-6 9   1-6 1-6 10  1-6 1-6
-#&gt; Levels: 1-6 7-8 9 10
-#&gt; </div><div class='input'> <span class='fu'>cut</span>(<span class='no'>random</span>, <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>label_sep</span> <span class='kw'>=</span> <span class='st'>" to "</span>) <span class='co'># other label separator</span></div><div class='output co'>#&gt;  [1] 7 to 11 7 to 11 1 to 6  1 to 6  7 to 11 7 to 11 7 to 11 1 to 6  1 to 6 
+#&gt; Levels: 1-6 7-11</div><div class='input'> <span class='fu'>cut</span>(<span class='fu'>sample</span>(<span class='fl'>10</span>), <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>6</span>, <span class='fl'>8</span>, <span class='fl'>9</span>, <span class='fl'>10</span>)) <span class='co'># nice labels if binwidth is one</span></div><div class='output co'>#&gt;  [1] 1-6 7-8 7-8 1-6 9   1-6 1-6 10  1-6 1-6
+#&gt; Levels: 1-6 7-8 9 10</div><div class='input'> <span class='fu'>cut</span>(<span class='no'>random</span>, <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>label_sep</span> <span class='kw'>=</span> <span class='st'>" to "</span>) <span class='co'># other label separator</span></div><div class='output co'>#&gt;  [1] 7 to 11 7 to 11 1 to 6  1 to 6  7 to 11 7 to 11 7 to 11 1 to 6  1 to 6 
 #&gt; [10] 1 to 6  1 to 6 
-#&gt; Levels: 1 to 6 7 to 11
-#&gt; </div><div class='input'> <span class='fu'>cut</span>(<span class='no'>random</span>, <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>8</span>, <span class='fl'>11</span>), <span class='kw'>right</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>) <span class='co'># bins closed on right</span></div><div class='output co'>#&gt;  [1] 8-11 8-11 1-7  1-7  8-11 1-7  8-11 1-7  1-7  1-7  1-7 
-#&gt; Levels: 1-7 8-11
-#&gt; </div><div class='input'> <span class='co'># if uneven, make right bin slightly larger</span>
+#&gt; Levels: 1 to 6 7 to 11</div><div class='input'> <span class='fu'>cut</span>(<span class='no'>random</span>, <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>, <span class='fl'>8</span>, <span class='fl'>11</span>), <span class='kw'>right</span> <span class='kw'>=</span> <span class='fl'>FALSE</span>) <span class='co'># bins closed on right</span></div><div class='output co'>#&gt;  [1] 8-11 8-11 1-7  1-7  8-11 1-7  8-11 1-7  1-7  1-7  1-7 
+#&gt; Levels: 1-7 8-11</div><div class='input'> <span class='co'># if uneven, make right bin slightly larger</span>
  <span class='fu'>cut</span>(<span class='no'>random</span>, <span class='kw'>breaks</span> <span class='kw'>=</span> <span class='fl'>2</span>, <span class='kw'>breaks_mode</span> <span class='kw'>=</span> <span class='st'>"spread"</span>, <span class='kw'>right</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>)</div><div class='output co'>#&gt;  [1] 6-11 6-11 1-5  1-5  6-11 6-11 6-11 6-11 1-5  1-5  1-5 
-#&gt; Levels: 1-5 6-11
-#&gt; </div><div class='input'> <span class='co'>## Not run: ------------------------------------</span>
+#&gt; Levels: 1-5 6-11</div><div class='input'> <span class='co'>## Not run: ------------------------------------</span>
 <span class='co'>#  # warnings</span>
 <span class='co'>#  cut(sample(10), breaks = c(0, 3, 5)) # missing values</span>
 <span class='co'>#  cut(sample(10), breaks = c(10, 0, 3)) # unordered breaks</span>
@@ -200,12 +188,30 @@ an integer vector of level codes.</p>
 <span class='co'>#  </span>
 <span class='co'>## ---------------------------------------------</span></div></pre>
   </div>
-  <div class="col-md-3">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
   </div>
 </div>
 
       <footer>
-      <p>Built by <a href="http://hadley.github.io/pkgdown/">pkgdown</a>. Styled with <a href="http://getbootstrap.com">Bootstrap 3</a>.</p>
+      <div class="copyright">
+  <p>Developed by Lorenz Walthert, Jon Calder.</p>
+</div>
+
+<div class="pkgdown">
+  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+</div>
+
       </footer>
    </div>
 

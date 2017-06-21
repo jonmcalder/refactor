@@ -5,20 +5,12 @@ refactor
 
 [![Project Status: WIP ? Initial development is in progress, but there has not yet been a stable, usable release suitable for the public.](http://www.repostatus.org/badges/latest/wip.svg)](http://www.repostatus.org/#wip) [![Build Status](https://travis-ci.org/jonmcalder/refactor.svg?branch=master)](https://travis-ci.org/jonmcalder/refactor) [![codecov](https://codecov.io/gh/jonmcalder/refactor/branch/master/graph/badge.svg)](https://codecov.io/gh/jonmcalder/refactor)
 
-------------------------------------------------------------------------
-
-[![minimal R version](https://img.shields.io/badge/R%3E%3D-3.2.1-6666ff.svg)](https://cran.r-project.org/) [![CRAN\_Status\_Badge](http://www.r-pkg.org/badges/version/refactor)](https://cran.r-project.org/package=refactor) [![packageversion](https://img.shields.io/badge/Package%20version-1.1.0-orange.svg?style=flat-square)](commits/master)
-
-------------------------------------------------------------------------
-
-[![Last-changedate](https://img.shields.io/badge/last%20change-2017--02--09-yellowgreen.svg)](/commits/master)
-
 **refactor** is an R package which aims to provide better handling of factors. Though R does have a special data type for factors, it isn't always explicity catered for in commonly used R functions, which can lead to unexpected and undesirable outcomes (e.g. see this [Win-Vector blog post](http://www.win-vector.com/blog/2014/09/factors-are-not-first-class-citizens-in-r/)). This observation formed the inspiration for 're'-factor: which is essentially to 're'-visit functions likely to be used with factor data and where possible to wrap, extend or override them in order to better cater for factor data, or at the very least to provide warnings when the integrity of the data could be compromised by an operation.
 
 Installation
 ------------
 
-refactor is not yet available on CRAN but you can easily install the latest development version from github using `devtools`:
+refactor is not available on CRAN but you can easily install the latest development version from github using `devtools`:
 
 ``` r
 # install.packages("devtools")

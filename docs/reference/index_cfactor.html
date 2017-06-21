@@ -6,11 +6,10 @@
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<title>index_cfactor. refactor</title>
+<title>Decode numerical into categorical data — index_cfactor â€¢ refactor</title>
 
 <!-- jquery -->
 <script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script>
-
 <!-- Bootstrap -->
 
 <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
@@ -22,6 +21,7 @@
 
 <!-- pkgdown -->
 <link href="../pkgdown.css" rel="stylesheet">
+<script src="../jquery.sticky-kit.min.js"></script>
 <script src="../pkgdown.js"></script>
 
 <!-- mathjax -->
@@ -34,10 +34,9 @@
   </head>
 
   <body>
-    <div class="container">
+    <div class="container template-reference-topic">
       <header>
-      
-<div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+      <div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
@@ -50,9 +49,6 @@
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
         <li>
-  <a href="../index.html">Home</a>
-</li>
-<li>
   <a href="../reference/index.html">Reference</a>
 </li>
 <li>
@@ -62,21 +58,23 @@
   <a href="../news/index.html">News</a>
 </li>
       </ul>
+      
       <ul class="nav navbar-nav navbar-right">
         
       </ul>
     </div><!--/.nav-collapse -->
   </div><!--/.container -->
 </div><!--/.navbar -->
+
       
       </header>
 
-      <div class="page-header">
-  <h1>Decode numerical into categorical data</h1>
-</div>
+      <div class="row">
+  <div class="col-md-9 contents">
+    <div class="page-header">
+    <h1>Decode numerical into categorical data</h1>
+    </div>
 
-<div class="row">
-  <div class="col-md-9">
     
     <p>Decode numerical columns in a data frame into (ordered) factors given the 
  encoding in another data frame.</p>
@@ -85,7 +83,7 @@
     <pre><span class='fu'>index_cfactor</span>(<span class='no'>data</span>, <span class='no'>index</span>, <span class='kw'>variable</span> <span class='kw'>=</span> <span class='st'>"variable"</span>, <span class='kw'>encoding</span> <span class='kw'>=</span> <span class='st'>"encoding"</span>,
   <span class='kw'>label</span> <span class='kw'>=</span> <span class='st'>"label"</span>, <span class='no'>...</span>)</pre>
     
-    <h2>Arguments</h2>
+    <h2 class="hasAnchor" id="arguments"><a class="anchor" href="#arguments"></a> Arguments</h2>
     <dl class="dl-horizontal">
       <dt>data</dt>
       <dd>A data frame containing at least one integer column to decode.</dd>
@@ -106,24 +104,21 @@ that will be given.</dd>
 in particular to <code><a href='cfactor.html'>cfactor</a></code>.</dd>
     </dl>
     
-    <div class="Value">
-      <h2>Value</h2>
+    <h2 class="hasAnchor" id="value"><a class="anchor" href="#value"></a>Value</h2>
 
-      <p>The original data frame is returned whereas the variables for which 
+    <p>The original data frame is returned whereas the variables for which 
  an encoding was provided are turned into (ordered) factors. All other 
  columns are returned unmodified.</p>
-    </div>
+    
+    <h2 class="hasAnchor" id="details"><a class="anchor" href="#details"></a>Details</h2>
 
-    <div class="Details">
-      <h2>Details</h2>
-
-      <p>Arguments passed via <code>...</code> to <code>cfactor</code> are only recycled 
+    <p>Arguments passed via <code>...</code> to <code>cfactor</code> are only recycled 
  if of length 1. Otherwise, an error is thrown. 
  All arguments passed via <code>...</code> are applied in the order of the data 
  columns but columns not to convert are skipped (see example).</p>
-    </div>
     
-    <h2 id="examples">Examples</h2>
+
+    <h2 class="hasAnchor" id="examples"><a class="anchor" href="#examples"></a>Examples</h2>
     <pre class="examples"><div class='input'><span class='no'>data</span> <span class='kw'>&lt;-</span> <span class='fu'>data.frame</span>(<span class='kw'>var1</span> <span class='kw'>=</span> <span class='fu'>sample</span>(<span class='kw'>x</span> <span class='kw'>=</span> <span class='fl'>1</span>:<span class='fl'>10</span>, <span class='kw'>size</span> <span class='kw'>=</span> <span class='fl'>20</span>, <span class='kw'>replace</span> <span class='kw'>=</span> <span class='fl'>TRUE</span>),
                    <span class='kw'>var2</span> <span class='kw'>=</span> <span class='fu'>rep</span>(<span class='fl'>1</span>:<span class='fl'>2</span>, <span class='fl'>20</span>),
                    <span class='kw'>var3</span> <span class='kw'>=</span> <span class='fu'>sample</span>(<span class='fl'>20</span>),
@@ -135,9 +130,8 @@ in particular to <code><a href='cfactor.html'>cfactor</a></code>.</dd>
                    <span class='kw'>encoding</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>1</span>:<span class='fl'>10</span>, <span class='fl'>1</span>:<span class='fl'>2</span>, <span class='fl'>1</span>:<span class='fl'>20</span>),
                    <span class='kw'>label</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='no'>letters</span>[<span class='fl'>1</span>:<span class='fl'>10</span>], <span class='fu'>c</span>(<span class='st'>"male"</span>, <span class='st'>"female"</span>), <span class='no'>LETTERS</span>[<span class='fl'>1</span>:<span class='fl'>20</span>]))
 
- <span class='fu'>index_cfactor</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>data</span>, <span class='kw'>index</span> <span class='kw'>=</span> <span class='no'>index</span>, <span class='kw'>variable</span> <span class='kw'>=</span> <span class='st'>"var"</span>, <span class='kw'>ordered</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>TRUE</span>, <span class='fl'>TRUE</span>, <span class='fl'>FALSE</span>))</div><div class='output'><strong class='text-warning'>Warning message:
-the following levels were empty: 
- 7</strong></div><div class='output co'>#&gt;    var1   var2 var3 var4          var5
+ <span class='fu'>index_cfactor</span>(<span class='kw'>data</span> <span class='kw'>=</span> <span class='no'>data</span>, <span class='kw'>index</span> <span class='kw'>=</span> <span class='no'>index</span>, <span class='kw'>variable</span> <span class='kw'>=</span> <span class='st'>"var"</span>, <span class='kw'>ordered</span> <span class='kw'>=</span> <span class='fu'>c</span>(<span class='fl'>TRUE</span>, <span class='fl'>TRUE</span>, <span class='fl'>FALSE</span>))</div><div class='output co'>#&gt; <span class='warning'>Warning: the following levels were empty: </span>
+#&gt; <span class='warning'> 7</span></div><div class='output co'>#&gt;    var1   var2 var3 var4          var5
 #&gt; 1     h   male    D    2    Washington
 #&gt; 2     h female    S    2      Maryland
 #&gt; 3     j   male    J    2        Hawaii
@@ -177,15 +171,32 @@ the following levels were empty:
 #&gt; 37    c   male    H    2        Nevada
 #&gt; 38    f female    Q    2       Indiana
 #&gt; 39    d   male    I    2          Utah
-#&gt; 40    f female    B    2      Illinois
-#&gt; </div></pre>
+#&gt; 40    f female    B    2      Illinois</div></pre>
   </div>
-  <div class="col-md-3">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
+    <h2>Contents</h2>
+    <ul class="nav nav-pills nav-stacked">
+      <li><a href="#arguments">Arguments</a></li>
+      
+      <li><a href="#value">Value</a></li>
+
+      <li><a href="#details">Details</a></li>
+      
+      <li><a href="#examples">Examples</a></li>
+    </ul>
+
   </div>
 </div>
 
       <footer>
-      <p>Built by <a href="http://hadley.github.io/pkgdown/">pkgdown</a>. Styled with <a href="http://getbootstrap.com">Bootstrap 3</a>.</p>
+      <div class="copyright">
+  <p>Developed by Lorenz Walthert, Jon Calder.</p>
+</div>
+
+<div class="pkgdown">
+  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+</div>
+
       </footer>
    </div>
 

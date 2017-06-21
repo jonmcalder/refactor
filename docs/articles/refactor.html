@@ -5,18 +5,18 @@
 <meta charset="utf-8">
 <meta http-equiv="X-UA-Compatible" content="IE=edge">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>refactor. refactor</title>
+<title>refactor • refactor</title>
 <!-- jquery --><script src="https://code.jquery.com/jquery-3.1.0.min.js" integrity="sha384-nrOSfDHtoPMzJHjVTdCopGqIqeYETSXhZDFyniQ8ZHcVy08QesyHcnOUpMpqnmWq" crossorigin="anonymous"></script><!-- Bootstrap --><link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
 <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script><!-- Font Awesome icons --><link href="https://maxcdn.bootstrapcdn.com/font-awesome/4.6.3/css/font-awesome.min.css" rel="stylesheet" integrity="sha384-T8Gy5hrqNKT+hzMclPo118YTQO6cYprQmhrYwIiQ/3axmI1hQomh7Ud2hPOy8SP1" crossorigin="anonymous">
 <!-- pkgdown --><link href="../pkgdown.css" rel="stylesheet">
-<script src="../pkgdown.js"></script><!-- mathjax --><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
+<script src="../jquery.sticky-kit.min.js"></script><script src="../pkgdown.js"></script><!-- mathjax --><script src="https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML"></script><!--[if lt IE 9]>
 <script src="https://oss.maxcdn.com/html5shiv/3.7.3/html5shiv.min.js"></script>
 <script src="https://oss.maxcdn.com/respond/1.4.2/respond.min.js"></script>
 <![endif]-->
 </head>
 <body>
-    <div class="container">
-      <header><div class="navbar navbar-default  navbar-fixed-top" role="navigation">
+    <div class="container template-vignette">
+      <header><div class="navbar navbar-default navbar-fixed-top" role="navigation">
   <div class="container">
     <div class="navbar-header">
       <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar">
@@ -28,9 +28,6 @@
     </div>
     <div id="navbar" class="navbar-collapse collapse">
       <ul class="nav navbar-nav">
-<li>
-  <a href="../index.html">Home</a>
-</li>
 <li>
   <a href="../reference/index.html">Reference</a>
 </li>
@@ -48,6 +45,7 @@
 <!--/.container -->
 </div>
 <!--/.navbar -->
+
       
       </header><div class="row">
   <div class="col-md-9">
@@ -55,18 +53,23 @@
       <h1>refactor</h1>
                         <h4 class="author">Lorenz Walthert and Jon Calder</h4>
             
-            <h4 class="date">2017-02-09</h4>
+            <h4 class="date">2017-06-21</h4>
           </div>
 
     
     
+<div class="contents">
 <div id="introduction" class="section level2">
-<h2>Introduction</h2>
+<h2 class="hasAnchor">
+<html><body><a href="#introduction" class="anchor"> </a></body></html>Introduction</h2>
 <p>Working with factors in R can be frustrating. <a href="http://www.win-vector.com/blog/2014/09/factors-are-not-first-class-citizens-in-r/">John Mount</a>, puts it well by saying that factors are not first-class citizens in R. Even the most basic code often behaves in an unexpected manner and without any warning. Let’s start off with a simple example - creating two factor vectors and combining them together - that illustrates some of the issues:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">lower &lt;-<span class="st"> </span><span class="kw">factor</span>(letters[<span class="dv">1</span>:<span class="dv">3</span>], <span class="dt">levels =</span> letters[<span class="dv">2</span>:<span class="dv">4</span>])
 upper &lt;-<span class="st"> </span><span class="kw">factor</span>(LETTERS[<span class="dv">1</span>:<span class="dv">5</span>], <span class="dt">levels =</span> LETTERS[<span class="dv">1</span>:<span class="dv">4</span>])
 (combined &lt;-<span class="st"> </span><span class="kw">c</span>(lower, upper))</code></pre></div>
-<pre><code>## [1] NA  1  2  1  2  3  4 NA</code></pre>
+<pre><code>## Warning: the following levels were removed: 
+##  NA</code></pre>
+<pre><code>## [1] &lt;NA&gt; b    c    A    B    C    D    &lt;NA&gt;
+## Levels: A b B c C D</code></pre>
 <p>One can note the following issues:</p>
 <ul>
 <li>
@@ -82,14 +85,18 @@ upper &lt;-<span class="st"> </span><span class="kw">factor</span>(LETTERS[<span
 </ul>
 </div>
 <div id="cfactor" class="section level2">
-<h2><code>cfactor</code></h2>
+<h2 class="hasAnchor">
+<html><body><a href="#cfactor" class="anchor"> </a></body></html>
+<code>cfactor</code>
+</h2>
 <p><code>cfactor</code> has been defined to give warnings in cases when empty factors are created from strings or when existing strings are not preserved. Essentially, it is a wrapper for <code>factor()</code>, and the ‘c’ stands for enhanced control. It also has improved level order detection based on numerical values within strings that is superior to the way <code>factor</code> assesses this order in certain cases.</p>
 <div id="unmatched-factors" class="section level3">
-<h3>unmatched factors</h3>
+<h3 class="hasAnchor">
+<html><body><a href="#unmatched-factors" class="anchor"> </a></body></html>unmatched factors</h3>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">library</span>(refactor)
 
 string &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>)
-<span class="kw">cfactor</span>(string, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"d"</span>))</code></pre></div>
+<span class="kw"><a href="../reference/cfactor.html">cfactor</a></span>(string, <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"d"</span>))</code></pre></div>
 <pre><code>## Warning: the following levels were empty: 
 ##  d</code></pre>
 <pre><code>## Warning: the following levels were removed: 
@@ -98,7 +105,8 @@ string &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">
 ## Levels: b c d</code></pre>
 </div>
 <div id="detect-levels" class="section level3">
-<h3>detect levels</h3>
+<h3 class="hasAnchor">
+<html><body><a href="#detect-levels" class="anchor"> </a></body></html>detect levels</h3>
 <p>The default behavior of <code>factor</code> (if levels are not explicitly supplied), is to first convert <code>x</code> to character, and then to take the unique values and sort the characters (<code>sort(unique(as.character(x)))</code>). This approach is fine if the string ordering was the same as ordering the numbers within the string, but in general this is not the case, as the following examples will illustrate:</p>
 <p><br><strong>A “clean” example</strong></p>
 <p>With all numbers having the same number of digits, <code>factor</code> can detect the order correctly.</p>
@@ -115,20 +123,21 @@ string &lt;-<span class="st"> </span><span class="kw">c</span>(<span class="st">
 <pre><code>## [1] EUR 21 - EUR 22 EUR 100 - 101   EUR 1 - EUR 10  EUR 11 - EUR 20
 ## 4 Levels: EUR 1 - EUR 10 &lt; EUR 100 - 101 &lt; ... &lt; EUR 21 - EUR 22</code></pre>
 <p><code>cfactor</code> detects levels using regular expressions. Concretely, it extracts the substrings preceding <code>sep</code>, removes everything except digits and the decimal point in <code>x</code> and orders the remaining numbers to find the order of the levels.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cfactor</span>(hard_to_dectect, <span class="dt">ordered =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">"-"</span>)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cfactor.html">cfactor</a></span>(hard_to_dectect, <span class="dt">ordered =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="st">"-"</span>)</code></pre></div>
 <pre><code>## [1] EUR 21 - EUR 22 EUR 100 - 101   EUR 1 - EUR 10  EUR 11 - EUR 20
 ## 4 Levels: EUR 1 - EUR 10 &lt; EUR 11 - EUR 20 &lt; ... &lt; EUR 100 - 101</code></pre>
 <p>This detection algorithm can be turned off and the default ordering of <code>factor</code> can be applied by setting the <code>sep</code> argument to <code>NULL</code>. Also, in the absence of any numbers, the default ordering of <code>factor</code> is applied.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">identical</span>(
-  <span class="kw">cfactor</span>(hard_to_dectect, <span class="dt">ordered =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="ot">NULL</span>),
+  <span class="kw"><a href="../reference/cfactor.html">cfactor</a></span>(hard_to_dectect, <span class="dt">ordered =</span> <span class="ot">TRUE</span>, <span class="dt">sep =</span> <span class="ot">NULL</span>),
    <span class="kw">factor</span>(hard_to_dectect, <span class="dt">ordered =</span> <span class="ot">TRUE</span>)
 )</code></pre></div>
 <pre><code>## [1] TRUE</code></pre>
 </div>
 <div id="intersection-of-underlying-values-and-labels" class="section level3">
-<h3>Intersection of underlying values and labels</h3>
+<h3 class="hasAnchor">
+<html><body><a href="#intersection-of-underlying-values-and-labels" class="anchor"> </a></body></html>Intersection of underlying values and labels</h3>
 <p>When creating a <code>factor</code> you sometimes want to label that data, that is, assign a label to each value supplied in <code>x</code>. A situation to avoid is using labels that are identical to its underlaying value for some but not all levels.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cfactor</span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>), <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">"a"</span>, <span class="st">"letter b"</span>, <span class="st">"b"</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cfactor.html">cfactor</a></span>(<span class="dt">x =</span> <span class="kw">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>), <span class="dt">levels =</span> <span class="kw">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>, <span class="st">"c"</span>), <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">"a"</span>, <span class="st">"letter b"</span>, <span class="st">"b"</span>))</code></pre></div>
 <pre><code>## Warning in cfactor(x = c("a", "b", "c"), levels = c("a", "b", "c"), labels = c("a", : Some values now used for the labels existed in the data vector 'x' already: 
 ##   'b' is now represented with 'letter b', 'b' now represents 'c' 
 ##   'a' still represents 'a'</code></pre>
@@ -139,13 +148,16 @@ In adition, a second warning that indicates that <code>a</code> is choosen as a 
 </div>
 </div>
 <div id="index_cfactor" class="section level2">
-<h2><code>index_cfactor</code></h2>
-<p>If data is encoded, the <code>labels</code> argument of <code>factor()</code> can be used to label the data, which is a common data pre-processing step. This works the same as with <code>cfactor()</code>. Here, we want to give an example where the relationship b eteween the encoding and the label is stored in a <code>data.frame</code>, e.g. after it was imported from a spread sheet.</p>
+<h2 class="hasAnchor">
+<html><body><a href="#index_cfactor" class="anchor"> </a></body></html>
+<code>index_cfactor</code>
+</h2>
+<p>If data is encoded, the <code>labels</code> argument of <code>factor()</code> can be used to label the data, which is a common data pre-processing step. This works the same as with <code><a href="../reference/cfactor.html">cfactor()</a></code>. Here, we want to give an example where the relationship b eteween the encoding and the label is stored in a <code>data.frame</code>, e.g. after it was imported from a spread sheet.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">data &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dt">x =</span> <span class="dv">1</span>:<span class="dv">10</span>, <span class="dt">size =</span> <span class="dv">20</span>, <span class="dt">replace =</span> <span class="ot">TRUE</span>)
 index &lt;-<span class="st"> </span><span class="kw">data.frame</span>(<span class="dt">encoding =</span> <span class="dv">1</span>:<span class="dv">10</span>,
                     <span class="dt">label =</span> letters[<span class="dv">1</span>:<span class="dv">10</span>])
 
-<span class="kw">cfactor</span>(data, <span class="dt">levels =</span> index$encoding, <span class="dt">labels =</span> index$label)</code></pre></div>
+<span class="kw"><a href="../reference/cfactor.html">cfactor</a></span>(data, <span class="dt">levels =</span> index$encoding, <span class="dt">labels =</span> index$label)</code></pre></div>
 <pre><code>## Warning: the following levels were empty: 
 ##  2
 ## 5</code></pre>
@@ -179,7 +191,7 @@ In a real-world situation, it is likely that a lot of variables have to be decod
 ## 5 var1        5     e
 ## 6 var1        6     f</code></pre>
 <p>Now we use <code>index_cfactor</code> to decode the <code>data.frame</code>. Note that <code>var4</code> and <code>var5</code> are left as is, since no variable encoding for them is defined in <code>index</code>. Using the <code>...</code> argument of <code>index_cfactor</code>, we can pass additional arguments to <code>cfactor</code>.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">final &lt;-<span class="st"> </span><span class="kw">head</span>(<span class="kw">index_cfactor</span>(<span class="dt">data =</span> data, <span class="dt">index =</span> index, <span class="dt">variable =</span> <span class="st">"var"</span>, 
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">final &lt;-<span class="st"> </span><span class="kw">head</span>(<span class="kw"><a href="../reference/index_cfactor.html">index_cfactor</a></span>(<span class="dt">data =</span> data, <span class="dt">index =</span> index, <span class="dt">variable =</span> <span class="st">"var"</span>, 
                             <span class="dt">ordered =</span> <span class="kw">c</span>(<span class="ot">TRUE</span>, <span class="ot">TRUE</span>, <span class="ot">FALSE</span>)))</code></pre></div>
 <pre><code>## Warning: the following levels were empty: 
 ##  4</code></pre>
@@ -215,13 +227,18 @@ In a real-world situation, it is likely that a lot of variables have to be decod
 <pre><code>## [1] "one minute"    "three minutes" "1 hour"</code></pre>
 </div>
 <div id="tailored-methods-for-categorical-data" class="section level2">
-<h2>tailored methods for categorical data</h2>
+<h2 class="hasAnchor">
+<html><body><a href="#tailored-methods-for-categorical-data" class="anchor"> </a></body></html>tailored methods for categorical data</h2>
 <p>Instead of defining completely new functions, we decided to provide some S3 generics to extend the functionality of existing R functions and tailor them so they are better suited for categorical data. Also, a more extensive warning and error behavior than for their base R counterparts is implemented.</p>
 <div id="cut" class="section level3">
-<h3><code>cut</code></h3>
+<h3 class="hasAnchor">
+<html><body><a href="#cut" class="anchor"> </a></body></html>
+<code>cut</code>
+</h3>
 <p>Applying cut can result in categorical data, for example if integers are binned or if ordered factor levels are summarized into larger categories.</p>
 <div id="a-cut-method-for-integers" class="section level4">
-<h4>a <code>cut</code> method for integers</h4>
+<h4 class="hasAnchor">
+<html><body><a href="#a-cut-method-for-integers" class="anchor"> </a></body></html>a <code>cut</code> method for integers</h4>
 <p><code>cut.default</code> provides rather inappropriate labels for integer values.</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">random &lt;-<span class="st"> </span><span class="kw">sample</span>(<span class="dv">100</span>)
 <span class="kw">cut.default</span>(random, <span class="dt">breaks =</span> <span class="kw">seq</span>(<span class="dv">0</span>, <span class="dv">100</span>, <span class="dt">by =</span> <span class="dv">10</span>))[<span class="dv">1</span>:<span class="dv">10</span>]</code></pre></div>
@@ -258,9 +275,10 @@ In a real-world situation, it is likely that a lot of variables have to be decod
 ## Levels: 1-2 3-5 6-10</code></pre>
 </div>
 <div id="a-cut-method-for-ordered-factors" class="section level4">
-<h4>a <code>cut</code> method for ordered factors</h4>
+<h4 class="hasAnchor">
+<html><body><a href="#a-cut-method-for-ordered-factors" class="anchor"> </a></body></html>a <code>cut</code> method for ordered factors</h4>
 <p>This method allows one to combine the levels of a factor into fewer categories given some break points:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">some_letters &lt;-<span class="st"> </span><span class="kw">cfactor</span>(letters, <span class="dt">ordered =</span> <span class="ot">TRUE</span>)
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">some_letters &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cfactor.html">cfactor</a></span>(letters, <span class="dt">ordered =</span> <span class="ot">TRUE</span>)
 <span class="kw">head</span>(<span class="kw">cut</span>(some_letters, <span class="dt">breaks =</span> <span class="kw">c</span>(<span class="st">"a"</span>, <span class="st">"q"</span>, <span class="st">"z"</span>), 
          <span class="dt">labels =</span> <span class="kw">c</span>(<span class="st">"beginning of the alphabet"</span>, <span class="st">"the rest of the alphabeth"</span>), 
          <span class="dt">right =</span> <span class="ot">TRUE</span>, <span class="dt">include.lowest =</span> <span class="ot">TRUE</span>))</code></pre></div>
@@ -272,32 +290,38 @@ In a real-world situation, it is likely that a lot of variables have to be decod
 </div>
 </div>
 <div id="cc" class="section level2">
-<h2>cc</h2>
+<h2 class="hasAnchor">
+<html><body><a href="#cc" class="anchor"> </a></body></html>cc</h2>
 <p>The purpose of <code>cc</code> is to combine elements into a vector, just as base <code>c</code> does. They only differ with regard to factor treatment, for which <code>c</code> most likely does not return what might be expected.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="kw">cfactor</span>(<span class="st">"a"</span>), <span class="kw">cfactor</span>(<span class="st">"b"</span>))</code></pre></div>
-<pre><code>## [1] 1 1</code></pre>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">cc</span>(<span class="kw">cfactor</span>(<span class="st">"a"</span>), <span class="kw">cfactor</span>(<span class="st">"b"</span>))</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw">c</span>(<span class="kw"><a href="../reference/cfactor.html">cfactor</a></span>(<span class="st">"a"</span>), <span class="kw"><a href="../reference/cfactor.html">cfactor</a></span>(<span class="st">"b"</span>))</code></pre></div>
+<pre><code>## [1] a b
+## Levels: a b</code></pre>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r"><span class="kw"><a href="../reference/cc.html">cc</a></span>(<span class="kw"><a href="../reference/cfactor.html">cfactor</a></span>(<span class="st">"a"</span>), <span class="kw"><a href="../reference/cfactor.html">cfactor</a></span>(<span class="st">"b"</span>))</code></pre></div>
 <pre><code>## Warning: ordering and levels not preserved since levels not identical</code></pre>
 <pre><code>## [1] a b
 ## Levels: a b</code></pre>
 <p><code>cc</code> can also deal with ordered factors. It is quite verbose in the sense that if the levels and/or the order of the levels do not match exactly, it will issue warnings.</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a_b &lt;-<span class="st"> </span><span class="kw">cfactor</span>(<span class="kw">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>), <span class="dt">ordered =</span> T)
-b_d &lt;-<span class="st"> </span><span class="kw">cfactor</span>(<span class="kw">c</span>(<span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"d"</span>), <span class="dt">ordered =</span> T)
-<span class="kw">cc</span>(a_b, b_d)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">a_b &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cfactor.html">cfactor</a></span>(<span class="kw">c</span>(<span class="st">"a"</span>, <span class="st">"b"</span>), <span class="dt">ordered =</span> T)
+b_d &lt;-<span class="st"> </span><span class="kw"><a href="../reference/cfactor.html">cfactor</a></span>(<span class="kw">c</span>(<span class="st">"b"</span>, <span class="st">"c"</span>, <span class="st">"d"</span>), <span class="dt">ordered =</span> T)
+<span class="kw"><a href="../reference/cc.html">cc</a></span>(a_b, b_d)</code></pre></div>
 <pre><code>## Warning: ordering and levels not preserved since levels not identical</code></pre>
 <pre><code>## [1] a b b c d
 ## Levels: a b c d</code></pre>
 </div>
 <div id="append" class="section level2">
-<h2>append</h2>
+<h2 class="hasAnchor">
+<html><body><a href="#append" class="anchor"> </a></body></html>append</h2>
 <p>The append function is a simple extension of the <code>base::append()</code> function, which is slightly refined in order to better handle appending of factors.</p>
-<p>As shown in the example below, the base version of <code>append()</code> converts factors back into their underlying integer representations in the process of combining them:</p>
+<p>As shown in the example below, the base version of <code><a href="../reference/append.html">append()</a></code> converts factors back into their underlying integer representations in the process of combining them:</p>
 <div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">f &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">c</span>(<span class="st">'c'</span>,<span class="st">'a'</span>,<span class="st">'a'</span>,<span class="ot">NA</span>,<span class="st">'b'</span>,<span class="st">'a'</span>), <span class="dt">levels=</span> <span class="kw">c</span>(<span class="st">'a'</span>,<span class="st">'b'</span>,<span class="st">'c'</span>))
 g &lt;-<span class="st"> </span><span class="kw">factor</span>(<span class="kw">sample</span>(letters[<span class="dv">4</span>:<span class="dv">10</span>]), <span class="dt">levels =</span> <span class="kw">sample</span>(letters[<span class="dv">4</span>:<span class="dv">10</span>]))
-base::<span class="kw">append</span>(f, g)</code></pre></div>
-<pre><code>##  [1]  3  1  1 NA  2  1  4  3  2  1  6  5  7</code></pre>
+base::<span class="kw"><a href="../reference/append.html">append</a></span>(f, g)</code></pre></div>
+<pre><code>## Warning: the following levels were removed: 
+##  NA</code></pre>
+<pre><code>##  [1] c    a    a    &lt;NA&gt; b    a    e    g    h    d    f    i    j   
+## Levels: a b c d e f g h i j</code></pre>
 <p>This is probably not what you’d expect to get. What <code>refactor::append</code> will give you instead, is this:</p>
-<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">refactor::<span class="kw">append</span>(f, g)</code></pre></div>
+<div class="sourceCode"><pre class="sourceCode r"><code class="sourceCode r">refactor::<span class="kw"><a href="../reference/append.html">append</a></span>(f, g)</code></pre></div>
 <pre><code>## Warning: the following levels were removed: 
 ##  NA</code></pre>
 <pre><code>##  [1] c    a    a    &lt;NA&gt; b    a    e    g    h    d    f    i    j   
@@ -305,9 +329,10 @@ base::<span class="kw">append</span>(f, g)</code></pre></div>
 <p>It returns a factor, preserves the levels, and also warns you about the <code>NA</code> value. Hopefully that is more in line with what you wanted.</p>
 <p><code>refactor::append()</code> will also handle ordered factors, provided that the ordering is consistent. If levels and/or ordering are not consistent, then it will simply fall back to the base method.</p>
 </div>
+</div>
   </div>
 
-  <div class="col-md-3 hidden-xs">
+  <div class="col-md-3 hidden-xs hidden-sm" id="sidebar">
         <div id="tocnav">
       <h2>Contents</h2>
       <ul class="nav nav-pills nav-stacked">
@@ -324,7 +349,14 @@ base::<span class="kw">append</span>(f, g)</code></pre></div>
 </div>
 
 
-      <footer><p>Built by <a href="http://hadley.github.io/pkgdown/">pkgdown</a>. Styled with <a href="http://getbootstrap.com">Bootstrap 3</a>.</p>
+      <footer><div class="copyright">
+  <p>Developed by Lorenz Walthert, Jon Calder.</p>
+</div>
+
+<div class="pkgdown">
+  <p>Site built with <a href="http://hadley.github.io/pkgdown/">pkgdown</a>.</p>
+</div>
+
       </footer>
 </div>
 
