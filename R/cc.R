@@ -39,8 +39,8 @@ cc <- function(..., recursive = FALSE) {
 
   levels_identical <- Reduce(identical, levels)
   levels_same_set <- Reduce(setequal, levels)
-  ##  ............................................................................
-  ##  test whether objects inherit from ordered or factor
+##  ............................................................................
+##  test whether objects inherit from ordered or factor
   dots_ordered <- vapply(dots, function(x) inherits(x, "ordered"), logical(1))
   dots_factor <- vapply(dots, function(x) inherits(x, "factor"), logical(1))
 
@@ -59,8 +59,8 @@ cc <- function(..., recursive = FALSE) {
       return(cfactor(unlist(dots_chars), ordered = FALSE))
     }
   } else {
-    ##  ............................................................................
-    ##  it's neither factorial nor ordered, so we simply call base::c
+##  ............................................................................
+##  it's neither factorial nor ordered, so we simply call base::c
     return(c(unlist(dots)))
   }
 }
