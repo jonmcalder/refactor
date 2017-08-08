@@ -59,11 +59,11 @@
 #' @export
 cfactor <- function(x, levels, labels = levels, exclude = NA,
                     ordered = is.ordered(x), nmax = NA, sep = c("-", "to")) {
-#   ____________________________________________________________________________
-#   preprocessing
+  #   ____________________________________________________________________________
+  #   preprocessing
 
-##  ............................................................................
-##  assertive tests / checks
+  ##  ............................................................................
+  ##  assertive tests / checks
 
   ## simple checks
 
@@ -121,20 +121,20 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
 
 
 
-##  ............................................................................
-##  coersion / function and variable definitions
+  ##  ............................................................................
+  ##  coersion / function and variable definitions
   x <- as.character(x)
 
   `%w/o%` <- function(x, y) x[!x %in% y] # opposite of %in%
   uniq_x <- unique(na.omit(x), nmax = nmax)
-##  ............................................................................
-#   ____________________________________________________________________________
-#   create factor
-##  ............................................................................
-##  detect levels if not given
+  ##  ............................................................................
+  #   ____________________________________________________________________________
+  #   create factor
+  ##  ............................................................................
+  ##  detect levels if not given
   if (missing(levels)) {
     has_numbers <- all(grepl("[[:digit:]]", uniq_x))
-    if (!is.null(sep) && has_numbers){ # use regular expression algorithm
+    if (!is.null(sep) && has_numbers) { # use regular expression algorithm
       sep.ready <- paste0(sep, collapse = "|")
       sep <- regexec(sep.ready, uniq_x, fixed = TRUE)
       start <- vapply(sep, "[", 1, FUN.VALUE = numeric(1)) # extract start of sep
@@ -154,8 +154,8 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
     }
   }
 
-##  ............................................................................
-##  create the factor
+  ##  ............................................................................
+  ##  create the factor
   ## only x should never be looked up in .GlobalEnv
   output <- factor(x, levels = levels, labels = labels, exclude = exclude,
                    ordered = ordered, nmax = nmax)
@@ -163,11 +163,11 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
   posterior <- base::ifelse(levels == labels, levels(output), levels)
 
 
-#   ____________________________________________________________________________
-#   warnings
-##  ............................................................................
-##  check whether any value in x occurs now in labels that and it not the same
-##  value
+  #   ____________________________________________________________________________
+  #   warnings
+  ##  ............................................................................
+  ##  check whether any value in x occurs now in labels that and it not the same
+  ##  value
   if (any(levels %in% labels) && !all(levels %in% labels)) {
     # find duplicates
     same_represent <- levels == labels
@@ -193,26 +193,26 @@ cfactor <- function(x, levels, labels = levels, exclude = NA,
     }
   }
 
-##  ............................................................................
-##  check if new levels differ from old unique character strings
+  ##  ............................................................................
+  ##  check if new levels differ from old unique character strings
   if (!setequal(prior, posterior)) {
     # levels that are not current names
     if (!all(posterior %in% prior)) {
       warning(paste("the following levels were empty: \n",
                     paste(c(posterior %w/o% prior), collapse = "\n")),
-      call. = FALSE)
+              call. = FALSE)
     }
 
 
-##  ............................................................................
-##  check that current names that don't become levels
+    ##  ............................................................................
+    ##  check that current names that don't become levels
     if (!all(prior %in% posterior)) {
       warning(paste("the following levels were removed: \n",
                     paste(prior[!(prior %in% posterior)], collapse = "\n")),
-      call. = FALSE)
+              call. = FALSE)
     }
   }
-#   ____________________________________________________________________________
-#   output
+  #   ____________________________________________________________________________
+  #   output
   output
 }

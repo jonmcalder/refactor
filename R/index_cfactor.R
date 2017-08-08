@@ -49,7 +49,7 @@ index_cfactor <- function(data, index, variable = "variable",
          if (is.na(check[[g]])) {
            stop(paste("argument '", g, "' specified incorrectly. ",
                       "There is no such column in '", quote(index), "'", sep = ""))
-  })
+         })
 
 
 
@@ -78,7 +78,7 @@ index_cfactor <- function(data, index, variable = "variable",
                        "' has unexpected length. Only arguments of length 1 are ",
                        "recycled. Hence, the arguement should either be of length ",
                        length(sp_index_enc), " or 1"))
-    })
+         })
 
   # check whether all variables in pos_fact have numeric counterparts in data,
   # otherwise stop
@@ -96,7 +96,7 @@ index_cfactor <- function(data, index, variable = "variable",
 
   # apply cfactor to the original data, each column with its specification
   # if there are multiple columns to decode
-  if (length(sp_index_lab) > 1){
+  if (length(sp_index_lab) > 1) {
     data[, pos_fact] <- as.data.frame(Map(cfactor, data[, pos_fact],
                                           sp_index_enc, sp_index_lab, ...))
   } else if (length(sp_index_lab) == 1) {

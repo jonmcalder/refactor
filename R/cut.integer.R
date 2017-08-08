@@ -159,10 +159,10 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
 
   # if breaks are not specified (i.e. only the number of breaks is provided)
   # create breakpoints based on breaks_mode
-  if (length(breaks) == 1){
+  if (length(breaks) == 1) {
 
     # should breakpoints be the (integer) equivalent of cut.default?
-    if (breaks_mode == "default"){
+    if (breaks_mode == "default") {
 
       # adapted from base::cut.default
       nb <- as.integer(breaks + 1) # one more than #{intervals}
@@ -177,7 +177,7 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
       include.lowest <- TRUE
 
       # or "spread" over the range of the data?
-    } else if (breaks_mode == "spread"){
+    } else if (breaks_mode == "spread") {
       breaks_output <- cut_breakpoints(x, breaks, right, include.lowest)
       breakpoints <- breaks_output$breakpoints
       include.lowest <- breaks_output$include.lowest

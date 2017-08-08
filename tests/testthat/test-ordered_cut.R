@@ -69,14 +69,14 @@ test_that("warnings", {
   # breaks that create missing values
   expect_warning(cut(cfactor1, breaks = c("a", "q", "y"),
                      right = TRUE, include.lowest = TRUE),
-  "[[:digit:]] missing values generated")
+                 "[[:digit:]] missing values generated")
 })
 
 test_that("errors", {
   # breaks that do not exist in data
   expect_error(cut(cfactor2, breaks = c("a", "q", "y"),
                    right = TRUE, include.lowest = TRUE),
-  "specified breakpoints inexistent in data")
+               "specified breakpoints inexistent in data")
   expect_error(cut(cfactor1, breaks = 2, labels = "a label",
                    right = TRUE, include.lowest = TRUE))
 })
@@ -100,7 +100,7 @@ test_that("binwidth 1", {
   # get a warning with scalar breaks
   expect_warning(cut(cfactor(rep(letters, 2),
                              ordered = TRUE), 20),
-  "are: a, b, c, d, e, f, g, h, i, j, k, l, m, n")
+                 "are: a, b, c, d, e, f, g, h, i, j, k, l, m, n")
 
   # don't get a waring with specified breakpoints
   expect_warning(cut(cfactor(rep(letters[1:20], 2), ordered = T), letters[1:20]), NA)

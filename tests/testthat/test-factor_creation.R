@@ -41,17 +41,17 @@ test_that("warnings", {
   ## case 1: only is represented
   expect_warning(cfactor(x = c("a", "b", "c"), levels = c("a", "b", "c"),
                          labels = c("b", "a", "laste")),
-  "Some values now used .* is now represented")
+                 "Some values now used .* is now represented")
 
   ## case 2: only still message
   expect_warning(cfactor(x = c("a", "b", "c"), levels = c("a", "b", "c"),
                          labels = c("a", "g", "laste")),
-  "Some values now used .* still represents")
+                 "Some values now used .* still represents")
 
   ## case 3: 1 and 2
   expect_warning(cfactor(x = c("a", "b", "c"), levels = c("a", "b", "c"),
                          labels = c("a", "now", "b")),
-  "Some values now used .* is now represented .* still represents")
+                 "Some values now used .* is now represented .* still represents")
 
   # duplicated factor inputs
   expect_warning(cfactor(c("a", "b"), levels = c("a", "a", "b")),

@@ -63,8 +63,8 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = TRUE,
                         ...) {
 
 
-#   ____________________________________________________________________________
-#   assertive tests                                                         ####
+  #   ____________________________________________________________________________
+  #   assertive tests                                                         ####
 
   # simple input checking
   assert_factor(x, ordered = T)
@@ -101,8 +101,8 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = TRUE,
 
 
 
-#   ____________________________________________________________________________
-#   determine breakpoints                                                   ####
+  #   ____________________________________________________________________________
+  #   determine breakpoints                                                   ####
 
   x_num <- as.numeric(x)
   x_lev <- levels(x)
@@ -110,7 +110,7 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = TRUE,
 
   ###
   # if breaks are not specified (i.e. only the number of breaks is provided)
-  if (length(breaks) == 1){
+  if (length(breaks) == 1) {
     numLabels <- breaks
     breaks_output <- cut_breakpoints(x_num, breaks, right, include.lowest)
     breakpoints <- breaks_output$breakpoints
@@ -129,8 +129,8 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = TRUE,
 
 
 
-#   ____________________________________________________________________________
-#   determine labels                                                        ####
+  #   ____________________________________________________________________________
+  #   determine labels                                                        ####
 
   adjust <- bin_adjust(right, include.lowest, numLabels)
 
@@ -159,7 +159,7 @@ cut.ordered <- function(x, breaks, labels = NULL, include.lowest = TRUE,
   }
 
 
-#   ____________________________________________________________________________
+  #   ____________________________________________________________________________
 
   output <- cut.default(x_num, breaks = breakpoints, labels = recode_labels,
                         include.lowest = include.lowest, right = right,
