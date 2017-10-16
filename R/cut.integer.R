@@ -145,7 +145,7 @@ cut.integer <- function(x, breaks, labels = NULL, include.lowest = TRUE,
   }
 
   if (length(breaks) == 1) {
-    if (breaks > max(x) - min(x) + 1) {
+    if (breaks > max(x, na.rm= TRUE) - min(x, na.rm = TRUE) + 1) {
       stop("range too small for the number of breaks specified")
     }
     if (length(x) <= breaks) {
